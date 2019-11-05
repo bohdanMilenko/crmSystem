@@ -1,38 +1,72 @@
 package com.bank;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class Customer extends FinancialDetails {
+abstract class Customer {
 
-    private String name;
-    private String surname;
-    private int age;
-    private double balance;
+     String name;
+     String surname;
+     int age;
+     boolean canadianResident;
+     boolean eligibleForCreditLine;
+     boolean eligibleForPromotion;
+     List<RelativeType> relativeTypes= new ArrayList<>();
+     Map<FinancialProductType,FinancialProduct> financialProductList = new HashMap<>();
 
-    private List<BankProducts> bankProducts;
-    private List<Relatives> relatives;
+     abstract void openCheckingAccount(double amount);
+     abstract void openCreditLine();
+     abstract void applyForPromotion();
 
-    public Customer(String name, String surname, int age, double balance, List<BankProducts> bankProducts, List<Relatives> relatives) {
-        this.name = name;
-        this.surname = surname;
-        this.age = age;
-        this.balance = balance;
-        this.bankProducts = bankProducts;
-        this.relatives = relatives;
+    int checkCreditLineEligibility(){
+        CheckingAccount checkingAccount = (CheckingAccount) financialProductList.get(FinancialProductType.CHECKING_ACCOUNT);
+        double checkingBalance = checkingAccount.getBalance();
+        if(checkingBalance < 1000 && !canadianResident){
+            System.out.println("Cannot apply for a credit card");
+            eligibleForCreditLine = false;
+            return 0;
+        }else if(checkingBalance < 1000 && canadianResident){
+            System.out.println("Eligible for $" + CreditCard.LOWEST_THRESHOLD);
+            eligibleForCreditLine = true;
+            return CreditCard.LOWEST_THRESHOLD;
+        }else if(checkingBalance<5000 && !canadianResident){
+            System.out.println("Eligible for $" + CreditCard.LOWEST_THRESHOLD);
+            eligibleForCreditLine = true;
+            return CreditCard.LOWEST_THRESHOLD;
+        }else if(checkingBalance<5000 && canadianResident) {
+            System.out.println("Eligible for $" + CreditCard.MIDDLE_THRESHOLD);
+            eligibleForCreditLine = true;
+            return CreditCard.MIDDLE_THRESHOLD;
+        }else if(checkingBalance > 5000 && !canadianResident){
+            System.out.println("Eligible for $" + CreditCard.MIDDLE_THRESHOLD);
+            eligibleForCreditLine = true;
+            return CreditCard.MIDDLE_THRESHOLD;
+        }else {
+            System.out.println("Eligible for $" + CreditCard.TOP_THRESHOLD);
+            eligibleForCreditLine = true;
+            return CreditCard.TOP_THRESHOLD;
+        }
     }
 
-    public Customer(String name, String surname, int age, double balance){
-        this.name = name;
-        this.surname = surname;
-        this.age = age;
-        this.bankProducts = new ArrayList<>();
-        this.relatives = new ArrayList<>();
 
+    public enum RelativeType {
+        PARENT,
+        SIBLING,
+        PARENTSSIBLING,
+        GRANDPARENT;
     }
 
-    @Override
-    double getBalance() {
-        return balance;
+    public enum SexType {
+        MALE,
+        FEMALE,
+        OTHER;
     }
+
+    public enum FinancialProductType{
+        CREDIT_CARD,
+        CHECKING_ACCOUNT;
+    }
+
 }

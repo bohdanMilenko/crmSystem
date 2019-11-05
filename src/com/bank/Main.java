@@ -4,6 +4,10 @@ public class Main {
 
     public static void main(String[] args) {
 
+        Customer customer = new RegularAccount();
+        customer.openCheckingAccount(6000);
+        customer.checkCreditLineEligibility();
+        System.out.println(customer.eligibleForCreditLine);
 
         /*
         Main goal of the application:
