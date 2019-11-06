@@ -1,18 +1,32 @@
 package com.bank;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class FinancialProduct {
 
     public enum TRANSACTION_TYPE{INCOME,EXPENSE}
 
-    public static final int WELCOMING_BONUS = 50;
-    Map<TRANSACTION_TYPE,Double> transactionList= new HashMap<>();
+    static final int WELCOMING_BONUS = 50;
+    List<Transaction> transactionList= new ArrayList<>();
 
-    abstract void increaseBalance(double incomingTransaction);
-    abstract void decreaseBalance(double outgoingTransaction);
-    abstract void updateTransactionList(TRANSACTION_TYPE transaction_type ,double transaction);
+    abstract void increaseBalance(double amount);
+    abstract void decreaseBalance(double amount);
+
+
+
+    Transaction createTransaction(double amount){
+        TRANSACTION_TYPE TYPE = defineTransactionType(amount);
+        return  new Transaction(TYPE,amount);
+    }
+
+    private TRANSACTION_TYPE defineTransactionType(double amount){
+        if(amount>0){
+            return TRANSACTION_TYPE.INCOME;
+        }else {
+            return TRANSACTION_TYPE.EXPENSE;
+        }
+    }
 
 
 

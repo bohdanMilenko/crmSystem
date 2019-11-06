@@ -1,7 +1,7 @@
 package com.bank;
 
 
-public class RegularAccount extends  Customer{
+public class ClientAccount extends  Customer{
 
 
 

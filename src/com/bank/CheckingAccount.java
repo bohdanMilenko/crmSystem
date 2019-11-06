@@ -24,7 +24,7 @@ public class CheckingAccount extends FinancialProduct {
     }
 
     @Override
-    void updateTransactionList(TRANSACTION_TYPE transaction_type, double transaction) {
+    void updateTransactionHistory(TRANSACTION_TYPE transaction_type, double transaction) {
 
     }
 }

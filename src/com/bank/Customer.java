@@ -58,10 +58,10 @@ abstract class Customer {
         GRANDPARENT;
     }
 
-    public enum SexType {
+    public enum GENDER {
         MALE,
         FEMALE,
-        OTHER;
+        UNKNOWN;
     }
 
     public enum FinancialProductType{

@@ -1,7 +1,8 @@
 package com.bank;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+
 
 
 public class CreditCard extends FinancialProduct {
@@ -10,25 +11,25 @@ public class CreditCard extends FinancialProduct {
     private  double creditLimit;
     private int overLimitCount;
     private boolean defaulted;
-    private Map<TRANSACTION_TYPE,Double> creditCardTransactions = new HashMap<>();
-    
-     static final int LOWEST_THRESHOLD = 1000;
-     static final int MIDDLE_THRESHOLD = 5000;
-     static final int TOP_THRESHOLD = 10000;
-    
-    
+
+    private List<Transaction> creditCardTransactions = new ArrayList<>();
+
+    static final int LOWEST_THRESHOLD = 1000;
+    static final int MIDDLE_THRESHOLD = 5000;
+    static final int TOP_THRESHOLD = 10000;
+
     private static final double OVER_LIMIT_FEE = 29.99;
 
     public CreditCard(double creditLimit) {
         this.balance+= WELCOMING_BONUS;
-        this.creditLimit = creditLimit* (-1);
+        this.creditLimit = creditLimit * (-1);
         this.defaulted = false;
     }
 
     @Override
     void increaseBalance(double incomingTransaction) {
         balance+= incomingTransaction;
-        updateTransactionList(TRANSACTION_TYPE.INCOME, incomingTransaction);
+        creditCardTransactions.add(super.createTransaction(incomingTransaction));
     }
 
     @Override
@@ -36,21 +37,11 @@ public class CreditCard extends FinancialProduct {
         if(creditLimit >= (balance - outgoingTransaction)){
             overLimitCount++;
             System.out.println("You used more funds than you credit line allows you!");
-            updateTransactionList(TRANSACTION_TYPE.EXPENSE, OVER_LIMIT_FEE);
-        }else {
-            balance -= outgoingTransaction;
+            creditCardTransactions.add(super.createTransaction(OVER_LIMIT_FEE));
         }
-        updateTransactionList(TRANSACTION_TYPE.EXPENSE, outgoingTransaction);
-    }
 
-    @Override
-    void updateTransactionList(TRANSACTION_TYPE transaction_type, double transaction) {
-
-        transactionList.put(transaction_type, transaction);
-    }
-
-    private void updateCreditCardTransactions(TRANSACTION_TYPE transaction_type, double transaction){
-        creditCardTransactions.put(transaction_type,transaction);
+        balance -= outgoingTransaction;
+        creditCardTransactions.add(super.createTransaction(outgoingTransaction));
     }
 
     public double getBalance() {
@@ -69,7 +60,7 @@ public class CreditCard extends FinancialProduct {
         return defaulted;
     }
 
-    public Map<TRANSACTION_TYPE, Double> getCreditCardTransactions() {
+    public List<Transaction> getCreditCardTransactions() {
         return creditCardTransactions;
     }
 }

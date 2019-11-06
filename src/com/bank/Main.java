@@ -4,7 +4,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Customer customer = new RegularAccount();
+        Customer customer = new ClientAccount();
         customer.openCheckingAccount(6000);
         customer.checkCreditLineEligibility();
         System.out.println(customer.eligibleForCreditLine);
