@@ -1,13 +1,18 @@
 package com.bank;
 
+import java.time.LocalDate;
+
 public class Main {
 
     public static void main(String[] args) {
 
-        Customer customer = new ClientAccount();
-        customer.openCheckingAccount(6000);
-        customer.checkCreditLineEligibility();
-        System.out.println(customer.eligibleForCreditLine);
+      Customer customer = new Customer("Mark", "Twain", LocalDate.of(1984,8,24),false);
+      ClientAccount MarkTwain = new ClientAccount(customer);
+
+      MarkTwain.openCheckingAccount(5000);
+
+      MarkTwain.openCreditLine();
+        System.out.println(MarkTwain.getAmountEligibleForCreditLine());
 
         /*
         Main goal of the application:

@@ -12,18 +12,18 @@ public class CreditCard extends FinancialProduct {
     private int overLimitCount;
     private boolean defaulted;
 
-    private List<Transaction> creditCardTransactions = new ArrayList<>();
+    private List<Transaction> creditCardTransactions;
 
     static final int LOWEST_THRESHOLD = 1000;
     static final int MIDDLE_THRESHOLD = 5000;
     static final int TOP_THRESHOLD = 10000;
-
     private static final double OVER_LIMIT_FEE = 29.99;
 
     public CreditCard(double creditLimit) {
         this.balance+= WELCOMING_BONUS;
         this.creditLimit = creditLimit * (-1);
         this.defaulted = false;
+        this.creditCardTransactions = new ArrayList<>();
     }
 
     @Override

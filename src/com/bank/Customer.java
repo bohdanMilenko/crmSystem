@@ -1,55 +1,44 @@
 package com.bank;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-abstract class Customer {
+public class Customer {
 
-     String name;
-     String surname;
-     int age;
-     boolean canadianResident;
-     boolean eligibleForCreditLine;
-     boolean eligibleForPromotion;
-     List<RelativeType> relativeTypes= new ArrayList<>();
-     Map<FinancialProductType,FinancialProduct> financialProductList = new HashMap<>();
+    private String name;
+    private String surname;
+    private LocalDate dateOfBirth;
+    private boolean isCanadianResident;
+    private List<RelativeType> relativeTypes;
 
-     abstract void openCheckingAccount(double amount);
-     abstract void openCreditLine();
-     abstract void applyForPromotion();
-
-    int checkCreditLineEligibility(){
-        CheckingAccount checkingAccount = (CheckingAccount) financialProductList.get(FinancialProductType.CHECKING_ACCOUNT);
-        double checkingBalance = checkingAccount.getBalance();
-        if(checkingBalance < 1000 && !canadianResident){
-            System.out.println("Cannot apply for a credit card");
-            eligibleForCreditLine = false;
-            return 0;
-        }else if(checkingBalance < 1000 && canadianResident){
-            System.out.println("Eligible for $" + CreditCard.LOWEST_THRESHOLD);
-            eligibleForCreditLine = true;
-            return CreditCard.LOWEST_THRESHOLD;
-        }else if(checkingBalance<5000 && !canadianResident){
-            System.out.println("Eligible for $" + CreditCard.LOWEST_THRESHOLD);
-            eligibleForCreditLine = true;
-            return CreditCard.LOWEST_THRESHOLD;
-        }else if(checkingBalance<5000 && canadianResident) {
-            System.out.println("Eligible for $" + CreditCard.MIDDLE_THRESHOLD);
-            eligibleForCreditLine = true;
-            return CreditCard.MIDDLE_THRESHOLD;
-        }else if(checkingBalance > 5000 && !canadianResident){
-            System.out.println("Eligible for $" + CreditCard.MIDDLE_THRESHOLD);
-            eligibleForCreditLine = true;
-            return CreditCard.MIDDLE_THRESHOLD;
-        }else {
-            System.out.println("Eligible for $" + CreditCard.TOP_THRESHOLD);
-            eligibleForCreditLine = true;
-            return CreditCard.TOP_THRESHOLD;
-        }
+    public Customer(String name, String surname, LocalDate dateOfBirth, boolean isCanadianResident) {
+        this.name = name;
+        this.surname = surname;
+        this.dateOfBirth = dateOfBirth;
+        this.isCanadianResident = isCanadianResident;
+        this.relativeTypes = new ArrayList<>();
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public boolean isCanadianResident() {
+        return isCanadianResident;
+    }
+
+    public List<RelativeType> getRelativeTypes() {
+        return relativeTypes;
+    }
 
     public enum RelativeType {
         PARENT,
@@ -64,7 +53,7 @@ abstract class Customer {
         UNKNOWN;
     }
 
-    public enum FinancialProductType{
+    public enum FinancialProductType {
         CREDIT_CARD,
         CHECKING_ACCOUNT;
     }
