@@ -13,4 +13,16 @@ public class Transaction {
         this.amount = amount;
         this.dateTime = LocalDateTime.now();
     }
+
+    public FinancialProduct.TRANSACTION_TYPE getTransaction_type() {
+        return transaction_type;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
+    public LocalDateTime getDateTime() {
+        return dateTime;
+    }
 }

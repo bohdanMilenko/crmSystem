@@ -1,17 +1,16 @@
 package com.bank;
 
-import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CheckingAccount extends FinancialProduct {
 
     private double balance;
-    private Map<LocalDate,Transaction> checkingAccountHistory;
+    private List<Transaction> checkingAccountHistory;
 
     public CheckingAccount(double balance) {
         this.balance = balance;
-        this.checkingAccountHistory = new HashMap<>();
+        this.checkingAccountHistory = new ArrayList<>();
     }
 
     public double getBalance() {
@@ -21,16 +20,16 @@ public class CheckingAccount extends FinancialProduct {
     @Override
     void depositMoneyToAccount(double incomingTransaction) {
         balance+=incomingTransaction;
-        checkingAccountHistory.put(LocalDate.now() ,super.createTransaction(incomingTransaction));
+        checkingAccountHistory.add(super.createTransaction(incomingTransaction));
     }
 
     @Override
     void withdrawMoneyFromAccount(double outgoingTransaction) {
         balance-=outgoingTransaction;
-        checkingAccountHistory.put( LocalDate.now() ,super.createTransaction(outgoingTransaction));
+        checkingAccountHistory.add(super.createTransaction(outgoingTransaction));
     }
 
-    public Map<LocalDate,Transaction> getCheckingAccountHistory() {
+    public List<Transaction> getCheckingAccountHistory() {
         return checkingAccountHistory;
     }
 }
