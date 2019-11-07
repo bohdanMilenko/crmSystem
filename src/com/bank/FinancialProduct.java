@@ -1,14 +1,14 @@
 package com.bank;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public abstract class FinancialProduct {
 
     public enum TRANSACTION_TYPE{INCOME,EXPENSE}
+    public enum FinancialProductType {
+        CREDIT_CARD,
+        CHECKING_ACCOUNT;
+    }
 
     static final int WELCOMING_BONUS = 50;
-    List<Transaction> transactionList= new ArrayList<>();
 
     abstract void depositMoneyToAccount(double amount);
     abstract void withdrawMoneyFromAccount(double amount);

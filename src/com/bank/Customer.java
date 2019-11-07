@@ -53,9 +53,6 @@ public class Customer {
         UNKNOWN;
     }
 
-    public enum FinancialProductType {
-        CREDIT_CARD,
-        CHECKING_ACCOUNT;
-    }
+
 
 }

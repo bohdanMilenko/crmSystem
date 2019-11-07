@@ -8,7 +8,7 @@ import java.util.Map;
 public class ClientAccount {
 
     private Customer customer;
-    private Map<Customer.FinancialProductType, FinancialProduct> financialProductList;
+    private Map<FinancialProduct.FinancialProductType, FinancialProduct> financialProductList;
     private int amountEligibleForCreditLine;
     private boolean eligibleForPromotion;
 
@@ -30,7 +30,7 @@ public class ClientAccount {
 
     CheckingAccount openCheckingAccount(double amount) {
         CheckingAccount checkingAccount = new CheckingAccount(amount);
-        financialProductList.put(Customer.FinancialProductType.CHECKING_ACCOUNT, checkingAccount);
+        financialProductList.put(FinancialProduct.FinancialProductType.CHECKING_ACCOUNT, checkingAccount);
         return checkingAccount;
     }
 
@@ -40,14 +40,14 @@ public class ClientAccount {
         CreditCard creditCard ;
         if (availableCreditLine > 0) {
             creditCard = new CreditCard(availableCreditLine);
-            financialProductList.put(Customer.FinancialProductType.CREDIT_CARD, creditCard);
+            financialProductList.put(FinancialProduct.FinancialProductType.CREDIT_CARD, creditCard);
             return creditCard;
         }
         return null;
     }
 
     private int checkCreditLineEligibility() {
-        CheckingAccount checkingAccount = (CheckingAccount) financialProductList.get(Customer.FinancialProductType.CHECKING_ACCOUNT);
+        CheckingAccount checkingAccount = (CheckingAccount) financialProductList.get(FinancialProduct.FinancialProductType.CHECKING_ACCOUNT);
         double checkingBalance = checkingAccount.getBalance();
         if (checkingBalance < 1000 && !customer.isCanadianResident()) {
             System.out.println("Cannot apply for a credit card");
@@ -84,5 +84,16 @@ public class ClientAccount {
         return eligibleForPromotion;
     }
 
-    public void checkPromotionEligibility();
+    public void checkPromotionEligibility(){
+        LocalDate monthBeforeNow = LocalDate.now().minusMonths(1);
+        CheckingAccount checkingAccount =  (CheckingAccount) financialProductList.get(FinancialProduct.FinancialProductType.CHECKING_ACCOUNT);
+        if(checkingAccount!=null){
+
+            for(Transaction transaction :  checkingAccount.getCheckingAccountHistory()){
+
+            }
+        }
+
+
+    }
 }
