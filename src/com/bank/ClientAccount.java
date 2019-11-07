@@ -1,33 +1,49 @@
 package com.bank;
 
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ClientAccount {
 
     private Customer customer;
-    private Map<Customer.FinancialProductType, FinancialProduct> financialProductList = new HashMap<>();
+    private Map<Customer.FinancialProductType, FinancialProduct> financialProductList;
     private int amountEligibleForCreditLine;
     private boolean eligibleForPromotion;
 
 
     public ClientAccount(Customer customer) {
         this.customer = customer;
+        this.financialProductList = new HashMap<>();
+        calculateInitialCreditLineEligibility(customer);
+        this.eligibleForPromotion = false;
     }
 
-    void openCheckingAccount(double amount) {
+    private void calculateInitialCreditLineEligibility(Customer customer){
+        LocalDate minimalAge = LocalDate.of(18,0,0);
+        boolean clientOldEnough =  customer.getDateOfBirth().compareTo(minimalAge)>0;
+        if(customer.isCanadianResident()&& clientOldEnough) {
+            this.amountEligibleForCreditLine = CreditCard.LOWEST_THRESHOLD;
+        }else {this.amountEligibleForCreditLine = 0;}
+    }
+
+    CheckingAccount openCheckingAccount(double amount) {
         CheckingAccount checkingAccount = new CheckingAccount(amount);
         financialProductList.put(Customer.FinancialProductType.CHECKING_ACCOUNT, checkingAccount);
+        return checkingAccount;
     }
 
 
-    void openCreditLine() {
+    CreditCard openCreditLine() {
         int availableCreditLine = checkCreditLineEligibility();
+        CreditCard creditCard ;
         if (availableCreditLine > 0) {
-            CreditCard creditCard = new CreditCard(availableCreditLine);
+            creditCard = new CreditCard(availableCreditLine);
             financialProductList.put(Customer.FinancialProductType.CREDIT_CARD, creditCard);
+            return creditCard;
         }
+        return null;
     }
 
     private int checkCreditLineEligibility() {
@@ -67,4 +83,6 @@ public class ClientAccount {
     public boolean isEligibleForPromotion() {
         return eligibleForPromotion;
     }
+
+    public void checkPromotionEligibility();
 }

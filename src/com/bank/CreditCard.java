@@ -1,6 +1,7 @@
 package com.bank;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -27,13 +28,13 @@ public class CreditCard extends FinancialProduct {
     }
 
     @Override
-    void increaseBalance(double incomingTransaction) {
+    void depositMoneyToAccount(double incomingTransaction) {
         balance+= incomingTransaction;
         creditCardTransactions.add(super.createTransaction(incomingTransaction));
     }
 
     @Override
-    void decreaseBalance(double outgoingTransaction) {
+    void withdrawMoneyFromAccount(double outgoingTransaction) {
         if(creditLimit >= (balance - outgoingTransaction)){
             overLimitCount++;
             System.out.println("You used more funds than you credit line allows you!");
@@ -61,6 +62,6 @@ public class CreditCard extends FinancialProduct {
     }
 
     public List<Transaction> getCreditCardTransactions() {
-        return creditCardTransactions;
+        return Collections.unmodifiableList(creditCardTransactions);
     }
 }

@@ -18,13 +18,13 @@ public class CheckingAccount extends FinancialProduct {
     }
 
     @Override
-    void increaseBalance(double incomingTransaction) {
+    void depositMoneyToAccount(double incomingTransaction) {
         balance+=incomingTransaction;
         checkingAccountHistory.add(super.createTransaction(incomingTransaction));
     }
 
     @Override
-    void decreaseBalance(double outgoingTransaction) {
+    void withdrawMoneyFromAccount(double outgoingTransaction) {
         balance-=outgoingTransaction;
         checkingAccountHistory.add(super.createTransaction(outgoingTransaction));
     }

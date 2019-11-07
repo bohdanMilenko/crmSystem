@@ -10,8 +10,8 @@ public abstract class FinancialProduct {
     static final int WELCOMING_BONUS = 50;
     List<Transaction> transactionList= new ArrayList<>();
 
-    abstract void increaseBalance(double amount);
-    abstract void decreaseBalance(double amount);
+    abstract void depositMoneyToAccount(double amount);
+    abstract void withdrawMoneyFromAccount(double amount);
 
 
 
