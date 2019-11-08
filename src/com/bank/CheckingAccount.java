@@ -29,7 +29,7 @@ public class CheckingAccount extends FinancialProduct {
     @Override
     void withdrawMoneyFromAccount(double outgoingTransaction) {
         balance-=outgoingTransaction;
-        checkingAccountHistory.add(super.createTransaction(outgoingTransaction));
+        checkingAccountHistory.add(super.createTransaction(-outgoingTransaction));
     }
 
     @Override

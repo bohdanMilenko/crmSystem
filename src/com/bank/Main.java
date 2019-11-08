@@ -4,26 +4,36 @@ import java.time.LocalDate;
 
 public class Main {
 
-    public static void main(String[] args)  throws  UnsupportedOperationException{
+    public static void main(String[] args) throws UnsupportedOperationException {
 
-      Customer customer = new Customer("Mark", "Twain", LocalDate.of(1984,8,24),false);
-      ClientAccount MarkTwain = new ClientAccount(customer);
+        Customer customer = new Customer("Mark", "Twain", LocalDate.of(1984, 8, 24), false);
+        ClientAccount MarkTwain = new ClientAccount(customer);
 
-      MarkTwain.openCheckingAccount(5000);
+        MarkTwain.openCheckingAccount(5000);
 
-      MarkTwain.openCreditLine();
+        MarkTwain.openCreditLine();
         System.out.println(MarkTwain.getAmountEligibleForCreditLine());
 
-        CreditCard creditCard =  MarkTwain.openCreditLine();
-        System.out.println(creditCard.getBalance());
+        CreditCard creditCard = MarkTwain.openCreditLine();
 
         creditCard.withdrawMoneyFromAccount(500.50);
         creditCard.withdrawMoneyFromAccount(900.00);
-        System.out.println(creditCard.getBalance());
+
 
         creditCard.printTransactionList();
         creditCard.withdrawMoneyFromAccount(15000.00);
         creditCard.printTransactionList();
+
+        CheckingAccount checkingAccount = MarkTwain.openCheckingAccount(9000);
+        checkingAccount.depositMoneyToAccount(500);
+        checkingAccount.withdrawMoneyFromAccount(2000);
+        checkingAccount.depositMoneyToAccount(15550);
+
+        MarkTwain.checkPromotionEligibility();
+        MarkTwain.viewAllFinancialProducts();
+
+        FinancialProduct financialProduct = new CreditCard(4000);
+
 
 
 

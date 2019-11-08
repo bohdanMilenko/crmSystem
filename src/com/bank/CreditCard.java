@@ -18,7 +18,7 @@ public class CreditCard extends FinancialProduct {
     static final int LOWEST_THRESHOLD = 1000;
     static final int MIDDLE_THRESHOLD = 5000;
     static final int TOP_THRESHOLD = 10000;
-    private static final double OVER_LIMIT_FEE = 29.99;
+    private static final double OVER_LIMIT_FEE = -29.99;
 
     public CreditCard(double creditLimit) {
         this.balance+= WELCOMING_BONUS;
@@ -43,7 +43,7 @@ public class CreditCard extends FinancialProduct {
 
         balance -= outgoingTransaction;
         System.out.println("You withdrew $" + outgoingTransaction + " and you current balance is: $" + balance);
-        creditCardTransactions.add(super.createTransaction(outgoingTransaction));
+        creditCardTransactions.add(super.createTransaction(-outgoingTransaction));
     }
 
     public double getBalance() {

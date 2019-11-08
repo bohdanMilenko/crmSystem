@@ -29,19 +29,26 @@ public class ClientAccount {
     }
 
     CheckingAccount openCheckingAccount(double amount) {
-        CheckingAccount checkingAccount = new CheckingAccount(amount);
-        financialProductList.put(FinancialProduct.FinancialProductType.CHECKING_ACCOUNT, checkingAccount);
-        return checkingAccount;
+        if(!checkIfFinancialProductExists(FinancialProduct.FinancialProductType.CHECKING_ACCOUNT)) {
+            CheckingAccount checkingAccount = new CheckingAccount(amount);
+            financialProductList.put(FinancialProduct.FinancialProductType.CHECKING_ACCOUNT, checkingAccount);
+            System.out.println("Successfully opened a checking account. You balance is: $" + amount);
+            return checkingAccount;
+        }
+        return null;
     }
 
 
     CreditCard openCreditLine() {
-        int availableCreditLine = checkCreditLineEligibility();
-        CreditCard creditCard ;
-        if (availableCreditLine > 0) {
-            creditCard = new CreditCard(availableCreditLine);
-            financialProductList.put(FinancialProduct.FinancialProductType.CREDIT_CARD, creditCard);
-            return creditCard;
+        if(!checkIfFinancialProductExists(FinancialProduct.FinancialProductType.CREDIT_CARD)) {
+            int availableCreditLine = checkCreditLineEligibility();
+            CreditCard creditCard;
+            if (availableCreditLine > 0) {
+                creditCard = new CreditCard(availableCreditLine);
+                financialProductList.put(FinancialProduct.FinancialProductType.CREDIT_CARD, creditCard);
+                System.out.println("Successfully opened a credit line with $" + availableCreditLine + " available for credit");
+                return creditCard;
+            }
         }
         return null;
     }
@@ -75,15 +82,6 @@ public class ClientAccount {
             return CreditCard.TOP_THRESHOLD;
         }
     }
-
-    public int getAmountEligibleForCreditLine() {
-        return amountEligibleForCreditLine;
-    }
-
-    public boolean isEligibleForPromotion() {
-        return eligibleForPromotion;
-    }
-
     public void checkPromotionEligibility(){
         CheckingAccount checkingAccount =  (CheckingAccount) financialProductList.get(FinancialProduct.FinancialProductType.CHECKING_ACCOUNT);
         double amountSpentLastMonth = 0.00;
@@ -93,8 +91,31 @@ public class ClientAccount {
         }
         if(amountSpentLastMonth>5000){
             this.eligibleForPromotion = true;
+            System.out.println("You are eligible for promotion");
         }else {
             this.eligibleForPromotion = false;
+            System.out.println("You have to spend $" + (5000-amountSpentLastMonth) + " to be eligible.");
         }
     }
+
+    public int getAmountEligibleForCreditLine() {
+        return amountEligibleForCreditLine;
+    }
+
+    public boolean isEligibleForPromotion() {
+        return eligibleForPromotion;
+    }
+
+    void viewAllFinancialProducts(){
+        financialProductList.forEach((k,v) -> System.out.println(k.toString()));
+    }
+
+    private boolean checkIfFinancialProductExists(FinancialProduct.FinancialProductType financialProductType){
+        if(financialProductList.get(financialProductType)!= null) {
+            System.out.println("Such financial product already exists!");
+            return true;
+        }
+        return false;
+    }
+
 }
