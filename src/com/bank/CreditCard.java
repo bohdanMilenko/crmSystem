@@ -42,6 +42,7 @@ public class CreditCard extends FinancialProduct {
         }
 
         balance -= outgoingTransaction;
+        System.out.println("You withdrew $" + outgoingTransaction + " and you current balance is: $" + balance);
         creditCardTransactions.add(super.createTransaction(outgoingTransaction));
     }
 

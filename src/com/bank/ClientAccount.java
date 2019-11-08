@@ -21,7 +21,7 @@ public class ClientAccount {
     }
 
     private void calculateInitialCreditLineEligibility(Customer customer){
-        LocalDate minimalAge = LocalDate.of(18,0,0);
+        LocalDate minimalAge = LocalDate.of(18,1,1);
         boolean clientOldEnough =  customer.getDateOfBirth().compareTo(minimalAge)>0;
         if(customer.isCanadianResident()&& clientOldEnough) {
             this.amountEligibleForCreditLine = CreditCard.LOWEST_THRESHOLD;

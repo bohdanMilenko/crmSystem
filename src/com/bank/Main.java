@@ -1,6 +1,9 @@
 package com.bank;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.util.List;
 
 public class Main {
 
@@ -13,6 +16,27 @@ public class Main {
 
       MarkTwain.openCreditLine();
         System.out.println(MarkTwain.getAmountEligibleForCreditLine());
+
+        CreditCard creditCard =  MarkTwain.openCreditLine();
+        System.out.println(creditCard.getBalance());
+
+        creditCard.withdrawMoneyFromAccount(500.50);
+        creditCard.withdrawMoneyFromAccount(900.00);
+        System.out.println(creditCard.getBalance());
+
+        List<Transaction> creditCardTransactions =  creditCard.getCreditCardTransactions();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM);
+        creditCardTransactions.forEach(transaction ->
+                System.out.println(formatter.format(transaction.getDateTime()) + " - " + transaction.getTransaction_type() + " " + transaction.getAmount() + " "));
+
+        //creditCardTransactions.add(new Transaction(FinancialProduct.TRANSACTION_TYPE.EXPENSE, 400.00));
+
+        creditCardTransactions.forEach(transaction ->
+                System.out.println(formatter.format(transaction.getDateTime()) + " - " + transaction.getTransaction_type() + " " + transaction.getAmount() + " "));
+
+
+
 
         /*
         Main goal of the application:
