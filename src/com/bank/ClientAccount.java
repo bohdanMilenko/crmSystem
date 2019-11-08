@@ -85,15 +85,10 @@ public class ClientAccount {
     }
 
     public void checkPromotionEligibility(){
-        LocalDate monthBeforeNow = LocalDate.now().minusMonths(1);
         CheckingAccount checkingAccount =  (CheckingAccount) financialProductList.get(FinancialProduct.FinancialProductType.CHECKING_ACCOUNT);
         double amountSpentLastMonth = 0.00;
         if(checkingAccount!=null){
-            for(Transaction transaction :  checkingAccount.getCheckingAccountHistory()){
-                if(transaction.getDateTime().toLocalDate().isAfter(monthBeforeNow)){
-                    amountSpentLastMonth+=transaction.getAmount();
-                }
-            }
+            amountSpentLastMonth = checkingAccount.getAmountSpentLastMonth();
             System.out.println("Amount spent last month is: $" + amountSpentLastMonth);
         }
         if(amountSpentLastMonth>5000){

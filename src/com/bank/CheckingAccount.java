@@ -1,5 +1,6 @@
 package com.bank;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
@@ -37,5 +38,16 @@ public class CheckingAccount extends FinancialProduct {
         DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM);
         checkingAccountHistory.forEach(transaction ->
                 System.out.println(formatter.format(transaction.getDateTime()) + " :" + transaction.getTransaction_type() + " $" + transaction.getAmount()));
+    }
+
+    double getAmountSpentLastMonth(){
+        LocalDate monthBeforeNow = LocalDate.now().minusMonths(1);
+        double amountSpentLastMonth = 0.0;
+        for(Transaction transaction : checkingAccountHistory){
+            if(transaction.getDateTime().isAfter(monthBeforeNow.atStartOfDay())){
+                amountSpentLastMonth+=transaction.getAmount();
+            }
+    }
+        return amountSpentLastMonth;
     }
 }
