@@ -1,5 +1,7 @@
 package com.bank;
 
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +31,11 @@ public class CheckingAccount extends FinancialProduct {
         checkingAccountHistory.add(super.createTransaction(outgoingTransaction));
     }
 
-    public List<Transaction> getCheckingAccountHistory() {
-        return checkingAccountHistory;
+    @Override
+    void printTransactionList() {
+        System.out.println("Your transaction list:");
+        DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM);
+        checkingAccountHistory.forEach(transaction ->
+                System.out.println(formatter.format(transaction.getDateTime()) + " :" + transaction.getTransaction_type() + " $" + transaction.getAmount()));
     }
 }

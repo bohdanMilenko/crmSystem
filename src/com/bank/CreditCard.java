@@ -1,9 +1,9 @@
 package com.bank;
 
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-
 
 
 public class CreditCard extends FinancialProduct {
@@ -62,7 +62,12 @@ public class CreditCard extends FinancialProduct {
         return defaulted;
     }
 
-    public List<Transaction> getCreditCardTransactions() {
-        return Collections.unmodifiableList(creditCardTransactions);
+
+    @Override
+    void printTransactionList() {
+        System.out.println("Your transaction list:");
+        DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM);
+        creditCardTransactions.forEach(transaction ->
+                System.out.println(formatter.format(transaction.getDateTime()) + " :" + transaction.getTransaction_type() + " $" + transaction.getAmount()));
     }
 }

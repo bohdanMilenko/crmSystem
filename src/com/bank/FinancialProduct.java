@@ -12,6 +12,7 @@ public abstract class FinancialProduct {
 
     abstract void depositMoneyToAccount(double amount);
     abstract void withdrawMoneyFromAccount(double amount);
+    abstract void printTransactionList();
 
 
 
@@ -27,6 +28,7 @@ public abstract class FinancialProduct {
             return TRANSACTION_TYPE.EXPENSE;
         }
     }
+
 
 
 
