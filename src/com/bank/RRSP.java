@@ -17,6 +17,7 @@ public class RRSP extends FinancialProduct implements Promotion{
 
     private double calculateRoom(){
 
+        return 15.00;
     }
 
     @Override

@@ -9,10 +9,18 @@ public class Main {
         Customer customer = new Customer("Mark", "Twain", LocalDate.of(1984, 8, 24), false);
         ClientAccount MarkTwain = new ClientAccount(customer);
 
-        MarkTwain.openCheckingAccount(5000);
 
-        MarkTwain.openCreditLine();
         System.out.println(MarkTwain.getAmountEligibleForCreditLine());
+
+
+
+        CheckingAccount checkingAccount = MarkTwain.openCheckingAccount(9000);
+        checkingAccount.depositMoneyToAccount(500);
+        checkingAccount.withdrawMoneyFromAccount(2000);
+        checkingAccount.depositMoneyToAccount(15550);
+
+        MarkTwain.checkPromotionEligibility();
+        MarkTwain.viewAllFinancialProducts();
 
         CreditCard creditCard = MarkTwain.openCreditLine();
 
@@ -24,15 +32,11 @@ public class Main {
         creditCard.withdrawMoneyFromAccount(15000.00);
         creditCard.printTransactionList();
 
-        CheckingAccount checkingAccount = MarkTwain.openCheckingAccount(9000);
-        checkingAccount.depositMoneyToAccount(500);
-        checkingAccount.withdrawMoneyFromAccount(2000);
-        checkingAccount.depositMoneyToAccount(15550);
-
-        MarkTwain.checkPromotionEligibility();
-        MarkTwain.viewAllFinancialProducts();
-
         FinancialProduct financialProduct = new CreditCard(4000);
+
+        RRSP rrsp =  MarkTwain.openRRSP();
+        RRSP rrsp2 =  MarkTwain.openRRSP();
+
 
 
 

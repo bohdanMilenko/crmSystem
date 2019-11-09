@@ -59,31 +59,36 @@ public class ClientAccount {
 
     private int checkCreditLineEligibility() {
         CheckingAccount checkingAccount = (CheckingAccount) financialProductList.get(FinancialProduct.FinancialProductType.CHECKING_ACCOUNT);
-        double checkingBalance = checkingAccount.getBalance();
-        if (checkingBalance < 1000 && !customer.isCanadianResident()) {
-            System.out.println("Cannot apply for a credit card");
-            amountEligibleForCreditLine = 0;
+        if(checkingAccount != null) {
+            double checkingBalance = checkingAccount.getBalance();
+            if (checkingBalance < 1000 && !customer.isCanadianResident()) {
+                System.out.println("Cannot apply for a credit card");
+                amountEligibleForCreditLine = 0;
+                return 0;
+            } else if (checkingBalance < 1000 && customer.isCanadianResident()) {
+                System.out.println("Eligible for $" + CreditCard.LOWEST_THRESHOLD);
+                amountEligibleForCreditLine = CreditCard.LOWEST_THRESHOLD;
+                return CreditCard.LOWEST_THRESHOLD;
+            } else if (checkingBalance < 5000 && !customer.isCanadianResident()) {
+                System.out.println("Eligible for $" + CreditCard.LOWEST_THRESHOLD);
+                amountEligibleForCreditLine = CreditCard.LOWEST_THRESHOLD;
+                return CreditCard.LOWEST_THRESHOLD;
+            } else if (checkingBalance < 5000 && customer.isCanadianResident()) {
+                System.out.println("Eligible for $" + CreditCard.MIDDLE_THRESHOLD);
+                amountEligibleForCreditLine = CreditCard.MIDDLE_THRESHOLD;
+                return CreditCard.MIDDLE_THRESHOLD;
+            } else if (checkingBalance >= 5000 && !customer.isCanadianResident()) {
+                System.out.println("Eligible for $" + CreditCard.MIDDLE_THRESHOLD);
+                amountEligibleForCreditLine = CreditCard.MIDDLE_THRESHOLD;
+                return CreditCard.MIDDLE_THRESHOLD;
+            } else {
+                System.out.println("Eligible for $" + CreditCard.TOP_THRESHOLD);
+                amountEligibleForCreditLine = CreditCard.TOP_THRESHOLD;
+                return CreditCard.TOP_THRESHOLD;
+            }
+        }else {
+            System.out.println("Not eligible, please open checking account first!");
             return 0;
-        } else if (checkingBalance < 1000 && customer.isCanadianResident()) {
-            System.out.println("Eligible for $" + CreditCard.LOWEST_THRESHOLD);
-            amountEligibleForCreditLine = CreditCard.LOWEST_THRESHOLD;
-            return CreditCard.LOWEST_THRESHOLD;
-        } else if (checkingBalance < 5000 && !customer.isCanadianResident()) {
-            System.out.println("Eligible for $" + CreditCard.LOWEST_THRESHOLD);
-            amountEligibleForCreditLine = CreditCard.LOWEST_THRESHOLD;
-            return CreditCard.LOWEST_THRESHOLD;
-        } else if (checkingBalance < 5000 && customer.isCanadianResident()) {
-            System.out.println("Eligible for $" + CreditCard.MIDDLE_THRESHOLD);
-            amountEligibleForCreditLine = CreditCard.MIDDLE_THRESHOLD;
-            return CreditCard.MIDDLE_THRESHOLD;
-        } else if (checkingBalance >= 5000 && !customer.isCanadianResident()) {
-            System.out.println("Eligible for $" + CreditCard.MIDDLE_THRESHOLD);
-            amountEligibleForCreditLine = CreditCard.MIDDLE_THRESHOLD;
-            return CreditCard.MIDDLE_THRESHOLD;
-        } else {
-            System.out.println("Eligible for $" + CreditCard.TOP_THRESHOLD);
-            amountEligibleForCreditLine = CreditCard.TOP_THRESHOLD;
-            return CreditCard.TOP_THRESHOLD;
         }
     }
     public void checkPromotionEligibility(){
@@ -114,7 +119,9 @@ public class ClientAccount {
         FinancialClientsInfo financialClientsInfo;
         if(!checkIfFinancialProductExists(FinancialProduct.FinancialProductType.RRSP)){
             financialClientsInfo =  requestFinancialInfo();
-            return new RRSP(financialClientsInfo);
+            RRSP rrsp = new RRSP(financialClientsInfo);
+            financialProductList.put(FinancialProduct.FinancialProductType.RRSP, rrsp);
+            return rrsp;
         }
         return null;
     }
@@ -129,20 +136,26 @@ public class ClientAccount {
         currentPosition = scanner.nextLine();
         System.out.println("For how many years do you work at current position?");
         yearsOnCurrentPosition = scanner.nextInt();
-        scanner.next();
+        scanner.nextLine();
         System.out.println("What is the name of the position you worked before?");
         previousPosition = scanner.nextLine();
         System.out.println("For how many years have you been working at your previous position?");
         yearsOnPreviousPosition = scanner.nextInt();
-        scanner.next();
-        System.out.println("Please enter the net income in 2017, 2018 and 2019:");
-        salaryHistory.put(2017, scanner.nextDouble());
-        scanner.next();
-        salaryHistory.put(2018, scanner.nextDouble());
-        scanner.next();
-        salaryHistory.put(2019,scanner.nextDouble());
-        scanner.next();
-        return new FinancialClientsInfo(currentPosition,previousPosition,yearsOnCurrentPosition, yearsOnPreviousPosition, salaryHistory);
+        scanner.nextLine();
+        System.out.println("Please enter the net income in 2017: ");
+        double incomeIn2017 = scanner.nextDouble();
+//        scanner.nextLine();
+        salaryHistory.put(2017, incomeIn2017);
+        System.out.println("Please enter the net income in 2018: ");
+        double incomeIn2018 = scanner.nextDouble();
+//        scanner.nextLine();
+        salaryHistory.put(2018,incomeIn2018);
+        System.out.println("Please enter the net income in 2019: ");
+        double incomeIn2019 = scanner.nextDouble();
+//        scanner.nextLine();
+        salaryHistory.put(2019,incomeIn2019);
+        this.financialClientsInfo = new FinancialClientsInfo(currentPosition,previousPosition,yearsOnCurrentPosition, yearsOnPreviousPosition, salaryHistory);
+        return this.financialClientsInfo;
     }
 
     public void viewAllFinancialProducts(){
