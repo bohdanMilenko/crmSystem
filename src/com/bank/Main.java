@@ -37,6 +37,13 @@ public class Main {
         RRSP rrsp =  MarkTwain.openRRSP();
         RRSP rrsp2 =  MarkTwain.openRRSP();
 
+        Customer customer1 = new Customer("Fyodor", "Dostoyevsky",LocalDate.of(1821,11,11),false);
+
+        ClientAccount Fyodor = new ClientAccount(customer1);
+        Fyodor.openRRSP();
+        Fyodor.viewAllFinancialProducts();
+
+
 
 
 

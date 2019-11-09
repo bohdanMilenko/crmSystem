@@ -3,8 +3,10 @@ package com.bank;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.InputMismatchException;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 public class ClientAccount {
 
@@ -33,7 +35,7 @@ public class ClientAccount {
     }
 
     CheckingAccount openCheckingAccount(double amount) {
-        if(!checkIfFinancialProductExists(FinancialProduct.FinancialProductType.CHECKING_ACCOUNT)) {
+        if(checkIfPossibleToAddNewFinancialProduct(FinancialProduct.FinancialProductType.CHECKING_ACCOUNT)) {
             CheckingAccount checkingAccount = new CheckingAccount(amount);
             financialProductList.put(FinancialProduct.FinancialProductType.CHECKING_ACCOUNT, checkingAccount);
             System.out.println("Successfully opened a checking account. You balance is: $" + amount);
@@ -44,7 +46,7 @@ public class ClientAccount {
 
 
     CreditCard openCreditLine() {
-        if(!checkIfFinancialProductExists(FinancialProduct.FinancialProductType.CREDIT_CARD)) {
+        if(checkIfPossibleToAddNewFinancialProduct(FinancialProduct.FinancialProductType.CREDIT_CARD)) {
             int availableCreditLine = checkCreditLineEligibility();
             CreditCard creditCard;
             if (availableCreditLine > 0) {
@@ -117,7 +119,7 @@ public class ClientAccount {
 
     RRSP openRRSP(){
         FinancialClientsInfo financialClientsInfo;
-        if(!checkIfFinancialProductExists(FinancialProduct.FinancialProductType.RRSP)){
+        if(checkIfPossibleToAddNewFinancialProduct(FinancialProduct.FinancialProductType.RRSP)){
             financialClientsInfo =  requestFinancialInfo();
             RRSP rrsp = new RRSP(financialClientsInfo);
             financialProductList.put(FinancialProduct.FinancialProductType.RRSP, rrsp);
@@ -159,15 +161,39 @@ public class ClientAccount {
     }
 
     public void viewAllFinancialProducts(){
+        System.out.println(customer.getName() + " - this is list of your current financial products:");
         financialProductList.forEach((k,v) -> System.out.println(k.toString()));
     }
 
-    private boolean checkIfFinancialProductExists(FinancialProduct.FinancialProductType financialProductType){
-        if(financialProductList.containsKey(financialProductType) ){
-            System.out.println( financialProductType.toString() + " already exists!");
+    private boolean checkIfPossibleToAddNewFinancialProduct(FinancialProduct.FinancialProductType financialProductType){
+        if(!financialProductList.containsKey(financialProductType) ){
             return true;
+        }else {
+            System.out.println(financialProductType.toString() + " already exists!");
+            return false;
         }
-        return false;
+    }
+
+    private double getNumberFromCustomer(){
+        double numberToReturn;
+        int i=0;
+        try {
+            do {
+                numberToReturn = scanner.nextDouble();
+                scanner.nextLine();
+                i++;
+            } while (numberToReturn < 0);
+        }catch (InputMismatchException e) {
+            if (i <= 3){
+                System.out.println("Please enter a valid number > 0!");
+        }else{
+            throw new InputMismatchException("Invalid input!");
+        }
+    }
+
+    private String getStringFromCustomer(){
+        Pattern pattern = new Pattern("[a-zA-z");
+
     }
 
 }
