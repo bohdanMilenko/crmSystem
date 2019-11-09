@@ -12,6 +12,7 @@ public class Customer {
     private boolean isCanadianResident;
     private List<RelativeType> relativeTypes;
 
+
     public Customer(String name, String surname, LocalDate dateOfBirth, boolean isCanadianResident) {
         this.name = name;
         this.surname = surname;
@@ -39,6 +40,8 @@ public class Customer {
     public List<RelativeType> getRelativeTypes() {
         return relativeTypes;
     }
+
+
 
     public enum RelativeType {
         PARENT,

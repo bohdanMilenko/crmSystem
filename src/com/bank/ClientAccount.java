@@ -4,13 +4,17 @@ package com.bank;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 public class ClientAccount {
 
     private Customer customer;
+    private FinancialClientsInfo financialClientsInfo;
     private Map<FinancialProduct.FinancialProductType, FinancialProduct> financialProductList;
     private int amountEligibleForCreditLine;
     private boolean eligibleForPromotion;
+
+    private Scanner scanner = new Scanner(System.in);
 
 
     public ClientAccount(Customer customer) {
@@ -106,13 +110,48 @@ public class ClientAccount {
         return eligibleForPromotion;
     }
 
-    void viewAllFinancialProducts(){
+    RRSP openRRSP(){
+        FinancialClientsInfo financialClientsInfo;
+        if(!checkIfFinancialProductExists(FinancialProduct.FinancialProductType.RRSP)){
+            financialClientsInfo =  requestFinancialInfo();
+            return new RRSP(financialClientsInfo);
+        }
+        return null;
+    }
+
+    private FinancialClientsInfo requestFinancialInfo(){
+        String currentPosition;
+        String previousPosition;
+        int yearsOnCurrentPosition;
+        int yearsOnPreviousPosition;
+        Map<Integer, Double> salaryHistory = new HashMap<>();
+        System.out.println("What is the name of the position you currently occupy?");
+        currentPosition = scanner.nextLine();
+        System.out.println("For how many years do you work at current position?");
+        yearsOnCurrentPosition = scanner.nextInt();
+        scanner.next();
+        System.out.println("What is the name of the position you worked before?");
+        previousPosition = scanner.nextLine();
+        System.out.println("For how many years have you been working at your previous position?");
+        yearsOnPreviousPosition = scanner.nextInt();
+        scanner.next();
+        System.out.println("Please enter the net income in 2017, 2018 and 2019:");
+        salaryHistory.put(2017, scanner.nextDouble());
+        scanner.next();
+        salaryHistory.put(2018, scanner.nextDouble());
+        scanner.next();
+        salaryHistory.put(2019,scanner.nextDouble());
+        scanner.next();
+        return new FinancialClientsInfo(currentPosition,previousPosition,yearsOnCurrentPosition, yearsOnPreviousPosition, salaryHistory);
+    }
+
+    public void viewAllFinancialProducts(){
         financialProductList.forEach((k,v) -> System.out.println(k.toString()));
     }
 
     private boolean checkIfFinancialProductExists(FinancialProduct.FinancialProductType financialProductType){
-        if(financialProductList.get(financialProductType)!= null) {
-            System.out.println("Such financial product already exists!");
+        if(financialProductList.containsKey(financialProductType) ){
+            System.out.println( financialProductType.toString() + " already exists!");
             return true;
         }
         return false;
