@@ -16,7 +16,7 @@ public class ClientAccount {
     private int amountEligibleForCreditLine;
     private boolean eligibleForPromotion;
 
-    private Scanner scanner = new Scanner(System.in);
+    public static Scanner scanner = new Scanner(System.in);
 
 
     public ClientAccount(Customer customer) {
@@ -135,26 +135,22 @@ public class ClientAccount {
         int yearsOnPreviousPosition;
         Map<Integer, Double> salaryHistory = new HashMap<>();
         System.out.println("What is the name of the position you currently occupy?");
-        currentPosition = scanner.nextLine();
+        currentPosition = getStringFromCustomer();
         System.out.println("For how many years do you work at current position?");
-        yearsOnCurrentPosition = scanner.nextInt();
-        scanner.nextLine();
+        yearsOnCurrentPosition = (int) getNumberFromCustomer();
         System.out.println("What is the name of the position you worked before?");
-        previousPosition = scanner.nextLine();
+        previousPosition = getStringFromCustomer();
         System.out.println("For how many years have you been working at your previous position?");
-        yearsOnPreviousPosition = scanner.nextInt();
-        scanner.nextLine();
+        yearsOnPreviousPosition = (int) getNumberFromCustomer();
+
         System.out.println("Please enter the net income in 2017: ");
-        double incomeIn2017 = scanner.nextDouble();
-//        scanner.nextLine();
+        double incomeIn2017 = getNumberFromCustomer();
         salaryHistory.put(2017, incomeIn2017);
         System.out.println("Please enter the net income in 2018: ");
-        double incomeIn2018 = scanner.nextDouble();
-//        scanner.nextLine();
+        double incomeIn2018 = getNumberFromCustomer();
         salaryHistory.put(2018,incomeIn2018);
         System.out.println("Please enter the net income in 2019: ");
-        double incomeIn2019 = scanner.nextDouble();
-//        scanner.nextLine();
+        double incomeIn2019 = getNumberFromCustomer();
         salaryHistory.put(2019,incomeIn2019);
         this.financialClientsInfo = new FinancialClientsInfo(currentPosition,previousPosition,yearsOnCurrentPosition, yearsOnPreviousPosition, salaryHistory);
         return this.financialClientsInfo;
@@ -174,26 +170,39 @@ public class ClientAccount {
         }
     }
 
-    private double getNumberFromCustomer(){
-        double numberToReturn;
-        int i=0;
+    public static double getNumberFromCustomer(){
+        double numberToReturn = -1;
         try {
             do {
                 numberToReturn = scanner.nextDouble();
                 scanner.nextLine();
-                i++;
             } while (numberToReturn < 0);
+            return numberToReturn;
         }catch (InputMismatchException e) {
-            if (i <= 3){
-                System.out.println("Please enter a valid number > 0!");
-        }else{
-            throw new InputMismatchException("Invalid input!");
+            System.out.println("Please enter a valid number > 0!");
+            getNumberFromCustomer();
+            scanner.nextLine();
         }
+        return numberToReturn;
     }
 
-    private String getStringFromCustomer(){
-        Pattern pattern = new Pattern("[a-zA-z");
-
+    public static String getStringFromCustomer(){
+        String returnString = "";
+        int i = 0;
+        try{
+            returnString = scanner.nextLine();
+            while ( !Pattern.matches("[a-zA-z]+",returnString)){
+                System.out.println("Please enter a string!");
+                returnString = scanner.nextLine();
+                i++;
+                if(i==3) throw new RuntimeException("Invalid input 3 times in a row!");
+            }
+        }catch (InputMismatchException e){
+            System.out.println("Wrong input from customer");
+        }catch (RuntimeException e){
+            System.out.println("Unable to get user input");
+        }
+        return returnString;
     }
 
 }
