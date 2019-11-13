@@ -1,23 +1,45 @@
 package com.bank;
 
-import java.time.LocalDate;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RRSP extends FinancialProduct implements Promotion{
 
     private FinancialClientsInfo financialClientsInfo;
     private double roomForContribution;
-    private Map<LocalDate,Double > maximumContributionRoomYearly;
+    private List<YearlyRoom> maximumContributionRoomYearly;
     private double balance;
 
     public RRSP(FinancialClientsInfo financialClientsInfo) {
+        updateYearlyRooms();
         this.financialClientsInfo = financialClientsInfo;
         this.roomForContribution = calculateRoom();
     }
 
     private double calculateRoom(){
+        double availableRoomForContribution=0;
+        double yearlySalary;
+        int currentYear;
+        for(YearlyRoom yearlyRoom : maximumContributionRoomYearly){
+            currentYear = yearlyRoom.getYear();
+            yearlySalary = financialClientsInfo.getSalaryHistory().get(currentYear);
+            if(yearlySalary*yearlyRoom.getMaximumPercentageToContribute() < yearlyRoom.getMaximumAmountToContribute()){
+                availableRoomForContribution+=yearlySalary*yearlyRoom.getMaximumPercentageToContribute();
+            }else {
+                availableRoomForContribution+=yearlyRoom.maximumAmountToContribute;
+            }
+            System.out.println("In " + currentYear + " you can contribute: " + availableRoomForContribution);
+        }
+        return availableRoomForContribution;
+    }
 
-        return 15.00;
+
+    public double getRoomForContribution() {
+        return roomForContribution;
+    }
+
+    public double getBalance() {
+        return balance;
     }
 
     @Override
@@ -64,4 +86,38 @@ public class RRSP extends FinancialProduct implements Promotion{
     public void applyPromotion() {
 
     }
+
+    private void updateYearlyRooms(){
+        this.maximumContributionRoomYearly = new ArrayList<>();
+        maximumContributionRoomYearly.add(new YearlyRoom(2017,26010.00,0.18));
+        maximumContributionRoomYearly.add(new YearlyRoom(2018,26230.00,0.18));
+        maximumContributionRoomYearly.add(new YearlyRoom(2019,26500.00,0.18));
+
+    }
+
+    class YearlyRoom{
+
+        private int year;
+        private double maximumAmountToContribute;
+        private double maximumPercentageToContribute;
+
+        public YearlyRoom(int year, double maximumAmountToContribute, double maximumPercentageToContribute) {
+            this.year = year;
+            this.maximumAmountToContribute = maximumAmountToContribute;
+            this.maximumPercentageToContribute = maximumPercentageToContribute;
+        }
+
+        public int getYear() {
+            return year;
+        }
+
+        public double getMaximumAmountToContribute() {
+            return maximumAmountToContribute;
+        }
+
+        public double getMaximumPercentageToContribute() {
+            return maximumPercentageToContribute;
+        }
+    }
+
 }

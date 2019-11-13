@@ -1,5 +1,6 @@
 package com.bank;
 
+import java.util.Collections;
 import java.util.Map;
 
 public class FinancialClientsInfo {
@@ -32,5 +33,9 @@ public class FinancialClientsInfo {
 
     public int getYearsSpentAtPreviousJob() {
         return yearsSpentAtPreviousJob;
+    }
+
+    public Map<Integer, Double> getSalaryHistory() {
+        return Collections.unmodifiableMap(salaryHistory);
     }
 }

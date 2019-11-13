@@ -176,12 +176,14 @@ public class ClientAccount {
             do {
                 numberToReturn = scanner.nextDouble();
                 scanner.nextLine();
+                if(numberToReturn < 0)   { System.out.println("Please enter a valid number >= 0!"); }
             } while (numberToReturn < 0);
             return numberToReturn;
         }catch (InputMismatchException e) {
-            System.out.println("Please enter a valid number > 0!");
-            getNumberFromCustomer();
+            System.out.println("Please enter a valid number >= 0!");
             scanner.nextLine();
+            getNumberFromCustomer();
+
         }
         return numberToReturn;
     }
