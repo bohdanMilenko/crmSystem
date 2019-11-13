@@ -1,5 +1,7 @@
 package com.bank;
 
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,11 +11,21 @@ public class RRSP extends FinancialProduct implements Promotion{
     private double roomForContribution;
     private List<YearlyRoom> maximumContributionRoomYearly;
     private double balance;
+    private List<Transaction> transactionHistory;
+    private double depositFeePercent = 0.01;
 
     public RRSP(FinancialClientsInfo financialClientsInfo) {
         updateYearlyRooms();
         this.financialClientsInfo = financialClientsInfo;
         this.roomForContribution = calculateRoom();
+        this.transactionHistory = new ArrayList<>();
+    }
+
+    private void updateYearlyRooms(){
+        this.maximumContributionRoomYearly = new ArrayList<>();
+        maximumContributionRoomYearly.add(new YearlyRoom(2017, 26010.00, 0.18));
+        maximumContributionRoomYearly.add(new YearlyRoom(2018, 26230.00, 0.18));
+        maximumContributionRoomYearly.add(new YearlyRoom(2019, 26500.00, 0.18));
     }
 
     private double calculateRoom(){
@@ -34,20 +46,14 @@ public class RRSP extends FinancialProduct implements Promotion{
     }
 
 
-    public double getRoomForContribution() {
-        return roomForContribution;
-    }
-
-    public double getBalance() {
-        return balance;
-    }
-
     @Override
     void depositMoneyToAccount(double amount) {
+        checkPromotionEligibility();
        if(roomForContribution>amount) {
            this.balance += amount;
            this.roomForContribution-=amount;
-           System.out.println("You deposited: $" + amount + "\nYour balance is: $" + balance + ", and avaiable room to contribute: $" + roomForContribution);
+           transactionHistory.add(super.createTransaction(amount));
+           System.out.println("You deposited: $" + amount + "\nYour balance is: $" + balance + ", and available room to contribute: $" + roomForContribution);
        }else {
            System.out.println("Your available room for contribution: $" + roomForContribution);
        }
@@ -57,6 +63,7 @@ public class RRSP extends FinancialProduct implements Promotion{
     void withdrawMoneyFromAccount(double amount) {
         if(amount<balance){
             balance-=amount;
+            transactionHistory.add(super.createTransaction(-amount));
             System.out.println("\nSuccessfully withdrew: $" + amount + "\nCurrent balance is: $" + balance);
         }else {
             System.out.println("\nNot enough funds! \nYou can withdraw only: $" + balance);
@@ -65,17 +72,25 @@ public class RRSP extends FinancialProduct implements Promotion{
 
     @Override
     void printTransactionList() {
-
+        System.out.println("Yours RRSP history:");
+        DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM);
+        transactionHistory.forEach(transaction ->
+                System.out.println(formatter.format(transaction.getDateTime()) + " :" + transaction.getTransaction_type() + " $" + transaction.getAmount()));
     }
+
 
     @Override
     public void viewEligibilityTerms() {
 
+        //Will print terms of the promotion
+        //If Person deposits more than 10,000 CAD - he receives
+
     }
 
     @Override
-    public void checkPromotionEligibility() {
-
+    public boolean checkPromotionEligibility() {
+        //Check sum of deposits this year. If deposits > 10,000 CAD set fee to 0%
+        return true;
     }
 
     @Override
@@ -83,13 +98,15 @@ public class RRSP extends FinancialProduct implements Promotion{
 
     }
 
-    private void updateYearlyRooms(){
-        this.maximumContributionRoomYearly = new ArrayList<>();
-        maximumContributionRoomYearly.add(new YearlyRoom(2017, 26010.00, 0.18));
-        maximumContributionRoomYearly.add(new YearlyRoom(2018, 26230.00, 0.18));
-        maximumContributionRoomYearly.add(new YearlyRoom(2019, 26500.00, 0.18));
-
+    public double getRoomForContribution() {
+        return roomForContribution;
     }
+
+    public double getBalance() {
+        return balance;
+    }
+
+
 
     private static class YearlyRoom{
 

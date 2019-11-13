@@ -50,6 +50,7 @@ public class Main {
         fyodorsRRSP.withdrawMoneyFromAccount(30000);
         fyodorsRRSP.depositMoneyToAccount(5000);
 
+        fyodorsRRSP.printTransactionList();
 
 
 
