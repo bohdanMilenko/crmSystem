@@ -45,26 +45,22 @@ public class RRSP extends FinancialProduct implements Promotion{
     @Override
     void depositMoneyToAccount(double amount) {
        if(roomForContribution>amount) {
-           balance += amount;
+           this.balance += amount;
+           this.roomForContribution-=amount;
+           System.out.println("You deposited: $" + amount + "\nYour balance is: $" + balance + ", and avaiable room to contribute: $" + roomForContribution);
        }else {
            System.out.println("Your available room for contribution: $" + roomForContribution);
        }
-
     }
 
     @Override
     void withdrawMoneyFromAccount(double amount) {
-        double netWithdrawalAmount;
         if(amount<balance){
             balance-=amount;
-            netWithdrawalAmount = redeemTaxesFromGrossAmount(amount);
+            System.out.println("\nSuccessfully withdrew: $" + amount + "\nCurrent balance is: $" + balance);
         }else {
-            System.out.println("You can withdraw only: $" + balance);
+            System.out.println("\nNot enough funds! \nYou can withdraw only: $" + balance);
         }
-    }
-
-    private double redeemTaxesFromGrossAmount(double amount){
-        return amount*(1-0.18);
     }
 
     @Override
@@ -89,13 +85,13 @@ public class RRSP extends FinancialProduct implements Promotion{
 
     private void updateYearlyRooms(){
         this.maximumContributionRoomYearly = new ArrayList<>();
-        maximumContributionRoomYearly.add(new YearlyRoom(2017,26010.00,0.18));
-        maximumContributionRoomYearly.add(new YearlyRoom(2018,26230.00,0.18));
-        maximumContributionRoomYearly.add(new YearlyRoom(2019,26500.00,0.18));
+        maximumContributionRoomYearly.add(new YearlyRoom(2017, 26010.00, 0.18));
+        maximumContributionRoomYearly.add(new YearlyRoom(2018, 26230.00, 0.18));
+        maximumContributionRoomYearly.add(new YearlyRoom(2019, 26500.00, 0.18));
 
     }
 
-    class YearlyRoom{
+    private static class YearlyRoom{
 
         private int year;
         private double maximumAmountToContribute;

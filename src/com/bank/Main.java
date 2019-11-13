@@ -44,6 +44,11 @@ public class Main {
         Fyodor.viewAllFinancialProducts();
 
         System.out.println(fyodorsRRSP.getRoomForContribution());
+        fyodorsRRSP.depositMoneyToAccount(30000);
+
+        fyodorsRRSP.withdrawMoneyFromAccount(2000);
+        fyodorsRRSP.withdrawMoneyFromAccount(30000);
+        fyodorsRRSP.depositMoneyToAccount(5000);
 
 
 
