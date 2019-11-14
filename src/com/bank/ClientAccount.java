@@ -36,12 +36,23 @@ public class ClientAccount {
 
     CheckingAccount openCheckingAccount(double amount) {
         if(checkIfPossibleToAddNewFinancialProduct(FinancialProduct.FinancialProductType.CHECKING_ACCOUNT)) {
-            CheckingAccount checkingAccount = new CheckingAccount(amount);
-            financialProductList.put(FinancialProduct.FinancialProductType.CHECKING_ACCOUNT, checkingAccount);
-            System.out.println("Successfully opened a checking account. You balance is: $" + amount);
-            return checkingAccount;
+            if(amount>0 && customer.isStudent()){
+                createCheckingAccount(amount);
+            }else if(!customer.isStudent() && amount > FinancialProduct.CHECKING_ACCOUNT_YEARLY_FEE) {
+               createCheckingAccount(amount - FinancialProduct.CHECKING_ACCOUNT_YEARLY_FEE);
+                System.out.println("The fee is: $" + FinancialProduct.CHECKING_ACCOUNT_YEARLY_FEE);
+            }else {
+                System.out.println("You need to pay yearly fee of $" + FinancialProduct.CHECKING_ACCOUNT_YEARLY_FEE);
+            }
         }
         return null;
+    }
+
+    private CheckingAccount createCheckingAccount(double amount){
+        CheckingAccount checkingAccount = new CheckingAccount(amount);
+        financialProductList.put(FinancialProduct.FinancialProductType.CHECKING_ACCOUNT, checkingAccount);
+        System.out.println("Successfully opened a checking account. You balance is: $" + amount);
+        return checkingAccount;
     }
 
 

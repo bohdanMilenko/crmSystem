@@ -6,7 +6,7 @@ public class Main {
 
     public static void main(String[] args) throws UnsupportedOperationException {
 
-        Customer customer = new Customer("Mark", "Twain", LocalDate.of(1984, 8, 24), false);
+        Customer customer = new Customer("Mark", "Twain", LocalDate.of(1984, 8, 24), false, true);
         ClientAccount MarkTwain = new ClientAccount(customer);
 
 
@@ -37,7 +37,7 @@ public class Main {
 //        RRSP rrsp =  MarkTwain.openRRSP();
 //        RRSP rrsp2 =  MarkTwain.openRRSP();
 
-        Customer customer1 = new Customer("Fyodor", "Dostoyevsky",LocalDate.of(1821,11,11),false);
+        Customer customer1 = new Customer("Fyodor", "Dostoyevsky",LocalDate.of(1821,11,11),false, false);
 
         ClientAccount Fyodor = new ClientAccount(customer1);
         RRSP fyodorsRRSP =  Fyodor.openRRSP();

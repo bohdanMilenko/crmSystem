@@ -21,6 +21,7 @@ public abstract class FinancialProduct {
     }
 
     static final int WELCOMING_BONUS = 50;
+    static final double CHECKING_ACCOUNT_YEARLY_FEE = 99.99;
 
     abstract void depositMoneyToAccount(double amount);
     abstract void withdrawMoneyFromAccount(double amount);

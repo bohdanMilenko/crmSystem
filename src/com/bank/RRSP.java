@@ -49,11 +49,13 @@ public class RRSP extends FinancialProduct implements Promotion{
     @Override
     void depositMoneyToAccount(double amount) {
         checkPromotionEligibility();
-       if(roomForContribution>amount) {
-           this.balance += amount;
+        double feeForDepositing = amount * depositFeePercent;
+       if(roomForContribution> (amount - feeForDepositing)) {
+           this.balance += amount- feeForDepositing;
            this.roomForContribution-=amount;
            transactionHistory.add(super.createTransaction(amount));
            System.out.println("You deposited: $" + amount + "\nYour balance is: $" + balance + ", and available room to contribute: $" + roomForContribution);
+           System.out.println("The fee is: $" + feeForDepositing);
        }else {
            System.out.println("Your available room for contribution: $" + roomForContribution);
        }
@@ -90,6 +92,8 @@ public class RRSP extends FinancialProduct implements Promotion{
     @Override
     public boolean checkPromotionEligibility() {
         //Check sum of deposits this year. If deposits > 10,000 CAD set fee to 0%
+
+
         return true;
     }
 
