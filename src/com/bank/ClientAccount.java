@@ -35,6 +35,7 @@ public class ClientAccount {
     }
 
     CheckingAccount openCheckingAccount(double amount) {
+        //contains key
         if(checkIfPossibleToAddNewFinancialProduct(FinancialProduct.FinancialProductType.CHECKING_ACCOUNT)) {
             if(amount>0 && customer.isStudent()){
                 createCheckingAccount(amount);
@@ -104,19 +105,11 @@ public class ClientAccount {
             return 0;
         }
     }
-    public void checkPromotionEligibility(){
-        CheckingAccount checkingAccount =  (CheckingAccount) financialProductList.get(FinancialProduct.FinancialProductType.CHECKING_ACCOUNT);
+    public void checkPromotionEligibility() {
+        CheckingAccount checkingAccount = (CheckingAccount) financialProductList.get(FinancialProduct.FinancialProductType.CHECKING_ACCOUNT);
         double amountSpentLastMonth = 0.00;
-        if(checkingAccount!=null){
-            amountSpentLastMonth = checkingAccount.getAmountSpentLastMonth();
-            System.out.println("Amount spent last month is: $" + amountSpentLastMonth);
-        }
-        if(amountSpentLastMonth>5000){
-            this.eligibleForPromotion = true;
-            System.out.println("You are eligible for promotion");
-        }else {
-            this.eligibleForPromotion = false;
-            System.out.println("You have to spend $" + (5000-amountSpentLastMonth) + " to be eligible.");
+        if (checkingAccount != null) {
+            checkingAccount.checkPromotionEligibility();
         }
     }
 
@@ -173,6 +166,7 @@ public class ClientAccount {
     }
 
     private boolean checkIfPossibleToAddNewFinancialProduct(FinancialProduct.FinancialProductType financialProductType){
+        //NAMING
         if(!financialProductList.containsKey(financialProductType) ){
             return true;
         }else {

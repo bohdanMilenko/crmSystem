@@ -7,6 +7,9 @@ public interface Promotion {
     double FEE_FREE_STUDENT_ACCOUNT = -99.99;
 
 
+    //default method with
+    //naming
+
     void viewEligibilityTerms();
 
     boolean checkPromotionEligibility();

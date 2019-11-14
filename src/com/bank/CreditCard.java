@@ -54,7 +54,7 @@ public class CreditCard extends FinancialProduct implements Promotion{
 
     @Override
     public boolean checkPromotionEligibility() {
-        
+
         return false;
     }
 
