@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class CreditCard extends FinancialProduct {
+public class CreditCard extends FinancialProduct implements Promotion{
 
     private double balance;
     private  double creditLimit;
@@ -25,6 +25,7 @@ public class CreditCard extends FinancialProduct {
         this.creditLimit = creditLimit * (-1);
         this.defaulted = false;
         this.creditCardTransactions = new ArrayList<>();
+        this.overLimitCount = 0;
     }
 
     @Override
@@ -44,6 +45,22 @@ public class CreditCard extends FinancialProduct {
         balance -= outgoingTransaction;
         System.out.println("You withdrew $" + outgoingTransaction + " and you current balance is: $" + balance);
         creditCardTransactions.add(super.createTransaction(-outgoingTransaction));
+    }
+
+    @Override
+    public void viewEligibilityTerms() {
+        //Prints terms of the promotion to the console
+    }
+
+    @Override
+    public boolean checkPromotionEligibility() {
+        
+        return false;
+    }
+
+    @Override
+    public void applyPromotion() {
+
     }
 
     public double getBalance() {

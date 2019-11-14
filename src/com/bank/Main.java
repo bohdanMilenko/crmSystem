@@ -9,10 +9,7 @@ public class Main {
         Customer customer = new Customer("Mark", "Twain", LocalDate.of(1984, 8, 24), false, true);
         ClientAccount MarkTwain = new ClientAccount(customer);
 
-
         System.out.println(MarkTwain.getAmountEligibleForCreditLine());
-
-
 
         CheckingAccount checkingAccount = MarkTwain.openCheckingAccount(9000);
         checkingAccount.depositMoneyToAccount(500);
