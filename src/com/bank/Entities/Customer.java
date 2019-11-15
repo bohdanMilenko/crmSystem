@@ -1,4 +1,4 @@
-package com.bank;
+package com.bank.Entities;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

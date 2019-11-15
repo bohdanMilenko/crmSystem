@@ -1,4 +1,4 @@
-package com.bank;
+package com.bank.Entities;
 
 import java.util.Collections;
 import java.util.Map;

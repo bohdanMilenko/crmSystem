@@ -1,5 +1,7 @@
 package com.bank;
 
+import com.bank.Entities.*;
+
 import java.time.LocalDate;
 
 public class Main {

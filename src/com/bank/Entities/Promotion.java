@@ -1,4 +1,4 @@
-package com.bank;
+package com.bank.Entities;
 
 public interface Promotion {
 

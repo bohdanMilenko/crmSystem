@@ -1,4 +1,4 @@
-package com.bank;
+package com.bank.Entities;
 
 
 import java.time.LocalDate;
@@ -26,6 +26,7 @@ public class ClientAccount {
         this.eligibleForPromotion = false;
     }
 
+    //Initializes variable should stay
     private void calculateInitialCreditLineEligibility(Customer customer){
         LocalDate minimalAge = LocalDate.of(18,1,1);
         boolean clientOldEnough =  customer.getDateOfBirth().compareTo(minimalAge)>0;
@@ -34,27 +35,8 @@ public class ClientAccount {
         }else {this.amountEligibleForCreditLine = 0;}
     }
 
-    CheckingAccount openCheckingAccount(double amount) {
-        //contains key
-        if(checkIfPossibleToAddNewFinancialProduct(FinancialProduct.FinancialProductType.CHECKING_ACCOUNT)) {
-            if(amount>0 && customer.isStudent()){
-                createCheckingAccount(amount);
-            }else if(!customer.isStudent() && amount > FinancialProduct.CHECKING_ACCOUNT_YEARLY_FEE) {
-               createCheckingAccount(amount - FinancialProduct.CHECKING_ACCOUNT_YEARLY_FEE);
-                System.out.println("The fee is: $" + FinancialProduct.CHECKING_ACCOUNT_YEARLY_FEE);
-            }else {
-                System.out.println("You need to pay yearly fee of $" + FinancialProduct.CHECKING_ACCOUNT_YEARLY_FEE);
-            }
-        }
-        return null;
-    }
 
-    private CheckingAccount createCheckingAccount(double amount){
-        CheckingAccount checkingAccount = new CheckingAccount(amount);
-        financialProductList.put(FinancialProduct.FinancialProductType.CHECKING_ACCOUNT, checkingAccount);
-        System.out.println("Successfully opened a checking account. You balance is: $" + amount);
-        return checkingAccount;
-    }
+
 
 
     CreditCard openCreditLine() {
@@ -165,14 +147,20 @@ public class ClientAccount {
         financialProductList.forEach((k,v) -> System.out.println(k.toString()));
     }
 
-    private boolean checkIfPossibleToAddNewFinancialProduct(FinancialProduct.FinancialProductType financialProductType){
-        //NAMING
-        if(!financialProductList.containsKey(financialProductType) ){
-            return true;
-        }else {
-            System.out.println(financialProductType.toString() + " already exists!");
-            return false;
-        }
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public FinancialClientsInfo getFinancialClientsInfo() {
+        return financialClientsInfo;
+    }
+
+    public Map<FinancialProduct.FinancialProductType, FinancialProduct> getFinancialProductList() {
+        return financialProductList;
+    }
+
+    public void addNewFinancialProduct(FinancialProduct.FinancialProductType financialProductType, FinancialProduct financialProduct){
+        financialProductList.put(financialProductType, financialProduct);
     }
 
     public static double getNumberFromCustomer(){

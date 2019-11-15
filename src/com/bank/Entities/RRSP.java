@@ -1,4 +1,4 @@
-package com.bank;
+package com.bank.Entities;
 
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
