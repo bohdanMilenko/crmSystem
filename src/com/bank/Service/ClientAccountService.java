@@ -12,18 +12,21 @@ public class ClientAccountService {
 
     private ClientAccount clientAccount;
 
+    public ClientAccountService(ClientAccount clientAccount) {
+        this.clientAccount = clientAccount;
+    }
 
     CheckingAccount openCheckingAccount(double amount) {
         //contains key
         Customer customer = clientAccount.getCustomer();
-        if(checkIfPossibleToAddNewFinancialProduct(FinancialProduct.FinancialProductType.CHECKING_ACCOUNT)) {
+        if(checkIfPossibleToAddNewFinancialProduct(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT)) {
             if(amount>0 && customer.isStudent()){
                 return createCheckingAccount(amount);
-            }else if(!customer.isStudent() && amount > FinancialProduct.CHECKING_ACCOUNT_YEARLY_FEE) {
-                System.out.println("The fee is: $" + FinancialProduct.CHECKING_ACCOUNT_YEARLY_FEE);
-                return createCheckingAccount(amount - FinancialProduct.CHECKING_ACCOUNT_YEARLY_FEE);
+            }else if(!customer.isStudent() && amount > FinancialProductService.CHECKING_ACCOUNT_YEARLY_FEE) {
+                System.out.println("The fee is: $" + FinancialProductService.CHECKING_ACCOUNT_YEARLY_FEE);
+                return createCheckingAccount(amount - FinancialProductService.CHECKING_ACCOUNT_YEARLY_FEE);
             }else {
-                System.out.println("You need to pay yearly fee of $" + FinancialProduct.CHECKING_ACCOUNT_YEARLY_FEE);
+                System.out.println("You need to pay yearly fee of $" + FinancialProductService.CHECKING_ACCOUNT_YEARLY_FEE);
             }
         }
         return null;
@@ -31,12 +34,12 @@ public class ClientAccountService {
 
     private CheckingAccount createCheckingAccount(double amount){
         CheckingAccount checkingAccount = new CheckingAccount(amount);
-        clientAccount.addNewFinancialProduct(FinancialProduct.FinancialProductType.CHECKING_ACCOUNT, checkingAccount);
+        clientAccount.addNewFinancialProduct(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT, checkingAccount);
         System.out.println("Successfully opened a checking account. You balance is: $" + amount);
         return checkingAccount;
     }
 
-    private boolean checkIfPossibleToAddNewFinancialProduct(FinancialProduct.FinancialProductType financialProductType){
+    private boolean checkIfPossibleToAddNewFinancialProduct(FinancialProductService.FinancialProductType financialProductType){
         //NAMING
         Map financialProductList = clientAccount.getTypeToFinancialProductMap();
         if(!financialProductList.containsKey(financialProductType) ){
@@ -48,14 +51,14 @@ public class ClientAccountService {
     }
 
     CreditCard openCreditLine() {
-        Map<FinancialProduct.FinancialProductType, FinancialProduct> financialProductList = clientAccount.getTypeToFinancialProductMap();
+        Map<FinancialProductService.FinancialProductType, FinancialProduct> financialProductList = clientAccount.getTypeToFinancialProductMap();
         Customer customer = clientAccount.getCustomer();
-        if(checkIfPossibleToAddNewFinancialProduct(FinancialProduct.FinancialProductType.CREDIT_CARD)) {
+        if(checkIfPossibleToAddNewFinancialProduct(FinancialProductService.FinancialProductType.CREDIT_CARD)) {
             int availableCreditLine = checkCreditLineEligibility(customer, financialProductList);
             CreditCard creditCard;
             if (availableCreditLine > 0) {
                 creditCard = new CreditCard(availableCreditLine);
-                financialProductList.put(FinancialProduct.FinancialProductType.CREDIT_CARD, creditCard);
+                financialProductList.put(FinancialProductService.FinancialProductType.CREDIT_CARD, creditCard);
                 System.out.println("Successfully opened a credit line with $" + availableCreditLine + " available for credit");
                 return creditCard;
             }
@@ -63,8 +66,8 @@ public class ClientAccountService {
         return null;
     }
 
-    private int checkCreditLineEligibility(Customer customer, Map<FinancialProduct.FinancialProductType, FinancialProduct> typeToFinancialProductMap) {
-        CheckingAccount checkingAccount = (CheckingAccount) typeToFinancialProductMap.get(FinancialProduct.FinancialProductType.CHECKING_ACCOUNT);
+    private int checkCreditLineEligibility(Customer customer, Map<FinancialProductService.FinancialProductType, FinancialProduct> typeToFinancialProductMap) {
+        CheckingAccount checkingAccount = (CheckingAccount) typeToFinancialProductMap.get(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT);
         if(checkingAccount != null) {
             double checkingBalance = checkingAccount.getBalance();
             if (checkingBalance < 1000 && !customer.isCanadianResident()) {
@@ -100,11 +103,11 @@ public class ClientAccountService {
 
     RRSP openRRSP(){
         FinancialClientsInfo financialClientsInfo;
-        Map<FinancialProduct.FinancialProductType, FinancialProduct> typeToFinancialProductMap = clientAccount.getTypeToFinancialProductMap();
-        if(checkIfPossibleToAddNewFinancialProduct(FinancialProduct.FinancialProductType.RRSP)){
+        Map<FinancialProductService.FinancialProductType, FinancialProduct> typeToFinancialProductMap = clientAccount.getTypeToFinancialProductMap();
+        if(checkIfPossibleToAddNewFinancialProduct(FinancialProductService.FinancialProductType.RRSP)){
             financialClientsInfo =  requestFinancialInfo();
             RRSP rrsp = new RRSP(financialClientsInfo);
-            typeToFinancialProductMap.put(FinancialProduct.FinancialProductType.RRSP, rrsp);
+            typeToFinancialProductMap.put(FinancialProductService.FinancialProductType.RRSP, rrsp);
             return rrsp;
         }
         return null;
@@ -138,6 +141,16 @@ public class ClientAccountService {
         FinancialClientsInfo financialClientsInfo =new FinancialClientsInfo(currentPosition,previousPosition,yearsOnCurrentPosition, yearsOnPreviousPosition, salaryHistory);
         clientAccount.setFinancialClientsInfo(financialClientsInfo);
         return financialClientsInfo;
+    }
+
+
+    public void checkPromotionEligibility() {
+        Map<FinancialProductService.FinancialProductType, FinancialProduct> typeToFinancialProductMap = clientAccount.getTypeToFinancialProductMap();
+        CheckingAccount checkingAccount = (CheckingAccount) typeToFinancialProductMap.get(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT);
+        double amountSpentLastMonth = 0.00;
+        if (checkingAccount != null) {
+            checkingAccount.checkPromotionEligibility();
+        }
     }
 
 

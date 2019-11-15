@@ -2,7 +2,7 @@ package com.bank.Service;
 
 import com.bank.Entities.Transaction;
 
-public abstract class FinancialProduct {
+public abstract class FinancialProductService {
 
     public enum FinancialProductType {
         CREDIT_CARD,

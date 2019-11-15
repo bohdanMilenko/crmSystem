@@ -1,7 +1,7 @@
 package com.bank.Entities;
 
 
-import com.bank.Service.FinancialProduct;
+import com.bank.Service.FinancialProductService;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -11,7 +11,7 @@ public class ClientAccount {
 
     private Customer customer;
     private FinancialClientsInfo financialClientsInfo;
-    private Map<FinancialProduct.FinancialProductType, FinancialProduct> typeToFinancialProductMap;
+    private Map<FinancialProductService.FinancialProductType, FinancialProduct> typeToFinancialProductMap;
     private int amountEligibleForCreditLine;
     private boolean eligibleForPromotion;
 
@@ -40,13 +40,7 @@ public class ClientAccount {
         this.financialClientsInfo = financialClientsInfo;
     }
 
-    public void checkPromotionEligibility() {
-        CheckingAccount checkingAccount = (CheckingAccount) typeToFinancialProductMap.get(FinancialProduct.FinancialProductType.CHECKING_ACCOUNT);
-        double amountSpentLastMonth = 0.00;
-        if (checkingAccount != null) {
-            checkingAccount.checkPromotionEligibility();
-        }
-    }
+
 
     public int getAmountEligibleForCreditLine() {
         return amountEligibleForCreditLine;
@@ -71,11 +65,11 @@ public class ClientAccount {
         return financialClientsInfo;
     }
 
-    public Map<FinancialProduct.FinancialProductType, FinancialProduct> getTypeToFinancialProductMap() {
+    public Map<FinancialProductService.FinancialProductType, FinancialProduct> getTypeToFinancialProductMap() {
         return typeToFinancialProductMap;
     }
 
-    public void addNewFinancialProduct(FinancialProduct.FinancialProductType financialProductType, FinancialProduct financialProduct){
+    public void addNewFinancialProduct(FinancialProductService.FinancialProductType financialProductType, FinancialProduct financialProduct){
         typeToFinancialProductMap.put(financialProductType, financialProduct);
     }
 

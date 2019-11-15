@@ -1,13 +1,20 @@
 package com.bank.Service;
 
+import com.bank.Entities.ClientAccount;
 import com.bank.Entities.CreditCard;
 
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.util.Map;
 
-public class CreditCardService extends FinancialProduct implements Promotion {
+public class CreditCardService extends FinancialProductService implements Promotion {
 
-    CreditCard creditCard;
+    private ClientAccount clientAccount;
+    private Map<FinancialProductService.FinancialProductType, FinancialProductService> typeToFinancialProductMap = clientAccount.getTypeToFinancialProductMap();
+    private CreditCard creditCard = typeToFinancialProductMap.get(FinancialProductType.CREDIT_CARD);
+    public CreditCardService(ClientAccount clientAccount) {
+        this.clientAccount = clientAccount;
+    }
 
     @Override
     void depositMoneyToAccount(double incomingTransaction) {

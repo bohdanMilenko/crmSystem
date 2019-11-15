@@ -1,7 +1,7 @@
 package com.bank;
 
 import com.bank.Entities.*;
-import com.bank.Service.FinancialProduct;
+import com.bank.Service.FinancialProductService;
 
 import java.time.LocalDate;
 
@@ -32,7 +32,7 @@ public class Main {
         creditCard.withdrawMoneyFromAccount(15000.00);
         creditCard.printTransactionList();
 
-        FinancialProduct financialProduct = new CreditCard(4000);
+        FinancialProductService financialProductService = new CreditCard(4000);
 
 //        RRSP rrsp =  MarkTwain.openRRSP();
 //        RRSP rrsp2 =  MarkTwain.openRRSP();
