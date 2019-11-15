@@ -15,9 +15,9 @@ public class CreditCard extends FinancialProduct implements Promotion{
 
     private List<Transaction> creditCardTransactions;
 
-    static final int LOWEST_THRESHOLD = 1000;
-    static final int MIDDLE_THRESHOLD = 5000;
-    static final int TOP_THRESHOLD = 10000;
+    public static final int LOWEST_THRESHOLD = 1000;
+    public static final int MIDDLE_THRESHOLD = 5000;
+    public static final int TOP_THRESHOLD = 10000;
     private static final double OVER_LIMIT_FEE = -29.99;
 
     public CreditCard(double creditLimit) {
