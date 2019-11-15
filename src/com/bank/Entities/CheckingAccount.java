@@ -1,16 +1,21 @@
 package com.bank.Entities;
 
+import com.bank.Service.FinancialProduct;
+import com.bank.Service.Promotion;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CheckingAccount extends FinancialProduct implements Promotion{
+public class CheckingAccount extends FinancialProduct implements Promotion {
 
     private double balance;
     private List<Transaction> checkingAccountHistory;
     private boolean eligibleForPromotion;
+
+
 
     public CheckingAccount(double balance) {
         this.balance = balance;
@@ -52,12 +57,12 @@ public class CheckingAccount extends FinancialProduct implements Promotion{
         double amountSpentLastMonth = getAmountSpentLastMonth();
         System.out.println("Amount spent last month is: $" + amountSpentLastMonth);
         if(amountSpentLastMonth>5000){
-        this.eligibleForPromotion = true;
-        System.out.println("You are eligible for promotion");
-    }else {
-        this.eligibleForPromotion = false;
-        System.out.println("You have to spend $" + (5000-amountSpentLastMonth) + " to be eligible.");
-    }
+            this.eligibleForPromotion = true;
+            System.out.println("You are eligible for promotion");
+        }else {
+            this.eligibleForPromotion = false;
+            System.out.println("You have to spend $" + (5000-amountSpentLastMonth) + " to be eligible.");
+        }
         return false;
     }
 

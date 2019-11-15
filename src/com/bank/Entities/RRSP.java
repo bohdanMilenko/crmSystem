@@ -1,11 +1,14 @@
 package com.bank.Entities;
 
+import com.bank.Service.FinancialProduct;
+import com.bank.Service.Promotion;
+
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RRSP extends FinancialProduct implements Promotion{
+public class RRSP  {
 
     private FinancialClientsInfo financialClientsInfo;
     private double roomForContribution;

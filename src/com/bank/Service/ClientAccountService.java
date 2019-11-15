@@ -97,7 +97,7 @@ public class ClientAccountService {
             return 0;
         }
     }
-    
+
     RRSP openRRSP(){
         FinancialClientsInfo financialClientsInfo;
         Map<FinancialProduct.FinancialProductType, FinancialProduct> typeToFinancialProductMap = clientAccount.getTypeToFinancialProductMap();
@@ -132,6 +132,7 @@ public class ClientAccountService {
         double incomeIn2018 = getNumberFromCustomer();
         salaryHistory.put(2018,incomeIn2018);
         System.out.println("Please enter the net income in 2019: ");
+
         double incomeIn2019 = getNumberFromCustomer();
         salaryHistory.put(2019,incomeIn2019);
         FinancialClientsInfo financialClientsInfo =new FinancialClientsInfo(currentPosition,previousPosition,yearsOnCurrentPosition, yearsOnPreviousPosition, salaryHistory);

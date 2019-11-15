@@ -1,6 +1,8 @@
 package com.bank.Entities;
 
 
+import com.bank.Service.FinancialProduct;
+
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;

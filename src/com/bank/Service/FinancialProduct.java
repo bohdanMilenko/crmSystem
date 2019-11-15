@@ -1,4 +1,6 @@
-package com.bank.Entities;
+package com.bank.Service;
+
+import com.bank.Entities.Transaction;
 
 public abstract class FinancialProduct {
 
@@ -19,7 +21,7 @@ public abstract class FinancialProduct {
         }
     }
 
-    static final int WELCOMING_BONUS = 50;
+
     public static final double CHECKING_ACCOUNT_YEARLY_FEE = 99.99;
 
     abstract void depositMoneyToAccount(double amount);
