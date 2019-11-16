@@ -2,37 +2,44 @@ package com.bank.Service;
 
 import com.bank.Entities.ClientAccount;
 import com.bank.Entities.CreditCard;
+import com.bank.Entities.Transaction;
 
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
-import java.util.Map;
+import java.util.List;
 
 public class CreditCardService extends FinancialProductService implements Promotion {
 
     private ClientAccount clientAccount;
-    private Map<FinancialProductService.FinancialProductType, FinancialProductService> typeToFinancialProductMap = clientAccount.getTypeToFinancialProductMap();
-    private CreditCard creditCard = typeToFinancialProductMap.get(FinancialProductType.CREDIT_CARD);
+    private CreditCard creditCard;
+
     public CreditCardService(ClientAccount clientAccount) {
         this.clientAccount = clientAccount;
+        creditCard = (CreditCard) clientAccount.getTypeToFinancialProductMap().get(FinancialProductType.CREDIT_CARD);
     }
 
     @Override
-    void depositMoneyToAccount(double incomingTransaction) {
-        balance+= incomingTransaction;
-        creditCardTransactions.add(super.createTransaction(incomingTransaction));
+    public void depositMoneyToAccount(double incomingTransaction) {
+        double balance = creditCard.getBalance();
+        creditCard.setBalance(balance + incomingTransaction);
+        creditCard.addTransactionToTransactionHistory(super.createTransaction(incomingTransaction));
     }
 
     @Override
-    void withdrawMoneyFromAccount(double outgoingTransaction) {
-        if(creditLimit >= (balance - outgoingTransaction)){
-            overLimitCount++;
+    public void withdrawMoneyFromAccount(double outgoingTransaction) {
+        double balance = creditCard.getBalance();
+        if(creditCard.getCreditLimit() >= (balance - outgoingTransaction)){
+            creditCard.increaseOverLimitCount();
             System.out.println("You used more funds than you credit line allows you!");
-            creditCardTransactions.add(super.createTransaction(OVER_LIMIT_FEE));
+            creditCard.addTransactionToTransactionHistory(super.createTransaction(CreditCard.OVER_LIMIT_FEE));
         }
 
-        balance -= outgoingTransaction;
+        creditCard.setBalance(balance- outgoingTransaction);
         System.out.println("You withdrew $" + outgoingTransaction + " and you current balance is: $" + balance);
-        creditCardTransactions.add(super.createTransaction(-outgoingTransaction));
+        creditCard.addTransactionToTransactionHistory(super.createTransaction(-outgoingTransaction));
+    }
+
+    @Override
+    public void reviewBalance() {
+        System.out.println("Your credit account balance is: $ " + creditCard.getBalance());
     }
 
     @Override
@@ -52,11 +59,7 @@ public class CreditCardService extends FinancialProductService implements Promot
     }
 
     @Override
-    void printTransactionList() {
-        System.out.println("Your transaction list:");
-        DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM);
-        creditCardTransactions.forEach(transaction ->
-                System.out.println(formatter.format(transaction.getDateTime()) + " :" + transaction.getTransaction_type() + " $" + transaction.getAmount()));
+    public List<Transaction> printTransactionList(List<Transaction> transactionHistory) {
+        return super.printTransactionList(transactionHistory);
     }
-
 }

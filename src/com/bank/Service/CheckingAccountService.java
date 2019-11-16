@@ -5,8 +5,6 @@ import com.bank.Entities.ClientAccount;
 import com.bank.Entities.Transaction;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.util.List;
 
 public class CheckingAccountService extends FinancialProductService implements Promotion {
@@ -35,12 +33,13 @@ public class CheckingAccountService extends FinancialProductService implements P
     }
 
     @Override
-    public void printTransactionList() {
-        System.out.println("Your transaction list:");
-        DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM);
-        List<Transaction> checkingAccountHistory = checkingAccount.getCheckingAccountHistory();
-        checkingAccountHistory.forEach(transaction ->
-                System.out.println(formatter.format(transaction.getDateTime()) + " :" + transaction.getTransaction_type() + " $" + transaction.getAmount()));
+    public List<Transaction> printTransactionList(List<Transaction> transactionHistory) {
+        return super.printTransactionList(transactionHistory);
+    }
+
+    @Override
+    public void reviewBalance() {
+        System.out.println("Your checking account balance is: $ " + checkingAccount.getBalance());
     }
 
     @Override

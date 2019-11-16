@@ -59,7 +59,4 @@ public class Customer {
         FEMALE,
         UNKNOWN;
     }
-
-
-
 }

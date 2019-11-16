@@ -1,11 +1,11 @@
 package com.bank;
 
-import com.bank.Entities.*;
+import com.bank.Entities.ClientAccount;
+import com.bank.Entities.Customer;
 import com.bank.Service.CheckingAccountService;
 import com.bank.Service.ClientAccountService;
-import com.bank.Service.FinancialProductService;
+import com.bank.Service.CreditCardService;
 
-import java.awt.event.MouseAdapter;
 import java.time.LocalDate;
 
 public class Main {
@@ -19,49 +19,29 @@ public class Main {
         CheckingAccountService checkingAccountService =  MarkTwainService.openCheckingAccount(5000);
 
         checkingAccountService.depositMoneyToAccount(10000);
-        
+        checkingAccountService.withdrawMoneyFromAccount(5000);
+        checkingAccountService.withdrawMoneyFromAccount(7000);
+        checkingAccountService.depositMoneyToAccount(15000);
+        checkingAccountService.reviewBalance();
 
+        checkingAccountService.checkPromotionEligibility();
         System.out.println(MarkTwain.getAmountEligibleForCreditLine());
 
+        CreditCardService creditCardService =  MarkTwainService.openCreditLine();
 
+        creditCardService.depositMoneyToAccount(900);
+        creditCardService.depositMoneyToAccount(1500);
+        creditCardService.depositMoneyToAccount(5000);
 
-        CheckingAccount checkingAccount = MarkTwain.openCheckingAccount(9000);
-        checkingAccount.depositMoneyToAccount(500);
-        checkingAccount.withdrawMoneyFromAccount(2000);
-        checkingAccount.depositMoneyToAccount(15550);
+        creditCardService.reviewBalance();
 
-        MarkTwain.checkPromotionEligibility();
-        MarkTwain.viewAllFinancialProducts();
-
-        CreditCard creditCard = MarkTwain.openCreditLine();
-
-        creditCard.withdrawMoneyFromAccount(500.50);
-        creditCard.withdrawMoneyFromAccount(900.00);
-
-
-        creditCard.printTransactionList();
-        creditCard.withdrawMoneyFromAccount(15000.00);
-        creditCard.printTransactionList();
-
-        FinancialProductService financialProductService = new CreditCard(4000);
 
 //        RRSP rrsp =  MarkTwain.openRRSP();
 //        RRSP rrsp2 =  MarkTwain.openRRSP();
 
         Customer customer1 = new Customer("Fyodor", "Dostoyevsky",LocalDate.of(1821,11,11),false, false);
 
-        ClientAccount Fyodor = new ClientAccount(customer1);
-        RRSP fyodorsRRSP =  Fyodor.openRRSP();
-        Fyodor.viewAllFinancialProducts();
 
-        System.out.println(fyodorsRRSP.getRoomForContribution());
-        fyodorsRRSP.depositMoneyToAccount(30000);
-
-        fyodorsRRSP.withdrawMoneyFromAccount(2000);
-        fyodorsRRSP.withdrawMoneyFromAccount(30000);
-        fyodorsRRSP.depositMoneyToAccount(5000);
-
-        fyodorsRRSP.printTransactionList();
 
 
 

@@ -12,10 +12,12 @@ public class ClientAccountService {
 
     private ClientAccount clientAccount;
     private Map<FinancialProductService.FinancialProductType, FinancialProductService> productToServiceMap;
+    private Customer customer;
 
     public ClientAccountService(ClientAccount clientAccount) {
         this.clientAccount = clientAccount;
         productToServiceMap = new HashMap<>();
+        customer = clientAccount.getCustomer();
     }
 
     public CheckingAccountService openCheckingAccount(double amount) {
@@ -34,9 +36,6 @@ public class ClientAccountService {
         return null;
     }
 
-    public CheckingAccount getCheckingAccount(){
-        return (CheckingAccount) clientAccount.getTypeToFinancialProductMap().get(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT);
-    }
 
     private CheckingAccountService createCheckingAccount(double amount){
         CheckingAccount checkingAccount = new CheckingAccount(amount);
@@ -47,35 +46,24 @@ public class ClientAccountService {
         return checkingAccountService;
     }
 
-    private boolean checkIfPossibleToAddNewFinancialProduct(FinancialProductService.FinancialProductType financialProductType){
-        //NAMING
-        Map financialProductList = clientAccount.getTypeToFinancialProductMap();
-        if(!financialProductList.containsKey(financialProductType) ){
-            return true;
-        }else {
-            System.out.println(financialProductType.toString() + " already exists!");
-            return false;
-        }
-    }
 
-    public CreditCard openCreditLine() {
-        Map<FinancialProductService.FinancialProductType, FinancialProduct> financialProductList = clientAccount.getTypeToFinancialProductMap();
-        Customer customer = clientAccount.getCustomer();
+    public CreditCardService openCreditLine() {
         if(checkIfPossibleToAddNewFinancialProduct(FinancialProductService.FinancialProductType.CREDIT_CARD)) {
-            int availableCreditLine = checkCreditLineEligibility(customer, financialProductList);
-            CreditCard creditCard;
+            int availableCreditLine = checkCreditLineEligibility();
             if (availableCreditLine > 0) {
-                creditCard = new CreditCard(availableCreditLine);
-                financialProductList.put(FinancialProductService.FinancialProductType.CREDIT_CARD, creditCard);
+                CreditCard creditCard = new CreditCard(availableCreditLine);
+                CreditCardService creditCardService = new CreditCardService(clientAccount);
+                clientAccount.addNewFinancialProduct(FinancialProductService.FinancialProductType.CREDIT_CARD, creditCard);
+                productToServiceMap.put(FinancialProductService.FinancialProductType.CREDIT_CARD, creditCardService);
                 System.out.println("Successfully opened a credit line with $" + availableCreditLine + " available for credit");
-                return creditCard;
+                return creditCardService;
             }
         }
         return null;
     }
 
-    private int checkCreditLineEligibility(Customer customer, Map<FinancialProductService.FinancialProductType, FinancialProduct> typeToFinancialProductMap) {
-        CheckingAccount checkingAccount = (CheckingAccount) typeToFinancialProductMap.get(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT);
+    private int checkCreditLineEligibility() {
+        CheckingAccount checkingAccount = (CheckingAccount) clientAccount.getTypeToFinancialProductMap().get(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT);
         if(checkingAccount != null) {
             double checkingBalance = checkingAccount.getBalance();
             if (checkingBalance < 1000 && !customer.isCanadianResident()) {
@@ -149,6 +137,19 @@ public class ClientAccountService {
         FinancialClientsInfo financialClientsInfo =new FinancialClientsInfo(currentPosition,previousPosition,yearsOnCurrentPosition, yearsOnPreviousPosition, salaryHistory);
         clientAccount.setFinancialClientsInfo(financialClientsInfo);
         return financialClientsInfo;
+    }
+
+
+
+    private boolean checkIfPossibleToAddNewFinancialProduct(FinancialProductService.FinancialProductType financialProductType){
+        //NAMING
+        Map financialProductList = clientAccount.getTypeToFinancialProductMap();
+        if(!financialProductList.containsKey(financialProductType) ){
+            return true;
+        }else {
+            System.out.println(financialProductType.toString() + " already exists!");
+            return false;
+        }
     }
 
 

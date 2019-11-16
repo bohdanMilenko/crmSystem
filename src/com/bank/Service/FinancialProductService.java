@@ -2,6 +2,10 @@ package com.bank.Service;
 
 import com.bank.Entities.Transaction;
 
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.util.List;
+
 public abstract class FinancialProductService {
 
     public enum FinancialProductType {
@@ -25,9 +29,18 @@ public abstract class FinancialProductService {
 
     public static final double CHECKING_ACCOUNT_YEARLY_FEE = 99.99;
 
-    abstract void depositMoneyToAccount(double amount);
-    abstract void withdrawMoneyFromAccount(double amount);
-    abstract void printTransactionList();
+    public abstract void depositMoneyToAccount(double amount);
+    public abstract void withdrawMoneyFromAccount(double amount);
+    public abstract void reviewBalance();
+
+    public  List<Transaction> printTransactionList(List<Transaction> transactionHistory){
+        System.out.println("Your transaction list:");
+        DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM);
+        transactionHistory.forEach(transaction ->
+                System.out.println(formatter.format(transaction.getDateTime()) + " :" + transaction.getTransaction_type() + " $" + transaction.getAmount()));
+    return transactionHistory;
+    }
+
 
 
 
