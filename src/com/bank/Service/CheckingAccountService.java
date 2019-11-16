@@ -21,21 +21,21 @@ public class CheckingAccountService extends FinancialProductService implements P
     }
 
     @Override
-    void depositMoneyToAccount(double incomingTransaction) {
+    public void depositMoneyToAccount(double incomingTransaction) {
         double balance = checkingAccount.getBalance();
         checkingAccount.setBalance( balance+incomingTransaction);
         checkingAccount.addTransactionToTransactionHistory(super.createTransaction(incomingTransaction));
     }
 
     @Override
-    void withdrawMoneyFromAccount(double outgoingTransaction) {
+    public void withdrawMoneyFromAccount(double outgoingTransaction) {
         double balance = checkingAccount.getBalance();
         checkingAccount.setBalance( balance-outgoingTransaction);
         checkingAccount.addTransactionToTransactionHistory(super.createTransaction(-outgoingTransaction));
     }
 
     @Override
-    void printTransactionList() {
+    public void printTransactionList() {
         System.out.println("Your transaction list:");
         DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM);
         List<Transaction> checkingAccountHistory = checkingAccount.getCheckingAccountHistory();

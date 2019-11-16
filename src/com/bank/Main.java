@@ -1,8 +1,11 @@
 package com.bank;
 
 import com.bank.Entities.*;
+import com.bank.Service.CheckingAccountService;
+import com.bank.Service.ClientAccountService;
 import com.bank.Service.FinancialProductService;
 
+import java.awt.event.MouseAdapter;
 import java.time.LocalDate;
 
 public class Main {
@@ -11,8 +14,16 @@ public class Main {
 
         Customer customer = new Customer("Mark", "Twain", LocalDate.of(1984, 8, 24), false, true);
         ClientAccount MarkTwain = new ClientAccount(customer);
+        ClientAccountService MarkTwainService = new ClientAccountService(MarkTwain);
+
+        CheckingAccountService checkingAccountService =  MarkTwainService.openCheckingAccount(5000);
+
+        checkingAccountService.depositMoneyToAccount(10000);
+        
 
         System.out.println(MarkTwain.getAmountEligibleForCreditLine());
+
+
 
         CheckingAccount checkingAccount = MarkTwain.openCheckingAccount(9000);
         checkingAccount.depositMoneyToAccount(500);
