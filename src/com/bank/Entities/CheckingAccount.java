@@ -36,4 +36,8 @@ public class CheckingAccount extends  FinancialProduct {
     public void addTransactionToTransactionHistory(Transaction transaction) {
         checkingAccountHistory.add(transaction);
     }
+
+    public void setEligibleForPromotion(boolean eligibleForPromotion) {
+        this.eligibleForPromotion = eligibleForPromotion;
+    }
 }

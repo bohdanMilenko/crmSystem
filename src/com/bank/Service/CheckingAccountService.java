@@ -1,24 +1,22 @@
 package com.bank.Service;
 
-import com.bank.Entities.*;
+import com.bank.Entities.CheckingAccount;
+import com.bank.Entities.ClientAccount;
+import com.bank.Entities.Transaction;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.List;
-import java.util.Map;
 
 public class CheckingAccountService extends FinancialProductService implements Promotion {
 
     private ClientAccount clientAccount;
-    private Customer customer;
-    private Map<FinancialProductService.FinancialProductType, FinancialProduct> typeToFinancialProductMap;
     private CheckingAccount checkingAccount;
 
 
     public CheckingAccountService(ClientAccount clientAccount) {
         this.clientAccount = clientAccount;
-        customer = clientAccount.getCustomer();
         checkingAccount = (CheckingAccount) clientAccount.getTypeToFinancialProductMap().get(FinancialProductType.CHECKING_ACCOUNT);
     }
 
@@ -55,10 +53,10 @@ public class CheckingAccountService extends FinancialProductService implements P
         double amountSpentLastMonth = getAmountSpentLastMonth();
         System.out.println("Amount spent last month is: $" + amountSpentLastMonth);
         if(amountSpentLastMonth>5000){
-            this.eligibleForPromotion = true;
+            checkingAccount.setEligibleForPromotion(true);
             System.out.println("You are eligible for promotion");
         }else {
-            this.eligibleForPromotion = false;
+            checkingAccount.setEligibleForPromotion(false);
             System.out.println("You have to spend $" + (5000-amountSpentLastMonth) + " to be eligible.");
         }
         return false;
@@ -71,6 +69,7 @@ public class CheckingAccountService extends FinancialProductService implements P
 
     private double getAmountSpentLastMonth(){
         LocalDate monthBeforeNow = LocalDate.now().minusMonths(1);
+        List<Transaction> checkingAccountHistory = checkingAccount.getCheckingAccountHistory();
         double amountSpentLastMonth = 0.0;
         for(Transaction transaction : checkingAccountHistory){
             if(transaction.getDateTime().isAfter(monthBeforeNow.atStartOfDay())){

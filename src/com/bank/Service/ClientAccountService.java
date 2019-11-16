@@ -11,6 +11,7 @@ import static com.bank.Service.FinancialInfoUtil.getStringFromCustomer;
 public class ClientAccountService {
 
     private ClientAccount clientAccount;
+    private Map<>
 
     public ClientAccountService(ClientAccount clientAccount) {
         this.clientAccount = clientAccount;
@@ -38,6 +39,7 @@ public class ClientAccountService {
 
     private CheckingAccount createCheckingAccount(double amount){
         CheckingAccount checkingAccount = new CheckingAccount(amount);
+        CheckingAccountService checkingAccountService = new CheckingAccountService(clientAccount);
         clientAccount.addNewFinancialProduct(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT, checkingAccount);
         System.out.println("Successfully opened a checking account. You balance is: $" + amount);
         return checkingAccount;
