@@ -22,6 +22,7 @@ public abstract class FinancialProductService {
     }
 
 
+
     public static final double CHECKING_ACCOUNT_YEARLY_FEE = 99.99;
 
     abstract void depositMoneyToAccount(double amount);
