@@ -1,30 +1,46 @@
 package com.bank.Service;
 
-import com.bank.Entities.Transaction;
+import com.bank.Entities.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.util.List;
+import java.util.Map;
 
 public class CheckingAccountService extends FinancialProductService implements Promotion {
 
+    private ClientAccount clientAccount;
+    private Customer customer;
+    private Map<FinancialProductService.FinancialProductType, FinancialProduct> typeToFinancialProductMap;
+    private CheckingAccount checkingAccount;
+
+
+    public CheckingAccountService(ClientAccount clientAccount) {
+        this.clientAccount = clientAccount;
+        customer = clientAccount.getCustomer();
+        checkingAccount = (CheckingAccount) clientAccount.getTypeToFinancialProductMap().get(FinancialProductType.CHECKING_ACCOUNT);
+    }
 
     @Override
     void depositMoneyToAccount(double incomingTransaction) {
-        balance+=incomingTransaction;
-        checkingAccountHistory.add(super.createTransaction(incomingTransaction));
+        double balance = checkingAccount.getBalance();
+        checkingAccount.setBalance( balance+incomingTransaction);
+        checkingAccount.addTransactionToTransactionHistory(super.createTransaction(incomingTransaction));
     }
 
     @Override
     void withdrawMoneyFromAccount(double outgoingTransaction) {
-        balance-=outgoingTransaction;
-        checkingAccountHistory.add(super.createTransaction(-outgoingTransaction));
+        double balance = checkingAccount.getBalance();
+        checkingAccount.setBalance( balance-outgoingTransaction);
+        checkingAccount.addTransactionToTransactionHistory(super.createTransaction(-outgoingTransaction));
     }
 
     @Override
     void printTransactionList() {
         System.out.println("Your transaction list:");
         DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM);
+        List<Transaction> checkingAccountHistory = checkingAccount.getCheckingAccountHistory();
         checkingAccountHistory.forEach(transaction ->
                 System.out.println(formatter.format(transaction.getDateTime()) + " :" + transaction.getTransaction_type() + " $" + transaction.getAmount()));
     }

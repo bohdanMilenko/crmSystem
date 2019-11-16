@@ -32,6 +32,10 @@ public class ClientAccountService {
         return null;
     }
 
+    CheckingAccount getCheckingAccount(){
+        return (CheckingAccount) clientAccount.getTypeToFinancialProductMap().get(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT);
+    }
+
     private CheckingAccount createCheckingAccount(double amount){
         CheckingAccount checkingAccount = new CheckingAccount(amount);
         clientAccount.addNewFinancialProduct(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT, checkingAccount);

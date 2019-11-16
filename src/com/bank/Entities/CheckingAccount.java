@@ -1,11 +1,5 @@
 package com.bank.Entities;
 
-import com.bank.Service.FinancialProductService;
-import com.bank.Service.Promotion;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,5 +21,19 @@ public class CheckingAccount extends  FinancialProduct {
         return balance;
     }
 
+    public List<Transaction> getCheckingAccountHistory() {
+        return checkingAccountHistory;
+    }
 
+    public boolean isEligibleForPromotion() {
+        return eligibleForPromotion;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
+
+    public void addTransactionToTransactionHistory(Transaction transaction) {
+        checkingAccountHistory.add(transaction);
+    }
 }
