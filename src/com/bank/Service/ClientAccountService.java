@@ -97,14 +97,16 @@ public class ClientAccountService {
         }
     }
 
-    public RRSP openRRSP(){
+    public RRSPService openRRSP(){
         FinancialClientsInfo financialClientsInfo;
         Map<FinancialProductService.FinancialProductType, FinancialProduct> typeToFinancialProductMap = clientAccount.getTypeToFinancialProductMap();
         if(checkIfPossibleToAddNewFinancialProduct(FinancialProductService.FinancialProductType.RRSP)){
             financialClientsInfo =  requestFinancialInfo();
             RRSP rrsp = new RRSP(financialClientsInfo);
+            RRSPService rrspService = new RRSPService(clientAccount);
             typeToFinancialProductMap.put(FinancialProductService.FinancialProductType.RRSP, rrsp);
-            return rrsp;
+            productToServiceMap.put(FinancialProductService.FinancialProductType.RRSP, rrspService);
+            return rrspService;
         }
         return null;
     }
@@ -140,7 +142,7 @@ public class ClientAccountService {
     }
 
 
-
+// Move to FinancialProduct or clientAccount
     private boolean checkIfPossibleToAddNewFinancialProduct(FinancialProductService.FinancialProductType financialProductType){
         //NAMING
         Map financialProductList = clientAccount.getTypeToFinancialProductMap();

@@ -5,6 +5,7 @@ import com.bank.Entities.Customer;
 import com.bank.Service.CheckingAccountService;
 import com.bank.Service.ClientAccountService;
 import com.bank.Service.CreditCardService;
+import com.bank.Service.RRSPService;
 
 import java.time.LocalDate;
 
@@ -22,6 +23,7 @@ public class Main {
         checkingAccountService.withdrawMoneyFromAccount(5000);
         checkingAccountService.withdrawMoneyFromAccount(7000);
         checkingAccountService.depositMoneyToAccount(15000);
+
         checkingAccountService.reviewBalance();
 
         checkingAccountService.checkIfEligibleForPromotion();
@@ -31,13 +33,19 @@ public class Main {
 
         creditCardService.depositMoneyToAccount(900);
         creditCardService.depositMoneyToAccount(1500);
+        creditCardService.withdrawMoneyFromAccount(5000);
         creditCardService.depositMoneyToAccount(5000);
 
         creditCardService.reviewBalance();
 
+        creditCardService.printTransactionHistory();
 
-//        RRSP rrsp =  MarkTwain.openRRSP();
-//        RRSP rrsp2 =  MarkTwain.openRRSP();
+        RRSPService MarkTwainRRSP =  MarkTwainService.openRRSP();
+
+        MarkTwainRRSP.depositMoneyToAccount(40000);
+        MarkTwainRRSP.depositMoneyToAccount(10000);
+        MarkTwainRRSP.withdrawMoneyFromAccount(200000);
+        MarkTwainRRSP.reviewBalance();
 
         Customer customer1 = new Customer("Fyodor", "Dostoyevsky",LocalDate.of(1821,11,11),false, false);
 

@@ -2,12 +2,6 @@ package com.bank.Service;
 
 import com.bank.Entities.ClientAccount;
 import com.bank.Entities.RRSP;
-import com.bank.Entities.Transaction;
-
-import javax.swing.table.TableRowSorter;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
-import java.util.List;
 
 public class RRSPService  extends  FinancialProductService implements  Promotion{
 
@@ -42,9 +36,10 @@ public class RRSPService  extends  FinancialProductService implements  Promotion
 
     @Override
     public void withdrawMoneyFromAccount(double amount) {
-        if(amount<balance){
-            balance-=amount;
-            transactionHistory.add(super.createTransaction(-amount));
+        double balance = rrsp.getBalance();
+        if(amount < balance){
+            rrsp.setBalance(balance - amount);
+            rrsp.addTransactionToTransactionHistory(super.createTransaction(-amount));
             System.out.println("\nSuccessfully withdrew: $" + amount + "\nCurrent balance is: $" + balance);
         }else {
             System.out.println("\nNot enough funds! \nYou can withdraw only: $" + balance);
@@ -77,5 +72,8 @@ public class RRSPService  extends  FinancialProductService implements  Promotion
 
     }
 
-
+    @Override
+    public void reviewBalance() {
+        System.out.println("Your RRSP account balance is: $ " + rrsp.getBalance());
+    }
 }

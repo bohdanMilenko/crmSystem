@@ -34,4 +34,13 @@ public class Transaction {
             return TRANSACTION_TYPE.EXPENSE;
         }
     }
+
+    @Override
+    public String toString() {
+        if(amount>0){
+            return "Successfully deposited $" + amount;
+        }else {
+            return "Successfully withdrew $" + amount;
+        }
+    }
 }

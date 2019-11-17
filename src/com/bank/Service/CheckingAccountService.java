@@ -10,16 +10,17 @@ import java.util.List;
 public class CheckingAccountService extends FinancialProductService implements Promotion {
 
     private ClientAccount clientAccount;
-    private CheckingAccount checkingAccount;
+    private  CheckingAccount checkingAccount;
 
 
     public CheckingAccountService(ClientAccount clientAccount) {
         this.clientAccount = clientAccount;
-        checkingAccount = (CheckingAccount) clientAccount.getTypeToFinancialProductMap().get(FinancialProductType.CHECKING_ACCOUNT);
+
     }
 
     @Override
     public void depositMoneyToAccount(double incomingTransaction) {
+        checkingAccount = (CheckingAccount) clientAccount.getTypeToFinancialProductMap().get(FinancialProductType.CHECKING_ACCOUNT);
         double balance = checkingAccount.getBalance();
         checkingAccount.setBalance( balance+incomingTransaction);
         checkingAccount.addTransactionToTransactionHistory(super.createTransaction(incomingTransaction));

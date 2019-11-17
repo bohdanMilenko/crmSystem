@@ -45,7 +45,9 @@ public abstract class FinancialProductService {
 
 
     Transaction createTransaction(double amount){
-        return  new Transaction(amount);
+        Transaction transaction = new Transaction(amount);
+        System.out.println(transaction.toString());
+        return transaction;
     }
 
 
