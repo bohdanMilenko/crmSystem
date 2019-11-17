@@ -23,7 +23,7 @@ public class ClientAccountService {
     public CheckingAccountService openCheckingAccount(double amount) {
         //contains key
         Customer customer = clientAccount.getCustomer();
-        if(checkIfPossibleToAddNewFinancialProduct(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT)) {
+        if(checkIfFinancialProductExists(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT)) {
             if(amount>0 && customer.isStudent()){
                 return createCheckingAccount(amount);
             }else if(!customer.isStudent() && amount > FinancialProductService.CHECKING_ACCOUNT_YEARLY_FEE) {
@@ -49,7 +49,7 @@ public class ClientAccountService {
 
 
     public CreditCardService openCreditLine() {
-        if(checkIfPossibleToAddNewFinancialProduct(FinancialProductService.FinancialProductType.CREDIT_CARD)) {
+        if(checkIfFinancialProductExists(FinancialProductService.FinancialProductType.CREDIT_CARD) && checkIfFinancialProductExists(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT)) {
             int availableCreditLine = checkCreditLineEligibility();
             if (availableCreditLine > 0) {
                 CreditCard creditCard = new CreditCard(availableCreditLine);
@@ -60,13 +60,15 @@ public class ClientAccountService {
                 clientAccount.reviewCurrentFinancialProducts();
                 return creditCardService;
             }
+        }else {
+            System.out.println("Either credit card already exists or you don't have checking account yet!");
         }
         return null;
     }
 
     private int checkCreditLineEligibility() {
         CheckingAccount checkingAccount = (CheckingAccount) clientAccount.getTypeToFinancialProductMap().get(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT);
-        if(checkingAccount != null) {
+
             double checkingBalance = checkingAccount.getBalance();
             if (checkingBalance < 1000 && !customer.isCanadianResident()) {
                 System.out.println("Cannot apply for a credit card");
@@ -92,17 +94,13 @@ public class ClientAccountService {
                 System.out.println("Eligible for $" + CreditCard.TOP_THRESHOLD);
                 clientAccount.setAmountEligibleForCreditLine(CreditCard.TOP_THRESHOLD);
                 return CreditCard.TOP_THRESHOLD;
-            }
-        }else {
-            System.out.println("Not eligible, please open checking account first!");
-            return 0;
         }
     }
 
     public RRSPService openRRSP(){
         FinancialClientsInfo financialClientsInfo;
         Map<FinancialProductService.FinancialProductType, FinancialProduct> typeToFinancialProductMap = clientAccount.getTypeToFinancialProductMap();
-        if(checkIfPossibleToAddNewFinancialProduct(FinancialProductService.FinancialProductType.RRSP)){
+        if(checkIfFinancialProductExists(FinancialProductService.FinancialProductType.RRSP)){
             financialClientsInfo =  requestFinancialInfo();
             RRSP rrsp = new RRSP(financialClientsInfo);
             typeToFinancialProductMap.put(FinancialProductService.FinancialProductType.RRSP, rrsp);
@@ -146,7 +144,7 @@ public class ClientAccountService {
 
 
 // Move to FinancialProduct or clientAccount
-    private boolean checkIfPossibleToAddNewFinancialProduct(FinancialProductService.FinancialProductType financialProductType){
+    private boolean checkIfFinancialProductExists(FinancialProductService.FinancialProductType financialProductType){
         //NAMING
         Map financialProductList = clientAccount.getTypeToFinancialProductMap();
         if(!financialProductList.containsKey(financialProductType) ){

@@ -39,9 +39,6 @@ public class Customer {
         return isCanadianResident;
     }
 
-    public List<RelativeType> getRelativeTypes() {
-        return relativeTypes;
-    }
 
     public boolean isStudent() {
         return isStudent;
