@@ -15,12 +15,11 @@ public class CheckingAccountService extends FinancialProductService implements P
 
     public CheckingAccountService(ClientAccount clientAccount) {
         this.clientAccount = clientAccount;
-
+        this.checkingAccount = (CheckingAccount) clientAccount.getTypeToFinancialProductMap().get(FinancialProductType.CHECKING_ACCOUNT);
     }
 
     @Override
     public void depositMoneyToAccount(double incomingTransaction) {
-        checkingAccount = (CheckingAccount) clientAccount.getTypeToFinancialProductMap().get(FinancialProductType.CHECKING_ACCOUNT);
         double balance = checkingAccount.getBalance();
         checkingAccount.setBalance( balance+incomingTransaction);
         checkingAccount.addTransactionToTransactionHistory(super.createTransaction(incomingTransaction));

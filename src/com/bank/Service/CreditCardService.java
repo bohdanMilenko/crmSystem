@@ -10,8 +10,10 @@ public class CreditCardService extends FinancialProductService implements Promot
 
     public CreditCardService(ClientAccount clientAccount) {
         this.clientAccount = clientAccount;
-        creditCard = (CreditCard) clientAccount.getTypeToFinancialProductMap().get(FinancialProductType.CREDIT_CARD);
+        this.creditCard = (CreditCard) clientAccount.getTypeToFinancialProductMap().get(FinancialProductType.CREDIT_CARD);
     }
+
+
 
     @Override
     public void depositMoneyToAccount(double incomingTransaction) {

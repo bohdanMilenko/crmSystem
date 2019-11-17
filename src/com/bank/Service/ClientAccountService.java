@@ -39,10 +39,11 @@ public class ClientAccountService {
 
     private CheckingAccountService createCheckingAccount(double amount){
         CheckingAccount checkingAccount = new CheckingAccount(amount);
+        clientAccount.addNewFinancialProduct(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT, checkingAccount);
         CheckingAccountService checkingAccountService = new CheckingAccountService(clientAccount);
         productToServiceMap.put(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT, checkingAccountService);
-        clientAccount.addNewFinancialProduct(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT, checkingAccount);
         System.out.println("Successfully opened a checking account. You balance is: $" + amount);
+        clientAccount.reviewCurrentFinancialProducts();
         return checkingAccountService;
     }
 
@@ -52,10 +53,11 @@ public class ClientAccountService {
             int availableCreditLine = checkCreditLineEligibility();
             if (availableCreditLine > 0) {
                 CreditCard creditCard = new CreditCard(availableCreditLine);
-                CreditCardService creditCardService = new CreditCardService(clientAccount);
                 clientAccount.addNewFinancialProduct(FinancialProductService.FinancialProductType.CREDIT_CARD, creditCard);
+                CreditCardService creditCardService = new CreditCardService(clientAccount);
                 productToServiceMap.put(FinancialProductService.FinancialProductType.CREDIT_CARD, creditCardService);
                 System.out.println("Successfully opened a credit line with $" + availableCreditLine + " available for credit");
+                clientAccount.reviewCurrentFinancialProducts();
                 return creditCardService;
             }
         }
@@ -103,9 +105,10 @@ public class ClientAccountService {
         if(checkIfPossibleToAddNewFinancialProduct(FinancialProductService.FinancialProductType.RRSP)){
             financialClientsInfo =  requestFinancialInfo();
             RRSP rrsp = new RRSP(financialClientsInfo);
-            RRSPService rrspService = new RRSPService(clientAccount);
             typeToFinancialProductMap.put(FinancialProductService.FinancialProductType.RRSP, rrsp);
+            RRSPService rrspService = new RRSPService(clientAccount);
             productToServiceMap.put(FinancialProductService.FinancialProductType.RRSP, rrspService);
+            clientAccount.reviewCurrentFinancialProducts();
             return rrspService;
         }
         return null;

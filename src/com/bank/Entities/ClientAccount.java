@@ -40,14 +40,16 @@ public class ClientAccount {
         this.financialClientsInfo = financialClientsInfo;
     }
 
-
-
     public int getAmountEligibleForCreditLine() {
         return amountEligibleForCreditLine;
     }
 
     public boolean isEligibleForPromotion() {
         return eligibleForPromotion;
+    }
+
+    public void reviewCurrentFinancialProducts(){
+        typeToFinancialProductMap.forEach((financialProductType, financialProduct) -> System.out.println(financialProduct.toString()));
     }
 
 

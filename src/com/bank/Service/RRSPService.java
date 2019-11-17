@@ -3,6 +3,8 @@ package com.bank.Service;
 import com.bank.Entities.ClientAccount;
 import com.bank.Entities.RRSP;
 
+import java.util.Objects;
+
 public class RRSPService  extends  FinancialProductService implements  Promotion{
 
 
@@ -10,9 +12,10 @@ public class RRSPService  extends  FinancialProductService implements  Promotion
     private RRSP rrsp;
 
     public RRSPService(ClientAccount clientAccount) {
-        this.clientAccount = clientAccount;
+        this.clientAccount = Objects.requireNonNull(clientAccount, "Client account is null");
         this.rrsp = (RRSP) clientAccount.getTypeToFinancialProductMap().get(FinancialProductType.RRSP);
     }
+
 
     @Override
     public void depositMoneyToAccount(double amount) {
