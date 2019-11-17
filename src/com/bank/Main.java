@@ -24,7 +24,7 @@ public class Main {
         checkingAccountService.depositMoneyToAccount(15000);
         checkingAccountService.reviewBalance();
 
-        checkingAccountService.checkPromotionEligibility();
+        checkingAccountService.checkIfEligibleForPromotion();
         System.out.println(MarkTwain.getAmountEligibleForCreditLine());
 
         CreditCardService creditCardService =  MarkTwainService.openCreditLine();

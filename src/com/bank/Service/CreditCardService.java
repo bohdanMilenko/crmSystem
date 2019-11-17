@@ -48,7 +48,7 @@ public class CreditCardService extends FinancialProductService implements Promot
     }
 
     @Override
-    public boolean checkPromotionEligibility() {
+    public boolean checkIfEligibleForPromotion() {
 
         return false;
     }

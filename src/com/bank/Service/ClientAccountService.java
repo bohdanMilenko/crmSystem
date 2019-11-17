@@ -5,8 +5,8 @@ import com.bank.Entities.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.bank.Service.FinancialInfoUtil.getNumberFromCustomer;
-import static com.bank.Service.FinancialInfoUtil.getStringFromCustomer;
+import static com.bank.Util.FinancialInfoUtil.getNumberFromCustomer;
+import static com.bank.Util.FinancialInfoUtil.getStringFromCustomer;
 
 public class ClientAccountService {
 

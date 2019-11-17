@@ -12,7 +12,7 @@ public interface Promotion {
 
     void viewEligibilityTerms();
 
-    boolean checkPromotionEligibility();
+    boolean checkIfEligibleForPromotion();
 
     void applyPromotion();
 }

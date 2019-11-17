@@ -48,7 +48,7 @@ public class CheckingAccountService extends FinancialProductService implements P
     }
 
     @Override
-    public boolean checkPromotionEligibility() {
+    public boolean checkIfEligibleForPromotion() {
         double amountSpentLastMonth = getAmountSpentLastMonth();
         System.out.println("Amount spent last month is: $" + amountSpentLastMonth);
         if(amountSpentLastMonth>5000){
