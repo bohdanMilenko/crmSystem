@@ -1,6 +1,7 @@
 package com.bank.Entities;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class RRSP extends  FinancialProduct {
@@ -63,8 +64,8 @@ public class RRSP extends  FinancialProduct {
         transactionHistory.add(transaction);
     }
 
-    public void setDepositFeePercent(double depositFeePercent) {
-        this.DEPOSIT_FEE_PERCENT = depositFeePercent;
+    public List<Transaction> getTransactionHistory() {
+        return Collections.unmodifiableList(transactionHistory);
     }
 
     private static class YearlyRoom{

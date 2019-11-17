@@ -2,9 +2,12 @@ package com.bank.Service;
 
 import com.bank.Entities.ClientAccount;
 import com.bank.Entities.RRSP;
+import com.bank.Entities.Transaction;
 
+import javax.swing.table.TableRowSorter;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.util.List;
 
 public class RRSPService  extends  FinancialProductService implements  Promotion{
 
@@ -20,24 +23,25 @@ public class RRSPService  extends  FinancialProductService implements  Promotion
     @Override
     public void depositMoneyToAccount(double amount) {
         double feeForDepositing;
+        double balance = rrsp.getBalance();
         if(checkIfEligibleForPromotion()) {
             feeForDepositing = 0;
         }else {
             feeForDepositing = amount * RRSP.DEPOSIT_FEE_PERCENT;
         }
         if(rrsp.getRoomForContribution() > (amount - feeForDepositing)) {
-            this.balance += amount- feeForDepositing;
-            this.roomForContribution-=amount;
-            transactionHistory.add(super.createTransaction(amount));
-            System.out.println("You deposited: $" + amount + "\nYour balance is: $" + balance + ", and available room to contribute: $" + roomForContribution);
+            rrsp.setBalance(balance + amount- feeForDepositing);
+            rrsp.setRoomForContribution(rrsp.getRoomForContribution() - amount + feeForDepositing);
+            rrsp.addTransactionToTransactionHistory(super.createTransaction(amount));
+            System.out.println("You deposited: $" + amount + "\nYour balance is: $" + balance + ", and available room to contribute: $" + rrsp.getRoomForContribution());
             System.out.println("The fee is: $" + feeForDepositing);
         }else {
-            System.out.println("Your available room for contribution: $" + roomForContribution);
+            System.out.println("Your available room for contribution: $" + rrsp.getRoomForContribution());
         }
     }
 
     @Override
-    void withdrawMoneyFromAccount(double amount) {
+    public void withdrawMoneyFromAccount(double amount) {
         if(amount<balance){
             balance-=amount;
             transactionHistory.add(super.createTransaction(-amount));
@@ -48,13 +52,9 @@ public class RRSPService  extends  FinancialProductService implements  Promotion
     }
 
     @Override
-    void printTransactionList() {
-        System.out.println("Yours RRSP history:");
-        DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM);
-        transactionHistory.forEach(transaction ->
-                System.out.println(formatter.format(transaction.getDateTime()) + " :" + transaction.getTransaction_type() + " $" + transaction.getAmount()));
+    public void printTransactionHistory() {
+        super.printTransactionList(rrsp.getTransactionHistory());
     }
-
 
     @Override
     public void viewEligibilityTerms() {

@@ -1,6 +1,7 @@
 package com.bank.Entities;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class CheckingAccount extends  FinancialProduct {
@@ -22,7 +23,7 @@ public class CheckingAccount extends  FinancialProduct {
     }
 
     public List<Transaction> getCheckingAccountHistory() {
-        return checkingAccountHistory;
+        return Collections.unmodifiableList(checkingAccountHistory);
     }
 
     public boolean isEligibleForPromotion() {

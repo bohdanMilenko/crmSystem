@@ -33,8 +33,8 @@ public class CheckingAccountService extends FinancialProductService implements P
     }
 
     @Override
-    public List<Transaction> printTransactionList(List<Transaction> transactionHistory) {
-        return super.printTransactionList(transactionHistory);
+    public void printTransactionHistory() {
+        super.printTransactionList(checkingAccount.getCheckingAccountHistory());
     }
 
     @Override

@@ -32,13 +32,13 @@ public abstract class FinancialProductService {
     public abstract void depositMoneyToAccount(double amount);
     public abstract void withdrawMoneyFromAccount(double amount);
     public abstract void reviewBalance();
+    public abstract void printTransactionHistory();
 
-    public  List<Transaction> printTransactionList(List<Transaction> transactionHistory){
+    public  void printTransactionList(List<Transaction> transactionHistory){
         System.out.println("Your transaction list:");
         DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM);
         transactionHistory.forEach(transaction ->
                 System.out.println(formatter.format(transaction.getDateTime()) + " :" + transaction.getTransaction_type() + " $" + transaction.getAmount()));
-    return transactionHistory;
     }
 
 

@@ -2,9 +2,6 @@ package com.bank.Service;
 
 import com.bank.Entities.ClientAccount;
 import com.bank.Entities.CreditCard;
-import com.bank.Entities.Transaction;
-
-import java.util.List;
 
 public class CreditCardService extends FinancialProductService implements Promotion {
 
@@ -59,7 +56,7 @@ public class CreditCardService extends FinancialProductService implements Promot
     }
 
     @Override
-    public List<Transaction> printTransactionList(List<Transaction> transactionHistory) {
-        return super.printTransactionList(transactionHistory);
+    public void printTransactionHistory(){
+        super.printTransactionList(creditCard.getCreditCardTransactions());
     }
 }
