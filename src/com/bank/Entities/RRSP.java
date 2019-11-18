@@ -8,6 +8,8 @@ public class RRSP extends  FinancialProduct {
 
     private FinancialClientsInfo financialClientsInfo;
     private double roomForContribution;
+
+    //TODO Rethink the idea of maximum room!!
     private List<YearlyRoom> maximumContributionRoomYearly;
     private double balance;
     private List<Transaction> transactionHistory;

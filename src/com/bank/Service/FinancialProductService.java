@@ -16,25 +16,31 @@ public abstract class FinancialProductService {
 
         @Override
         public String toString() {
-            switch (this){
-                case CREDIT_CARD: return "Credit Card";
-                case CHECKING_ACCOUNT: return "Checking account";
-                case RRSP: return "RRSP";
-                default: throw new IllegalArgumentException();
+            switch (this) {
+                case CREDIT_CARD:
+                    return "Credit Card";
+                case CHECKING_ACCOUNT:
+                    return "Checking account";
+                case RRSP:
+                    return "RRSP";
+                default:
+                    throw new IllegalArgumentException();
             }
         }
     }
 
 
-
     public static final double CHECKING_ACCOUNT_YEARLY_FEE = 99.99;
 
     public abstract void depositMoneyToAccount(double amount);
+
     public abstract void withdrawMoneyFromAccount(double amount);
+
     public abstract void reviewBalance();
+
     public abstract void printTransactionHistory();
 
-    public  void printTransactionList(List<Transaction> transactionHistory){
+    public void printTransactionList(List<Transaction> transactionHistory) {
         System.out.println("Your transaction list:");
         DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM);
         transactionHistory.forEach(transaction ->
@@ -42,16 +48,11 @@ public abstract class FinancialProductService {
     }
 
 
-
-
-    Transaction createTransaction(double amount){
+    Transaction createTransaction(double amount) {
         Transaction transaction = new Transaction(amount);
         System.out.println(transaction.toString());
         return transaction;
     }
-
-
-
 
 
 }

@@ -7,7 +7,7 @@ import com.bank.Entities.Transaction;
 import java.time.LocalDate;
 import java.util.List;
 
-public class CheckingAccountService extends FinancialProductService implements Promotion {
+public class CheckingAccountService extends FinancialProductService implements Promotionable {
 
     private ClientAccount clientAccount;
     private  CheckingAccount checkingAccount;
@@ -19,17 +19,17 @@ public class CheckingAccountService extends FinancialProductService implements P
     }
 
     @Override
-    public void depositMoneyToAccount(double incomingTransaction) {
+    public void depositMoneyToAccount(double incomingTransactionAmount) {
         double balance = checkingAccount.getBalance();
-        checkingAccount.setBalance( balance+incomingTransaction);
-        checkingAccount.addTransactionToTransactionHistory(super.createTransaction(incomingTransaction));
+        checkingAccount.setBalance( balance+incomingTransactionAmount);
+        checkingAccount.addTransactionToTransactionHistory(super.createTransaction(incomingTransactionAmount));
     }
 
     @Override
-    public void withdrawMoneyFromAccount(double outgoingTransaction) {
+    public void withdrawMoneyFromAccount(double outgoingTransactionAmount) {
         double balance = checkingAccount.getBalance();
-        checkingAccount.setBalance( balance-outgoingTransaction);
-        checkingAccount.addTransactionToTransactionHistory(super.createTransaction(-outgoingTransaction));
+        checkingAccount.setBalance( balance-outgoingTransactionAmount);
+        checkingAccount.addTransactionToTransactionHistory(super.createTransaction(-outgoingTransactionAmount));
     }
 
     @Override
