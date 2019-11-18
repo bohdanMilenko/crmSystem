@@ -4,6 +4,7 @@ package com.bank.Entities;
 import com.bank.Service.FinancialProductService;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,20 +14,17 @@ public class ClientAccount {
     private FinancialClientsInfo financialClientsInfo;
     private Map<FinancialProductService.FinancialProductType, FinancialProduct> typeToFinancialProductMap;
     private int amountEligibleForCreditLine;
-    private boolean eligibleForPromotion;
 
     public ClientAccount(Customer customer) {
         this.customer = customer;
         this.typeToFinancialProductMap = new HashMap<>();
         calculateInitialCreditLineEligibility(customer);
-        this.eligibleForPromotion = false;
     }
 
-    //Initializes variable should stay
     private void calculateInitialCreditLineEligibility(Customer customer){
-        LocalDate minimalAge = LocalDate.of(18,1,1);
-        boolean clientOldEnough =  customer.getDateOfBirth().compareTo(minimalAge)>0;
-        if(customer.isCanadianResident()&& clientOldEnough) {
+        LocalDate thresholdDate = LocalDate.now().minusYears(18);
+        boolean clientOldEnough =  customer.getDateOfBirth().isBefore(thresholdDate);
+        if(customer.isCanadianResident() && clientOldEnough) {
             this.amountEligibleForCreditLine = CreditCard.LOWEST_THRESHOLD;
         }else {this.amountEligibleForCreditLine = 0;}
     }
@@ -44,20 +42,12 @@ public class ClientAccount {
         return amountEligibleForCreditLine;
     }
 
-    public boolean isEligibleForPromotion() {
-        return eligibleForPromotion;
-    }
 
     public void reviewCurrentFinancialProducts(){
-        typeToFinancialProductMap.forEach((financialProductType, financialProduct) -> System.out.println(financialProduct.toString()));
-    }
-
-
-
-    public void viewAllFinancialProducts(){
-        System.out.println(customer.getName() + " - this is list of your current financial products:");
+        System.out.println(customer.getName() + " you have the following financial products:");
         typeToFinancialProductMap.forEach((k, v) -> System.out.println(k.toString()));
     }
+
 
     public Customer getCustomer() {
         return customer;
@@ -68,7 +58,7 @@ public class ClientAccount {
     }
 
     public Map<FinancialProductService.FinancialProductType, FinancialProduct> getTypeToFinancialProductMap() {
-        return typeToFinancialProductMap;
+        return Collections.unmodifiableMap(typeToFinancialProductMap);
     }
 
     public void addNewFinancialProduct(FinancialProductService.FinancialProductType financialProductType, FinancialProduct financialProduct){
