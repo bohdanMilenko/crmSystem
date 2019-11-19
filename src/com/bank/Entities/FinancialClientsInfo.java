@@ -1,6 +1,5 @@
 package com.bank.Entities;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,7 +36,7 @@ public class FinancialClientsInfo {
     }
 
     public Map<Integer, Double> getSalaryHistory() {
-        return Collections.unmodifiableMap(salaryHistory);
+        return new HashMap<>(salaryHistory);
     }
 
     @Override

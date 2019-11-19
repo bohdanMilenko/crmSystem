@@ -4,7 +4,6 @@ package com.bank.Entities;
 import com.bank.Service.FinancialProductService;
 
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,7 +57,7 @@ public class ClientAccount {
     }
 
     public Map<FinancialProductService.FinancialProductType, FinancialProduct> getTypeToFinancialProductMap() {
-        return Collections.unmodifiableMap(typeToFinancialProductMap);
+        return new HashMap<>(typeToFinancialProductMap);
     }
 
     public void addNewFinancialProduct(FinancialProductService.FinancialProductType financialProductType, FinancialProduct financialProduct){

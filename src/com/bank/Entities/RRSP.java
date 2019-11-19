@@ -1,7 +1,6 @@
 package com.bank.Entities;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class RRSP extends  FinancialProduct {
@@ -67,7 +66,7 @@ public class RRSP extends  FinancialProduct {
     }
 
     public List<Transaction> getTransactionHistory() {
-        return Collections.unmodifiableList(transactionHistory);
+        return new ArrayList<>(transactionHistory);
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.bank.Entities;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 
@@ -66,7 +65,7 @@ public class CreditCard  extends  FinancialProduct{
     }
 
     public List<Transaction> getCreditCardTransactions() {
-        return Collections.unmodifiableList(creditCardTransactions);
+        return new ArrayList<>(creditCardTransactions);
     }
 
     @Override
