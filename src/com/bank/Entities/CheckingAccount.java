@@ -1,7 +1,6 @@
 package com.bank.Entities;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class CheckingAccount extends  FinancialProduct {
@@ -23,7 +22,7 @@ public class CheckingAccount extends  FinancialProduct {
     }
 
     public List<Transaction> getCheckingAccountHistory() {
-        return Collections.unmodifiableList(checkingAccountHistory);
+        return new ArrayList<>(checkingAccountHistory);
     }
 
     public boolean isEligibleForPromotion() {
@@ -40,5 +39,12 @@ public class CheckingAccount extends  FinancialProduct {
 
     public void setEligibleForPromotion(boolean eligibleForPromotion) {
         this.eligibleForPromotion = eligibleForPromotion;
+    }
+
+    @Override
+    protected CheckingAccount clone() throws CloneNotSupportedException {
+        CheckingAccount clone = (CheckingAccount) super.clone();
+        clone.checkingAccountHistory = new ArrayList<>(checkingAccountHistory);
+        return clone;
     }
 }

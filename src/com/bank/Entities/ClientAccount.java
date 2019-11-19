@@ -65,6 +65,13 @@ public class ClientAccount {
         typeToFinancialProductMap.put(financialProductType, financialProduct);
     }
 
-
+    @Override
+    protected ClientAccount clone() throws CloneNotSupportedException {
+        ClientAccount clone = (ClientAccount) super.clone();
+        clone.typeToFinancialProductMap = new HashMap<>(typeToFinancialProductMap);
+        clone.financialClientsInfo = financialClientsInfo.clone();
+        clone.customer = customer.clone();
+        return clone;
+    }
 
 }

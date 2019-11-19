@@ -70,6 +70,14 @@ public class RRSP extends  FinancialProduct {
         return Collections.unmodifiableList(transactionHistory);
     }
 
+    @Override
+    protected RRSP clone() throws CloneNotSupportedException {
+        RRSP clone = (RRSP) super.clone();
+        clone.transactionHistory = new ArrayList<>(transactionHistory);
+        clone.financialClientsInfo = financialClientsInfo.clone();
+        return clone;
+    }
+
     private static class YearlyRoom{
 
         private int year;

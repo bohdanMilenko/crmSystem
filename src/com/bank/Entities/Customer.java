@@ -56,4 +56,10 @@ public class Customer {
         FEMALE,
         UNKNOWN;
     }
+
+    @Override
+    protected Customer clone() throws CloneNotSupportedException {
+        Customer clone = (Customer) super.clone();
+        return clone;
+    }
 }

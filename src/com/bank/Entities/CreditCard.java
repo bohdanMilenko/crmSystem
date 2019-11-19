@@ -68,4 +68,11 @@ public class CreditCard  extends  FinancialProduct{
     public List<Transaction> getCreditCardTransactions() {
         return Collections.unmodifiableList(creditCardTransactions);
     }
+
+    @Override
+    protected CreditCard clone() throws CloneNotSupportedException {
+        CreditCard clone = (CreditCard) super.clone();
+        clone.creditCardTransactions = new ArrayList<>(creditCardTransactions);
+        return clone;
+    }
 }
