@@ -51,7 +51,6 @@ public class CheckingAccountService extends FinancialProductService implements P
 
     @Override
     public void viewEligibilityTerms() {
-        //Prints terms of the promotion to the console
     }
 
     @Override

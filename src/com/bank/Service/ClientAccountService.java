@@ -48,7 +48,8 @@ public class ClientAccountService {
 
 
     public CreditCardService openCreditLine() {
-        if (checkIfFinancialProductExists(FinancialProductService.FinancialProductType.CREDIT_CARD) && checkIfFinancialProductExists(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT)) {
+        if (checkIfFinancialProductExists(FinancialProductService.FinancialProductType.CREDIT_CARD) &&
+                checkIfFinancialProductExists( FinancialProductService.FinancialProductType.CHECKING_ACCOUNT)) {
             int availableCreditLine = checkCreditLineEligibility();
             if (availableCreditLine > 0) {
                 CreditCard creditCard = new CreditCard(availableCreditLine);
@@ -67,33 +68,35 @@ public class ClientAccountService {
 
     private int checkCreditLineEligibility() {
         CheckingAccount checkingAccount = (CheckingAccount) clientAccount.getTypeToFinancialProductMap().get(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT);
-
-        double checkingBalance = checkingAccount.getBalance();
-        if (checkingBalance < 1000 && !customer.isCanadianResident()) {
-            System.out.println("Cannot apply for a credit card");
-            clientAccount.setAmountEligibleForCreditLine(0);
-            return 0;
-        } else if (checkingBalance < 1000 && customer.isCanadianResident()) {
-            System.out.println("Eligible for $" + CreditCard.LOWEST_THRESHOLD);
-            clientAccount.setAmountEligibleForCreditLine(CreditCard.LOWEST_THRESHOLD);
-            return CreditCard.LOWEST_THRESHOLD;
-        } else if (checkingBalance < 5000 && !customer.isCanadianResident()) {
-            System.out.println("Eligible for $" + CreditCard.LOWEST_THRESHOLD);
-            clientAccount.setAmountEligibleForCreditLine(CreditCard.LOWEST_THRESHOLD);
-            return CreditCard.LOWEST_THRESHOLD;
-        } else if (checkingBalance < 5000 && customer.isCanadianResident()) {
-            System.out.println("Eligible for $" + CreditCard.MIDDLE_THRESHOLD);
-            clientAccount.setAmountEligibleForCreditLine(CreditCard.MIDDLE_THRESHOLD);
-            return CreditCard.MIDDLE_THRESHOLD;
-        } else if (checkingBalance >= 5000 && !customer.isCanadianResident()) {
-            System.out.println("Eligible for $" + CreditCard.MIDDLE_THRESHOLD);
-            clientAccount.setAmountEligibleForCreditLine(CreditCard.MIDDLE_THRESHOLD);
-            return CreditCard.MIDDLE_THRESHOLD;
-        } else {
-            System.out.println("Eligible for $" + CreditCard.TOP_THRESHOLD);
-            clientAccount.setAmountEligibleForCreditLine(CreditCard.TOP_THRESHOLD);
-            return CreditCard.TOP_THRESHOLD;
+        if(checkingAccount!=null) {
+            double checkingBalance = checkingAccount.getBalance();
+            if (checkingBalance < 1000 && !customer.isCanadianResident()) {
+                System.out.println("Cannot apply for a credit card");
+                clientAccount.setAmountEligibleForCreditLine(0);
+                return 0;
+            } else if (checkingBalance < 1000 && customer.isCanadianResident()) {
+                System.out.println("Eligible for $" + CreditCard.LOWEST_THRESHOLD);
+                clientAccount.setAmountEligibleForCreditLine(CreditCard.LOWEST_THRESHOLD);
+                return CreditCard.LOWEST_THRESHOLD;
+            } else if (checkingBalance < 5000 && !customer.isCanadianResident()) {
+                System.out.println("Eligible for $" + CreditCard.LOWEST_THRESHOLD);
+                clientAccount.setAmountEligibleForCreditLine(CreditCard.LOWEST_THRESHOLD);
+                return CreditCard.LOWEST_THRESHOLD;
+            } else if (checkingBalance < 5000 && customer.isCanadianResident()) {
+                System.out.println("Eligible for $" + CreditCard.MIDDLE_THRESHOLD);
+                clientAccount.setAmountEligibleForCreditLine(CreditCard.MIDDLE_THRESHOLD);
+                return CreditCard.MIDDLE_THRESHOLD;
+            } else if (checkingBalance >= 5000 && !customer.isCanadianResident()) {
+                System.out.println("Eligible for $" + CreditCard.MIDDLE_THRESHOLD);
+                clientAccount.setAmountEligibleForCreditLine(CreditCard.MIDDLE_THRESHOLD);
+                return CreditCard.MIDDLE_THRESHOLD;
+            } else {
+                System.out.println("Eligible for $" + CreditCard.TOP_THRESHOLD);
+                clientAccount.setAmountEligibleForCreditLine(CreditCard.TOP_THRESHOLD);
+                return CreditCard.TOP_THRESHOLD;
+            }
         }
+        return -1;
     }
 
     public RRSPService openRRSP() {

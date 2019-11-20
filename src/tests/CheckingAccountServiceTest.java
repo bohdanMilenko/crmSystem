@@ -1,4 +1,4 @@
-package com.bank.Util;
+package tests;
 
 import com.bank.Entities.CheckingAccount;
 import com.bank.Entities.ClientAccount;
