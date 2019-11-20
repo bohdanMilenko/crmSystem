@@ -16,8 +16,8 @@ public class ClientAccountService {
 
     public ClientAccountService(ClientAccount clientAccount) {
         this.clientAccount = clientAccount;
-        productToServiceMap = new HashMap<>();
-        customer = clientAccount.getCustomer();
+        this.productToServiceMap = new HashMap<>();
+        this.customer = clientAccount.getCustomer();
     }
 
     public CheckingAccountService openCheckingAccount(double amount) {

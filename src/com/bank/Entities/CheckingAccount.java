@@ -3,7 +3,7 @@ package com.bank.Entities;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CheckingAccount extends  FinancialProduct {
+public class CheckingAccount extends  FinancialProduct implements  Cloneable {
 
     private double balance;
     private List<Transaction> checkingAccountHistory;
@@ -42,7 +42,7 @@ public class CheckingAccount extends  FinancialProduct {
     }
 
     @Override
-    protected CheckingAccount clone() throws CloneNotSupportedException {
+    public CheckingAccount clone() throws CloneNotSupportedException {
         CheckingAccount clone = (CheckingAccount) super.clone();
         clone.checkingAccountHistory = new ArrayList<>(checkingAccountHistory);
         return clone;

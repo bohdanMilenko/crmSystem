@@ -17,7 +17,11 @@ public class Main {
         ClientAccount MarkTwain = new ClientAccount(customer);
         ClientAccountService MarkTwainService = new ClientAccountService(MarkTwain);
 
+
+
         CheckingAccountService checkingAccountService =  MarkTwainService.openCheckingAccount(5000);
+
+        MarkTwain.setAmountEligibleForCreditLine(100000);
 
         checkingAccountService.depositMoneyToAccount(10000);
         checkingAccountService.withdrawMoneyFromAccount(5000);
