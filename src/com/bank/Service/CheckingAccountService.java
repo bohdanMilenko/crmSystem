@@ -30,8 +30,13 @@ public class CheckingAccountService extends FinancialProductService implements P
     public void withdrawMoneyFromAccount(double outgoingTransactionAmount) {
         if(outgoingTransactionAmount<0){ outgoingTransactionAmount*=(-1);}
         double balance = checkingAccount.getBalance();
-        checkingAccount.setBalance( balance-outgoingTransactionAmount);
-        checkingAccount.addTransactionToTransactionHistory(super.createTransaction(-outgoingTransactionAmount));
+        double remainingBalance = balance-outgoingTransactionAmount;
+        if(remainingBalance>=0) {
+            checkingAccount.setBalance(balance - outgoingTransactionAmount);
+            checkingAccount.addTransactionToTransactionHistory(super.createTransaction(-outgoingTransactionAmount));
+        }else {
+            System.out.println("Not enough funds! \nYour balance is: $" + checkingAccount.getBalance());
+        }
     }
 
     @Override
@@ -53,14 +58,16 @@ public class CheckingAccountService extends FinancialProductService implements P
     public boolean checkIfEligibleForPromotion() {
         double amountSpentLastMonth = getAmountSpentLastMonth();
         System.out.println("Amount spent last month is: $" + amountSpentLastMonth);
-        if(amountSpentLastMonth>5000){
-            checkingAccount.setEligibleForPromotion(true);
+        if(amountSpentLastMonth<-5000){
+            this.checkingAccount.setEligibleForPromotion(true);
             System.out.println("You are eligible for promotion");
+            return true;
         }else {
-            checkingAccount.setEligibleForPromotion(false);
+            this.checkingAccount.setEligibleForPromotion(false);
             System.out.println("You have to spend $" + (5000-amountSpentLastMonth) + " to be eligible.");
+            return false;
         }
-        return false;
+
     }
 
     @Override
