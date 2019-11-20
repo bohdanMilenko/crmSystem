@@ -22,14 +22,25 @@ class CheckingAccountServiceTest {
         ClientAccount clientAccount = new ClientAccount(customer);
         ClientAccountService clientAccountService = new ClientAccountService(clientAccount);
         CheckingAccountService checkingAccountService = clientAccountService.openCheckingAccount(15000);
+
         checkingAccountService.depositMoneyToAccount(10000.00);
         CheckingAccount checkingAccount = (CheckingAccount) clientAccount.getTypeToFinancialProductMap().get(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT);
         assertEquals(25000 - FinancialProductService.CHECKING_ACCOUNT_YEARLY_FEE, checkingAccount.getBalance(), 0.000001);
-
     }
 
     @org.junit.jupiter.api.Test
     void testWithdrawMoneyFromAccount() {
+        Customer customer = new Customer("Bob", "Marley", LocalDate.of(1965, 10, 1), false, false);
+        ClientAccount clientAccount = new ClientAccount(customer);
+        ClientAccountService clientAccountService = new ClientAccountService(clientAccount);
+        CheckingAccountService checkingAccountService = clientAccountService.openCheckingAccount(15000);
+        CheckingAccount checkingAccount = (CheckingAccount) clientAccount.getTypeToFinancialProductMap().get(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT);
+
+        checkingAccountService.withdrawMoneyFromAccount(10000);
+        assertEquals(5000- FinancialProductService.CHECKING_ACCOUNT_YEARLY_FEE,checkingAccount.getBalance());
+
+        checkingAccountService.withdrawMoneyFromAccount(10000);
+        assertEquals(5000,checkingAccount.getBalance());
     }
 
     @org.junit.jupiter.api.Test

@@ -20,6 +20,7 @@ public class CheckingAccountService extends FinancialProductService implements P
 
     @Override
     public void depositMoneyToAccount(double incomingTransactionAmount) {
+        if(incomingTransactionAmount<0){ incomingTransactionAmount*=(-1);}
         double balance = checkingAccount.getBalance();
         checkingAccount.setBalance( balance+incomingTransactionAmount);
         checkingAccount.addTransactionToTransactionHistory(super.createTransaction(incomingTransactionAmount));
@@ -27,6 +28,7 @@ public class CheckingAccountService extends FinancialProductService implements P
 
     @Override
     public void withdrawMoneyFromAccount(double outgoingTransactionAmount) {
+        if(outgoingTransactionAmount<0){ outgoingTransactionAmount*=(-1);}
         double balance = checkingAccount.getBalance();
         checkingAccount.setBalance( balance-outgoingTransactionAmount);
         checkingAccount.addTransactionToTransactionHistory(super.createTransaction(-outgoingTransactionAmount));
