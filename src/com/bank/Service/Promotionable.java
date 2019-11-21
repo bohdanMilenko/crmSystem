@@ -1,5 +1,7 @@
 package com.bank.Service;
 
+import com.bank.Entities.ClientAccount;
+
 public interface Promotionable {
 
     double CASH_BACK_BONUS = 0.01;
@@ -12,7 +14,7 @@ public interface Promotionable {
 
     void viewEligibilityTerms();
 
-    boolean checkIfEligibleForPromotion();
+    boolean checkIfEligibleForPromotion(ClientAccount clientAccountService);
 
     void applyPromotion();
 }

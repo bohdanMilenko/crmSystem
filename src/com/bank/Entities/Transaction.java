@@ -7,7 +7,11 @@ public class Transaction {
     private TRANSACTION_TYPE transaction_type;
     private double amount;
     private LocalDateTime dateTime;
-    public enum TRANSACTION_TYPE{INCOME,EXPENSE}
+
+    public enum TRANSACTION_TYPE{
+        INCOME,
+        EXPENSE
+    }
 
     public Transaction( double amount) {
         this.transaction_type = defineTransactionType(amount);

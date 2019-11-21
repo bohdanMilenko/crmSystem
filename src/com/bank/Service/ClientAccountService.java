@@ -2,6 +2,7 @@ package com.bank.Service;
 
 import com.bank.Entities.*;
 
+import java.lang.ref.Cleaner;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,65 +11,50 @@ import static com.bank.Util.FinancialInfoUtil.getStringFromCustomer;
 
 public class ClientAccountService {
 
-    private ClientAccount clientAccount;
-    private Map<FinancialProductService.FinancialProductType, FinancialProductService> productToServiceMap;
-    private Customer customer;
 
-    public ClientAccountService(ClientAccount clientAccount) {
-        this.clientAccount = clientAccount;
-        this.productToServiceMap = new HashMap<>();
-        this.customer = clientAccount.getCustomer();
-    }
-
-    public CheckingAccountService openCheckingAccount(double amount) {
-        //contains key
+    public void openCheckingAccount(ClientAccount clientAccount, double amount) throws Exception {
+        Customer customer = clientAccount.getCustomer();
         if (checkIfFinancialProductExists(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT)) {
             if (amount > 0 && customer.isStudent()) {
-                return createCheckingAccount(amount);
+                createCheckingAccount(clientAccount, amount);
             } else if (!customer.isStudent() && amount > FinancialProductService.CHECKING_ACCOUNT_YEARLY_FEE) {
                 System.out.println("The fee is: $" + FinancialProductService.CHECKING_ACCOUNT_YEARLY_FEE);
-                return createCheckingAccount(amount - FinancialProductService.CHECKING_ACCOUNT_YEARLY_FEE);
+                double depositAmountWithFeeApplied = amount - FinancialProductService.CHECKING_ACCOUNT_YEARLY_FEE;
+                createCheckingAccount(clientAccount, depositAmountWithFeeApplied);
             } else {
-                System.out.println("You need to pay yearly fee of $" + FinancialProductService.CHECKING_ACCOUNT_YEARLY_FEE);
+                throw new Exception("Checking account already exists");
             }
         }
-        return null;
     }
 
 
-    private CheckingAccountService createCheckingAccount(double amount) {
+    private void createCheckingAccount(ClientAccount clientAccount, double amount) {
         CheckingAccount checkingAccount = new CheckingAccount(amount);
         clientAccount.addNewFinancialProduct(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT, checkingAccount);
-        CheckingAccountService checkingAccountService = new CheckingAccountService(clientAccount);
-        productToServiceMap.put(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT, checkingAccountService);
         System.out.println("Successfully opened a checking account. You balance is: $" + amount);
         clientAccount.reviewCurrentFinancialProducts();
-        return checkingAccountService;
     }
 
 
-    public CreditCardService openCreditLine() {
-        if (checkIfFinancialProductExists(FinancialProductService.FinancialProductType.CREDIT_CARD) &&
-                checkIfFinancialProductExists( FinancialProductService.FinancialProductType.CHECKING_ACCOUNT)) {
-            int availableCreditLine = checkCreditLineEligibility();
+    public void openCreditLine(ClientAccount clientAccount) {
+        Map<FinancialProductService.FinancialProductType, FinancialProduct> typeToFinancialProduct = clientAccount.getTypeToFinancialProductMap();
+        int availableCreditLine = checkCreditLineEligibility();
+        if (!typeToFinancialProduct.containsKey(FinancialProductService.FinancialProductType.CREDIT_CARD) &&
+                     typeToFinancialProduct.containsKey(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT)) {
             if (availableCreditLine > 0) {
                 CreditCard creditCard = new CreditCard(availableCreditLine);
                 clientAccount.addNewFinancialProduct(FinancialProductService.FinancialProductType.CREDIT_CARD, creditCard);
-                CreditCardService creditCardService = new CreditCardService(clientAccount);
-                productToServiceMap.put(FinancialProductService.FinancialProductType.CREDIT_CARD, creditCardService);
                 System.out.println("Successfully opened a credit line with $" + availableCreditLine + " available for credit");
                 clientAccount.reviewCurrentFinancialProducts();
-                return creditCardService;
             }
         } else {
-            System.out.println("Either credit card already exists or you don't have checking account yet!");
+            throw new Exception("Either credit card already exists or you don't have checking account yet!"));
         }
-        return null;
     }
 
     private int checkCreditLineEligibility() {
         CheckingAccount checkingAccount = (CheckingAccount) clientAccount.getTypeToFinancialProductMap().get(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT);
-        if(checkingAccount!=null) {
+        if (checkingAccount != null) {
             double checkingBalance = checkingAccount.getBalance();
             if (checkingBalance < 1000 && !customer.isCanadianResident()) {
                 System.out.println("Cannot apply for a credit card");

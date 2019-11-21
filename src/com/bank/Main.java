@@ -24,7 +24,11 @@ public class Main {
         MarkTwain.setAmountEligibleForCreditLine(100000);
 
         checkingAccountService.depositMoneyToAccount(10000);
-        checkingAccountService.withdrawMoneyFromAccount(5000);
+        try {
+            checkingAccountService.withdrawMoneyFromAccount(5000);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         checkingAccountService.withdrawMoneyFromAccount(7000);
         checkingAccountService.depositMoneyToAccount(15000);
 
