@@ -14,7 +14,7 @@ public interface Promotionable {
 
     void viewEligibilityTerms();
 
-    boolean checkIfEligibleForPromotion(ClientAccount clientAccountService);
+    boolean checkIfEligibleForPromotion(ClientAccount clientAccountService) throws Exception;
 
-    void applyPromotion();
+    void applyPromotion() throws Exception;
 }

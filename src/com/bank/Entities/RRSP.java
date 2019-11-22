@@ -5,20 +5,23 @@ import java.util.List;
 
 public class RRSP extends  FinancialProduct {
 
+    private ClientAccount clientAccount;
     private FinancialClientsInfo financialClientsInfo;
-    private double roomForContribution;
+    private double roomForContribution = calculateRoom();
 
     //TODO Rethink the idea of maximum room!!
     private List<YearlyRoom> maximumContributionRoomYearly;
     private double balance;
-    private List<Transaction> transactionHistory;
+    private List<Transaction> transactionHistory = new ArrayList<>();
     public static final double DEPOSIT_FEE_PERCENT = 0.01;
 
-    public RRSP(FinancialClientsInfo financialClientsInfo) {
+    public RRSP(ClientAccount clientAccount) {
+        this.clientAccount = clientAccount;
+    }
+
+    {
         updateYearlyRooms();
-        this.financialClientsInfo = financialClientsInfo;
-        this.roomForContribution = calculateRoom();
-        this.transactionHistory = new ArrayList<>();
+        this.financialClientsInfo = clientAccount.getFinancialClientsInfo();
     }
 
     private void updateYearlyRooms(){

@@ -2,7 +2,6 @@ package com.bank.Service;
 
 import com.bank.Entities.*;
 
-import java.lang.ref.Cleaner;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,7 +13,7 @@ public class ClientAccountService {
 
     public void openCheckingAccount(ClientAccount clientAccount, double amount) throws Exception {
         Customer customer = clientAccount.getCustomer();
-        if (checkIfFinancialProductExists(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT)) {
+        if (checkIfFinancialProductExists(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT, clientAccount)) {
             if (amount > 0 && customer.isStudent()) {
                 createCheckingAccount(clientAccount, amount);
             } else if (!customer.isStudent() && amount > FinancialProductService.CHECKING_ACCOUNT_YEARLY_FEE) {
@@ -36,11 +35,12 @@ public class ClientAccountService {
     }
 
 
-    public void openCreditLine(ClientAccount clientAccount) {
+    public void openCreditLine(ClientAccount clientAccount) throws Exception {
         Map<FinancialProductService.FinancialProductType, FinancialProduct> typeToFinancialProduct = clientAccount.getTypeToFinancialProductMap();
-        int availableCreditLine = checkCreditLineEligibility();
+
         if (!typeToFinancialProduct.containsKey(FinancialProductService.FinancialProductType.CREDIT_CARD) &&
-                     typeToFinancialProduct.containsKey(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT)) {
+                typeToFinancialProduct.containsKey(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT)) {
+            int availableCreditLine = checkCreditLineEligibility(clientAccount);
             if (availableCreditLine > 0) {
                 CreditCard creditCard = new CreditCard(availableCreditLine);
                 clientAccount.addNewFinancialProduct(FinancialProductService.FinancialProductType.CREDIT_CARD, creditCard);
@@ -48,12 +48,14 @@ public class ClientAccountService {
                 clientAccount.reviewCurrentFinancialProducts();
             }
         } else {
-            throw new Exception("Either credit card already exists or you don't have checking account yet!"));
+            throw new Exception("Either credit card already exists or you don't have checking account yet!");
         }
     }
 
-    private int checkCreditLineEligibility() {
-        CheckingAccount checkingAccount = (CheckingAccount) clientAccount.getTypeToFinancialProductMap().get(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT);
+    private int checkCreditLineEligibility(ClientAccount clientAccount) {
+        CheckingAccount checkingAccount = (CheckingAccount) clientAccount.getTypeToFinancialProductMap().
+                get(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT);
+        Customer customer = clientAccount.getCustomer();
         if (checkingAccount != null) {
             double checkingBalance = checkingAccount.getBalance();
             if (checkingBalance < 1000 && !customer.isCanadianResident()) {
@@ -85,19 +87,16 @@ public class ClientAccountService {
         return -1;
     }
 
-    public RRSPService openRRSP() {
+    public void openRRSP(ClientAccount clientAccount) {
         FinancialClientsInfo financialClientsInfo;
         Map<FinancialProductService.FinancialProductType, FinancialProduct> typeToFinancialProductMap = clientAccount.getTypeToFinancialProductMap();
-        if (checkIfFinancialProductExists(FinancialProductService.FinancialProductType.RRSP)) {
+        if (checkIfFinancialProductExists(FinancialProductService.FinancialProductType.RRSP, clientAccount)) {
             financialClientsInfo = requestFinancialInfo();
-            RRSP rrsp = new RRSP(financialClientsInfo);
+            clientAccount.setFinancialClientsInfo(financialClientsInfo);
+            RRSP rrsp = new RRSP(clientAccount);
             typeToFinancialProductMap.put(FinancialProductService.FinancialProductType.RRSP, rrsp);
-            RRSPService rrspService = new RRSPService(clientAccount);
-            productToServiceMap.put(FinancialProductService.FinancialProductType.RRSP, rrspService);
             clientAccount.reviewCurrentFinancialProducts();
-            return rrspService;
         }
-        return null;
     }
 
     private FinancialClientsInfo requestFinancialInfo() {
@@ -125,14 +124,12 @@ public class ClientAccountService {
 
         double incomeIn2019 = getNumberFromCustomer();
         salaryHistory.put(2019, incomeIn2019);
-        FinancialClientsInfo financialClientsInfo = new FinancialClientsInfo(currentPosition, previousPosition, yearsOnCurrentPosition, yearsOnPreviousPosition, salaryHistory);
-        clientAccount.setFinancialClientsInfo(financialClientsInfo);
-        return financialClientsInfo;
+        return new FinancialClientsInfo(currentPosition, previousPosition, yearsOnCurrentPosition, yearsOnPreviousPosition, salaryHistory);
     }
 
 
     //TODO Move to FinancialProduct or clientAccount
-    private boolean checkIfFinancialProductExists(FinancialProductService.FinancialProductType financialProductType) {
+    private boolean checkIfFinancialProductExists(FinancialProductService.FinancialProductType financialProductType, ClientAccount clientAccount) {
         Map financialProductList = clientAccount.getTypeToFinancialProductMap();
         if (!financialProductList.containsKey(financialProductType)) {
             return true;

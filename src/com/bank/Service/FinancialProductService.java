@@ -33,13 +33,13 @@ public abstract class FinancialProductService {
 
     public static final double CHECKING_ACCOUNT_YEARLY_FEE = 99.99;
 
-    public abstract void depositMoneyToAccount(ClientAccount clientAccount, double amount);
+    public abstract void depositMoneyToAccount(ClientAccount clientAccount, double amount) throws Exception;
 
     public abstract void withdrawMoneyFromAccount(ClientAccount clientAccount, double amount) throws Exception;
 
-    public abstract void reviewBalance(ClientAccount clientAccountService);
+    public abstract void reviewBalance(ClientAccount clientAccount) throws Exception;
 
-    public abstract void printTransactionHistory(ClientAccount clientAccountService);
+    public abstract void printTransactionHistory(ClientAccount clientAccount) throws Exception;
 
     void printTransactionList(List<Transaction> transactionHistory) {
         System.out.println("Your transaction list:");

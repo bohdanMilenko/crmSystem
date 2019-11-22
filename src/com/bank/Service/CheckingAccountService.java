@@ -10,8 +10,6 @@ import java.util.List;
 public class CheckingAccountService extends FinancialProductService implements Promotionable {
 
 
-
-
     @Override
     public void depositMoneyToAccount(ClientAccount clientAccountService, double incomingTransactionAmount) {
         if (incomingTransactionAmount < 0) {

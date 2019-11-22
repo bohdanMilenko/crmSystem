@@ -6,15 +6,13 @@ import java.util.List;
 public class CheckingAccount extends  FinancialProduct implements  Cloneable {
 
     private double balance;
-    private List<Transaction> checkingAccountHistory;
-    private boolean eligibleForPromotion;
+    private List<Transaction> checkingAccountHistory = new ArrayList<>();
+    private boolean eligibleForPromotion = false;
 
 
 
     public CheckingAccount(double balance) {
         this.balance = balance;
-        this.checkingAccountHistory = new ArrayList<>();
-        this.eligibleForPromotion = false;
     }
 
     public double getBalance() {
