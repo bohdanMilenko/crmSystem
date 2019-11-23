@@ -33,15 +33,15 @@ public abstract class FinancialProductService {
 
     public static final double CHECKING_ACCOUNT_YEARLY_FEE = 99.99;
 
-    public abstract void depositMoneyToAccount(ClientAccount clientAccount, double amount) throws Exception;
+    public abstract void depositMoneyToAccount(ClientAccount clientAccount, double amount) throws NullPointerException;
 
-    public abstract void withdrawMoneyFromAccount(ClientAccount clientAccount, double amount) throws Exception;
+    public abstract void withdrawMoneyFromAccount(ClientAccount clientAccount, double amount) throws NullPointerException;
 
-    public abstract void reviewBalance(ClientAccount clientAccount) throws Exception;
+    public abstract void reviewBalance(ClientAccount clientAccount) throws NullPointerException;
 
-    public abstract void printTransactionHistory(ClientAccount clientAccount) throws Exception;
+    public abstract void printTransactionHistory(ClientAccount clientAccount) throws NullPointerException;
 
-    void printTransactionList(List<Transaction> transactionHistory) {
+    void printTransactionList(List<Transaction> transactionHistory) throws NullPointerException{
         System.out.println("Your transaction list:");
         DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM);
         transactionHistory.forEach(transaction ->

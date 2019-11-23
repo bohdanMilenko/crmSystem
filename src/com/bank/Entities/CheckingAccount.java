@@ -8,7 +8,7 @@ public class CheckingAccount extends  FinancialProduct implements  Cloneable {
     private double balance;
     private List<Transaction> checkingAccountHistory = new ArrayList<>();
     private boolean eligibleForPromotion = false;
-
+    public static final int PROMOTION_ELIGIBLE_EXPENSES = -5000;
 
 
     public CheckingAccount(double balance) {

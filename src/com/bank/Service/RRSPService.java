@@ -7,7 +7,7 @@ public class RRSPService extends FinancialProductService implements Promotionabl
 
 
     @Override
-    public void depositMoneyToAccount(ClientAccount clientAccount, double incomingTransactionAmount) throws Exception {
+    public void depositMoneyToAccount(ClientAccount clientAccount, double incomingTransactionAmount) throws NullPointerException {
         RRSP rrsp = checkIfFinProductExists(clientAccount);
         double feeForDepositing;
         double balance = rrsp.getBalance();
@@ -24,12 +24,13 @@ public class RRSPService extends FinancialProductService implements Promotionabl
             System.out.println("The fee is: $" + feeForDepositing);
         } else {
             System.out.println("Your available room for contribution: $" + rrsp.getRoomForContribution());
+            throw new IllegalArgumentException();
         }
     }
 
 
     @Override
-    public void withdrawMoneyFromAccount(ClientAccount clientAccount, double outgoingTransactionAmount) throws Exception {
+    public void withdrawMoneyFromAccount(ClientAccount clientAccount, double outgoingTransactionAmount) throws NullPointerException {
         RRSP rrsp = checkIfFinProductExists(clientAccount);
         double balance = rrsp.getBalance();
         if (outgoingTransactionAmount < balance) {
@@ -38,11 +39,12 @@ public class RRSPService extends FinancialProductService implements Promotionabl
             System.out.println("\nSuccessfully withdrew: $" + outgoingTransactionAmount + "\nCurrent balance is: $" + balance);
         } else {
             System.out.println("\nNot enough funds! \nYou can withdraw only: $" + balance);
+            throw new IllegalArgumentException();
         }
     }
 
     @Override
-    public void printTransactionHistory(ClientAccount clientAccount) throws Exception {
+    public void printTransactionHistory(ClientAccount clientAccount) throws NullPointerException {
         RRSP rrsp = checkIfFinProductExists(clientAccount);
         super.printTransactionList(rrsp.getTransactionHistory());
     }
@@ -55,11 +57,10 @@ public class RRSPService extends FinancialProductService implements Promotionabl
 
     }
 
+    //TODO COMPLETE THIS METHOD
     @Override
-    public boolean checkIfEligibleForPromotion(ClientAccount clientAccount) throws Exception {
+    public boolean checkIfEligibleForPromotion(ClientAccount clientAccount) throws NullPointerException {
         RRSP rrsp = checkIfFinProductExists(clientAccount);
-        //Check sum of deposits this year. If deposits > 10,000 CAD set fee to 0%
-
 
         return true;
     }
@@ -70,16 +71,16 @@ public class RRSPService extends FinancialProductService implements Promotionabl
     }
 
     @Override
-    public void reviewBalance(ClientAccount clientAccount) throws Exception {
+    public void reviewBalance(ClientAccount clientAccount) throws NullPointerException {
         RRSP rrsp = checkIfFinProductExists(clientAccount);
         System.out.println("Your RRSP account balance is: $ " + rrsp.getBalance());
     }
 
-    private RRSP checkIfFinProductExists(ClientAccount clientAccount) throws Exception {
+    private RRSP checkIfFinProductExists(ClientAccount clientAccount) throws NullPointerException {
         if (clientAccount.getTypeToFinancialProductMap().containsKey(FinancialProductType.RRSP)) {
             return (RRSP) clientAccount.getTypeToFinancialProductMap().get(FinancialProductType.RRSP);
         } else {
-            throw new Exception("RRSP does not exists");
+            throw new NullPointerException(FinancialProductType.RRSP.toString() +" does not exists");
         }
     }
 }

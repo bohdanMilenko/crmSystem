@@ -1,5 +1,6 @@
 package com.bank.Service;
 
+import com.bank.Entities.CheckingAccount;
 import com.bank.Entities.ClientAccount;
 import com.bank.Entities.CreditCard;
 import com.bank.Entities.Transaction;
@@ -8,44 +9,32 @@ public class CreditCardService extends FinancialProductService implements Promot
 
 
     @Override
-    public void depositMoneyToAccount(ClientAccount clientAccount, double incomingTransactionAmount) throws Exception {
-        if (clientAccount.getTypeToFinancialProductMap().containsKey(FinancialProductType.CREDIT_CARD)) {
-            CreditCard creditCard = (CreditCard) clientAccount.getTypeToFinancialProductMap().get(FinancialProductType.CREDIT_CARD);
-            double balance = creditCard.getBalance();
-            creditCard.setBalance(balance + incomingTransactionAmount);
-            creditCard.addTransactionToTransactionHistory(super.createTransaction(incomingTransactionAmount));
-        } else {
-            throw new Exception("No Credit Line opened");
-        }
+    public void depositMoneyToAccount(ClientAccount clientAccount, double incomingTransactionAmount) throws NullPointerException {
+        CreditCard creditCard = checkIfFinProductExists(clientAccount);
+        double balance = creditCard.getBalance();
+        creditCard.setBalance(balance + incomingTransactionAmount);
+        creditCard.addTransactionToTransactionHistory(super.createTransaction(incomingTransactionAmount));
     }
 
     @Override
-    public void withdrawMoneyFromAccount(ClientAccount clientAccount, double outgoingTransactionAmount) throws Exception {
-        if (clientAccount.getTypeToFinancialProductMap().containsKey(FinancialProductType.CREDIT_CARD)) {
-            CreditCard creditCard = (CreditCard) clientAccount.getTypeToFinancialProductMap().get(FinancialProductType.CREDIT_CARD);
-            double balance = creditCard.getBalance();
-            if (creditCard.getCreditLimit() >= (balance - outgoingTransactionAmount)) {
-                creditCard.increaseOverLimitCount();
-                System.out.println("You used more funds than you credit line allows you!");
-                creditCard.addTransactionToTransactionHistory(super.createTransaction(CreditCard.OVER_LIMIT_FEE));
-            }
-            creditCard.setBalance(balance - outgoingTransactionAmount);
-            System.out.println("You withdrew $" + outgoingTransactionAmount + " and you current balance is: $" + balance);
-            Transaction transaction = super.createTransaction(-outgoingTransactionAmount);
-            creditCard.addTransactionToTransactionHistory(transaction);
-        } else {
-            throw new Exception("No Credit Line opened");
+    public void withdrawMoneyFromAccount(ClientAccount clientAccount, double outgoingTransactionAmount) throws NullPointerException {
+        CreditCard creditCard = checkIfFinProductExists(clientAccount);
+        double balance = creditCard.getBalance();
+        if (creditCard.getCreditLimit() >= (balance - outgoingTransactionAmount)) {
+            creditCard.increaseOverLimitCount();
+            System.out.println("You used more funds than you credit line allows you!");
+            creditCard.addTransactionToTransactionHistory(super.createTransaction(CreditCard.OVER_LIMIT_FEE));
         }
+        creditCard.setBalance(balance - outgoingTransactionAmount);
+        System.out.println("You withdrew $" + outgoingTransactionAmount + " and you current balance is: $" + balance);
+        Transaction transaction = super.createTransaction(-outgoingTransactionAmount);
+        creditCard.addTransactionToTransactionHistory(transaction);
     }
 
     @Override
-    public void reviewBalance(ClientAccount clientAccount) throws Exception {
-        if (clientAccount.getTypeToFinancialProductMap().containsKey(FinancialProductType.CREDIT_CARD)) {
-            CreditCard creditCard = (CreditCard) clientAccount.getTypeToFinancialProductMap().get(FinancialProductType.CREDIT_CARD);
-            System.out.println("Your credit account balance is: $ " + creditCard.getBalance());
-        } else {
-            throw new Exception("No Credit Line opened");
-        }
+    public void reviewBalance(ClientAccount clientAccount) throws NullPointerException {
+        CreditCard creditCard = checkIfFinProductExists(clientAccount);
+        System.out.println("Your credit account balance is: $ " + creditCard.getBalance());
     }
 
     @Override
@@ -65,12 +54,17 @@ public class CreditCardService extends FinancialProductService implements Promot
     }
 
     @Override
-    public void printTransactionHistory(ClientAccount clientAccount) throws Exception {
+    public void printTransactionHistory(ClientAccount clientAccount) throws NullPointerException {
+        CreditCard creditCard = checkIfFinProductExists(clientAccount);
+        super.printTransactionList(creditCard.getCreditCardTransactions());
+    }
+
+    private CreditCard checkIfFinProductExists(ClientAccount clientAccount) throws NullPointerException {
         if (clientAccount.getTypeToFinancialProductMap().containsKey(FinancialProductType.CREDIT_CARD)) {
-            CreditCard creditCard = (CreditCard) clientAccount.getTypeToFinancialProductMap().get(FinancialProductType.CREDIT_CARD);
-            super.printTransactionList(creditCard.getCreditCardTransactions());
+            return (CreditCard) clientAccount.getTypeToFinancialProductMap().get(FinancialProductType.CREDIT_CARD);
         } else {
-            throw new Exception("No Credit Line opened");
+            throw new NullPointerException(FinancialProductType.CREDIT_CARD.toString() + " does not exists");
         }
     }
 }
+
