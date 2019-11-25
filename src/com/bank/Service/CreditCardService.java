@@ -49,7 +49,7 @@ public class CreditCardService extends FinancialProductService implements Promot
     }
 
     @Override
-    public void applyPromotion() {
+    public void applyPromotion(ClientAccount clientAccount) {
 
     }
 

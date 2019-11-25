@@ -66,7 +66,7 @@ public class RRSPService extends FinancialProductService implements Promotionabl
     }
 
     @Override
-    public void applyPromotion() {
+    public void applyPromotion(ClientAccount clientAccount) {
 
     }
 

@@ -79,7 +79,7 @@ public class CheckingAccountService extends FinancialProductService implements P
             double amountSpentLastMonth = getAmountSpentLastMonth(checkingAccount);
             Transaction promotionBonus = super.createTransaction(amountSpentLastMonth * (-0.01));
             checkingAccount.addTransactionToTransactionHistory(promotionBonus);
-            System.out.println("Your bonus is: $" +  promotionBonus);
+            System.out.println("Your bonus is: $" +  promotionBonus.getAmount());
         }else {
             throw new IllegalStateException("Not eligible client attempts to apply promotion!");
         }

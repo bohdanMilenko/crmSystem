@@ -8,13 +8,11 @@ import com.bank.Service.CheckingAccountService;
 import com.bank.Service.ClientAccountService;
 import com.bank.Service.FinancialProductService;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Period;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -75,13 +73,13 @@ class CheckingAccountServiceTest {
     @Test
     void testDepositMoneyToAccountCheckTransactionTime() {
         checkingAccountService.depositMoneyToAccount(clientAccount, 25000);
-        assertTrue( getSecondsDifference() <= 0 && getSecondsDifference()>=-1);
+        assertTrue(getSecondsDifference(1) <= 0 && getSecondsDifference(1) >= -1);
     }
 
     @Test
-    void testWithdrawMoneyFromAccountLegalSumBalanceCheck(){
-        checkingAccountService.withdrawMoneyFromAccount(clientAccount,5000);
-        assertEquals(INITIAL_AMOUNT - 5000 - FinancialProductService.CHECKING_ACCOUNT_YEARLY_FEE ,checkingAccount.getBalance());
+    void testWithdrawMoneyFromAccountLegalSumBalanceCheck() {
+        checkingAccountService.withdrawMoneyFromAccount(clientAccount, 5000);
+        assertEquals(INITIAL_AMOUNT - 5000 - FinancialProductService.CHECKING_ACCOUNT_YEARLY_FEE, checkingAccount.getBalance());
     }
 
     @Test
@@ -96,12 +94,13 @@ class CheckingAccountServiceTest {
     }
 
     @Test
-    void testWithdrawMoneyFromAccountCheckTransactionTime(){
+    void testWithdrawMoneyFromAccountCheckTransactionTime() {
         checkingAccountService.withdrawMoneyFromAccount(clientAccount, 1000);
-        assertTrue( getSecondsDifference() <= 0 && getSecondsDifference() >=-1);
+        assertTrue(getSecondsDifference(1) <= 0 && getSecondsDifference(1) >= -1);
     }
+
     @Test
-    void testWithdrawMoneyFromAccountCheckTransactionAmount(){
+    void testWithdrawMoneyFromAccountCheckTransactionAmount() {
         checkingAccountService.withdrawMoneyFromAccount(clientAccount, 1000);
         Transaction transaction = checkingAccount.getCheckingAccountHistory().get(1);
         double transactionAmount = transaction.getAmount();
@@ -115,14 +114,16 @@ class CheckingAccountServiceTest {
         assertEquals(Transaction.TRANSACTION_TYPE.EXPENSE, transaction.getTransaction_type());
     }
 
-//No point to write
+    //No point to write
     @Test
     void testPrintTransactionHistory() {
     }
+
     //No point to write
     @Test
     void testReviewBalance() {
     }
+
     //No point to write
     @Test
     void viewEligibilityTerms() {
@@ -165,13 +166,55 @@ class CheckingAccountServiceTest {
 
 
     @Test
-    void applyPromotion() {
+    void applyPromotionBasic() {
+        checkingAccountService.withdrawMoneyFromAccount(clientAccount, 6000);
+        checkingAccountService.applyPromotion(clientAccount);
+        assertTrue(checkingAccount.isEligibleForPromotion());
+    }
+
+    @Test
+    void applyPromotionCheckTransactionAmount() {
+        double outgoingTransaction = 6000;
+        double expectedBonus = outgoingTransaction * 0.01;
+        checkingAccountService.withdrawMoneyFromAccount(clientAccount, outgoingTransaction);
+        checkingAccountService.applyPromotion(clientAccount);
+        Transaction transaction = checkingAccount.getCheckingAccountHistory().get(2);
+        assertEquals(expectedBonus, transaction.getAmount());
+    }
+
+    @Test
+    void applyPromotionCheckTransactionTime() {
+        checkingAccountService.withdrawMoneyFromAccount(clientAccount, 6000);
+        checkingAccountService.applyPromotion(clientAccount);
+        assertTrue(getSecondsDifference(2) <= 0 && getSecondsDifference(2) >= -1);
+    }
+
+    @Test
+    void applyPromotionCheckTransactionType() {
+        checkingAccountService.withdrawMoneyFromAccount(clientAccount, 6000);
+        checkingAccountService.applyPromotion(clientAccount);
+        Transaction transaction = checkingAccount.getCheckingAccountHistory().get(2);
+        assertEquals(Transaction.TRANSACTION_TYPE.INCOME, transaction.getTransaction_type());
+    }
+
+    @Test
+    void applyPromotionIsEligibleAlreadyTrue() throws IllegalStateException {
+        checkingAccountService.withdrawMoneyFromAccount(clientAccount, 6000);
+        checkingAccount.setEligibleForPromotion(true);
+        assertThrows(IllegalStateException.class, () -> checkingAccountService.applyPromotion(clientAccount));
+    }
+
+    @Test
+    void applyPromotionNotEnoughSpent() throws IllegalStateException {
+        checkingAccountService.withdrawMoneyFromAccount(clientAccount, 4000);
+        checkingAccount.setEligibleForPromotion(true);
+        assertThrows(IllegalStateException.class, () -> checkingAccountService.applyPromotion(clientAccount));
     }
 
 
-    private long getSecondsDifference(){
+    private long getSecondsDifference(int transactionNumber) {
         LocalDateTime currentTime = LocalDateTime.now();
-        Transaction transaction = checkingAccount.getCheckingAccountHistory().get(1);
+        Transaction transaction = checkingAccount.getCheckingAccountHistory().get(transactionNumber);
         Duration diff = Duration.between(currentTime, transaction.getDateTime());
         System.out.println(diff.toSeconds());
         return diff.toSeconds();
