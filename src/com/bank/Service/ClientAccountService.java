@@ -29,6 +29,9 @@ public class ClientAccountService {
 
     private void createCheckingAccount(ClientAccount clientAccount, double amount) {
         CheckingAccount checkingAccount = new CheckingAccount(amount);
+        if(!clientAccount.getCustomer().isStudent()){
+            checkingAccount.addTransactionToTransactionHistory(new Transaction(FinancialProductService.CHECKING_ACCOUNT_YEARLY_FEE));
+        }
         clientAccount.addNewFinancialProduct(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT, checkingAccount);
         System.out.println("Successfully opened a checking account. You balance is: $" + amount);
         clientAccount.reviewCurrentFinancialProducts();

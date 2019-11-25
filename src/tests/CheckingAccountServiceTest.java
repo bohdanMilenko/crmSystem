@@ -3,13 +3,17 @@ package tests;
 import com.bank.Entities.CheckingAccount;
 import com.bank.Entities.ClientAccount;
 import com.bank.Entities.Customer;
+import com.bank.Entities.Transaction;
 import com.bank.Service.CheckingAccountService;
 import com.bank.Service.ClientAccountService;
 import com.bank.Service.FinancialProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Period;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -46,19 +50,44 @@ class CheckingAccountServiceTest {
     }
 
     @Test
-    void testDepositMoneyToAccountBalanceCheck()  {
+    void testDepositMoneyToAccountCheckTransactionAmount() {
         checkingAccountService.depositMoneyToAccount(clientAccount, 25000);
-        assertEquals(35000 - FinancialProductService.CHECKING_ACCOUNT_YEARLY_FEE, checkingAccount.getBalance(), 0.000001);
+        Transaction transaction = checkingAccount.getCheckingAccountHistory().get(0);
+        assertEquals(FinancialProductService.CHECKING_ACCOUNT_YEARLY_FEE, transaction.getAmount());
     }
 
     @Test
-    void testWithdrawMoneyFromAccountWithinLimits() throws NullPointerException {
-        assertThrows(IllegalArgumentException.class, ()-> checkingAccountService.depositMoneyToAccount(clientAccount,-500));
+    void testDepositMoneyToAccountCheckTransactionAmount2() {
+        checkingAccountService.depositMoneyToAccount(clientAccount, 25000);
+        Transaction transaction = checkingAccount.getCheckingAccountHistory().get(1);
+        assertEquals(25000, transaction.getAmount());
+    }
+
+    @Test
+    void testDepositMoneyToAccountCheckTransactionType() {
+        checkingAccountService.depositMoneyToAccount(clientAccount, 25000);
+        Transaction transaction = checkingAccount.getCheckingAccountHistory().get(1);
+        assertEquals(Transaction.TRANSACTION_TYPE.INCOME, transaction.getTransaction_type());
+    }
+
+    @Test
+    void testDepositMoneyToAccountCheckTransactionTime() {
+        checkingAccountService.depositMoneyToAccount(clientAccount, 25000);
+        LocalDateTime currentTime = LocalDateTime.now();
+        Transaction transaction = checkingAccount.getCheckingAccountHistory().get(1);
+        Duration diff = Duration.between(currentTime, transaction.getDateTime());
+        System.out.println(diff.toSeconds());
+        assertTrue( diff.toSeconds() < 0 && diff.toSeconds()>=-2);
+    }
+
+    @Test
+    void testWithdrawMoneyFromAccountWithinLimits() throws IllegalArgumentException {
+        assertThrows(IllegalArgumentException.class, () -> checkingAccountService.depositMoneyToAccount(clientAccount, -500));
 
     }
 
     @Test
-    void testWithdrawMoneyFromAccountOverLimit() throws IllegalArgumentException {
+    void testWithdrawMoneyFromAccountOverLimit() throws NullPointerException {
         assertThrows(IllegalArgumentException.class, () -> checkingAccountService.withdrawMoneyFromAccount(clientAccount, 20000));
 
     }
