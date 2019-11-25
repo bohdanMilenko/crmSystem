@@ -1,9 +1,6 @@
 package com.bank.Service;
 
-import com.bank.Entities.CheckingAccount;
-import com.bank.Entities.ClientAccount;
-import com.bank.Entities.RRSP;
-import com.bank.Entities.Transaction;
+import com.bank.Entities.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -65,19 +62,27 @@ public class CheckingAccountService extends FinancialProductService implements P
         double amountSpentLastMonth = getAmountSpentLastMonth(checkingAccount);
         System.out.println("Amount spent last month is: $" + amountSpentLastMonth);
         if (amountSpentLastMonth <= PROMOTION_ELIGIBLE_EXPENSES) {
-            checkingAccount.setEligibleForPromotion(true);
-            System.out.println("You are eligible for promotion");
+            System.out.println("You are eligible for promotion, please apply for it!");
             return true;
         } else {
             checkingAccount.setEligibleForPromotion(false);
             System.out.println("You have to spend $" + (PROMOTION_ELIGIBLE_EXPENSES - amountSpentLastMonth) + " to be eligible.");
             return false;
         }
-
     }
 
     @Override
-    public void applyPromotion() {
+    public void applyPromotion(ClientAccount clientAccount) {
+        CheckingAccount checkingAccount = checkIfFinProductExists(clientAccount);
+        if(!checkingAccount.isEligibleForPromotion() && checkIfEligibleForPromotion(clientAccount)){
+            checkingAccount.setEligibleForPromotion(true);
+            double amountSpentLastMonth = getAmountSpentLastMonth(checkingAccount);
+            Transaction promotionBonus = super.createTransaction(amountSpentLastMonth * (-0.01));
+            checkingAccount.addTransactionToTransactionHistory(promotionBonus);
+            System.out.println("Your bonus is: $" +  promotionBonus);
+        }else {
+            throw new IllegalStateException("Not eligible client attempts to apply promotion!");
+        }
 
     }
 

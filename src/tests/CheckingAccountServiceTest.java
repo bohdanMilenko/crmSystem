@@ -8,6 +8,7 @@ import com.bank.Service.CheckingAccountService;
 import com.bank.Service.ClientAccountService;
 import com.bank.Service.FinancialProductService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
@@ -24,13 +25,14 @@ class CheckingAccountServiceTest {
 
     private ClientAccountService clientAccountService = new ClientAccountService();
     private CheckingAccountService checkingAccountService = new CheckingAccountService();
+    final int INITIAL_AMOUNT = 10000;
 
 
     @BeforeEach
     void setUp() throws Exception {
         Customer customer = new Customer("Bob", "Marley", LocalDate.of(1965, 10, 1), false, false);
         clientAccount = new ClientAccount(customer);
-        clientAccountService.openCheckingAccount(clientAccount, 10000);
+        clientAccountService.openCheckingAccount(clientAccount, INITIAL_AMOUNT);
         checkingAccount = (CheckingAccount) clientAccount.getTypeToFinancialProductMap().get(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT);
         System.out.println("Finished Initialization");
         System.out.println();
@@ -40,13 +42,13 @@ class CheckingAccountServiceTest {
     @Test
     void testDepositMoneyToAccount() throws NullPointerException {
         checkingAccountService.depositMoneyToAccount(clientAccount, 25000);
-        assertEquals(35000 - FinancialProductService.CHECKING_ACCOUNT_YEARLY_FEE, checkingAccount.getBalance(), 0.000001);
+        assertEquals(INITIAL_AMOUNT + 25000 - FinancialProductService.CHECKING_ACCOUNT_YEARLY_FEE, checkingAccount.getBalance(), 0.000001);
     }
 
     @Test
     void testDepositMoneyToAccountNegativeSum() throws IllegalArgumentException {
         checkingAccountService.depositMoneyToAccount(clientAccount, 25000);
-        assertEquals(35000 - FinancialProductService.CHECKING_ACCOUNT_YEARLY_FEE, checkingAccount.getBalance(), 0.000001);
+        assertEquals(INITIAL_AMOUNT + 25000 - FinancialProductService.CHECKING_ACCOUNT_YEARLY_FEE, checkingAccount.getBalance(), 0.000001);
     }
 
     @Test
@@ -73,33 +75,55 @@ class CheckingAccountServiceTest {
     @Test
     void testDepositMoneyToAccountCheckTransactionTime() {
         checkingAccountService.depositMoneyToAccount(clientAccount, 25000);
-        LocalDateTime currentTime = LocalDateTime.now();
-        Transaction transaction = checkingAccount.getCheckingAccountHistory().get(1);
-        Duration diff = Duration.between(currentTime, transaction.getDateTime());
-        System.out.println(diff.toSeconds());
-        assertTrue( diff.toSeconds() < 0 && diff.toSeconds()>=-2);
+        assertTrue( getSecondsDifference() <= 0 && getSecondsDifference()>=-1);
     }
 
     @Test
-    void testWithdrawMoneyFromAccountWithinLimits() throws IllegalArgumentException {
-        assertThrows(IllegalArgumentException.class, () -> checkingAccountService.depositMoneyToAccount(clientAccount, -500));
+    void testWithdrawMoneyFromAccountLegalSumBalanceCheck(){
+        checkingAccountService.withdrawMoneyFromAccount(clientAccount,5000);
+        assertEquals(INITIAL_AMOUNT - 5000 - FinancialProductService.CHECKING_ACCOUNT_YEARLY_FEE ,checkingAccount.getBalance());
+    }
+
+    @Test
+    void testWithdrawMoneyFromAccountNegativeSum() throws IllegalArgumentException {
+        assertThrows(IllegalArgumentException.class, () -> checkingAccountService.withdrawMoneyFromAccount(clientAccount, -500));
 
     }
 
     @Test
     void testWithdrawMoneyFromAccountOverLimit() throws NullPointerException {
-        assertThrows(IllegalArgumentException.class, () -> checkingAccountService.withdrawMoneyFromAccount(clientAccount, 20000));
-
+        assertThrows(IllegalArgumentException.class, () -> checkingAccountService.withdrawMoneyFromAccount(clientAccount, 10001));
     }
 
+    @Test
+    void testWithdrawMoneyFromAccountCheckTransactionTime(){
+        checkingAccountService.withdrawMoneyFromAccount(clientAccount, 1000);
+        assertTrue( getSecondsDifference() <= 0 && getSecondsDifference() >=-1);
+    }
+    @Test
+    void testWithdrawMoneyFromAccountCheckTransactionAmount(){
+        checkingAccountService.withdrawMoneyFromAccount(clientAccount, 1000);
+        Transaction transaction = checkingAccount.getCheckingAccountHistory().get(1);
+        double transactionAmount = transaction.getAmount();
+        assertEquals(-1000, transactionAmount);
+    }
+
+    @Test
+    void testWithdrawMoneyFromAccountCheckTransactionType() {
+        checkingAccountService.withdrawMoneyFromAccount(clientAccount, 1000);
+        Transaction transaction = checkingAccount.getCheckingAccountHistory().get(1);
+        assertEquals(Transaction.TRANSACTION_TYPE.EXPENSE, transaction.getTransaction_type());
+    }
+
+//No point to write
     @Test
     void testPrintTransactionHistory() {
     }
-
+    //No point to write
     @Test
     void testReviewBalance() {
     }
-
+    //No point to write
     @Test
     void viewEligibilityTerms() {
     }
@@ -112,7 +136,7 @@ class CheckingAccountServiceTest {
     @Test
     void checkIfEligibleForPromotionNotEnoughExpenses() throws NullPointerException {
         checkingAccountService.withdrawMoneyFromAccount(clientAccount, 1000);
-        assertFalse(checkingAccountService.checkIfEligibleForPromotion(clientAccount));
+        assertFalse(checkingAccount.isEligibleForPromotion());
     }
 
     @Test
@@ -139,7 +163,17 @@ class CheckingAccountServiceTest {
         assertTrue(checkingAccountService.checkIfEligibleForPromotion(clientAccount));
     }
 
+
     @Test
     void applyPromotion() {
+    }
+
+
+    private long getSecondsDifference(){
+        LocalDateTime currentTime = LocalDateTime.now();
+        Transaction transaction = checkingAccount.getCheckingAccountHistory().get(1);
+        Duration diff = Duration.between(currentTime, transaction.getDateTime());
+        System.out.println(diff.toSeconds());
+        return diff.toSeconds();
     }
 }
