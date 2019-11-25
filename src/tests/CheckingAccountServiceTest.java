@@ -23,7 +23,7 @@ class CheckingAccountServiceTest {
 
     private ClientAccountService clientAccountService = new ClientAccountService();
     private CheckingAccountService checkingAccountService = new CheckingAccountService();
-    final int INITIAL_AMOUNT = 10000;
+    private final int INITIAL_AMOUNT = 10000;
 
 
     @BeforeEach

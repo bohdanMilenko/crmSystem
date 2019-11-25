@@ -39,9 +39,12 @@ public class Customer {
         return isCanadianResident;
     }
 
-
     public boolean isStudent() {
         return isStudent;
+    }
+
+    public void setStudentAccount(){
+        this.isStudent = true;
     }
 
     public enum RelativeType {
@@ -62,4 +65,6 @@ public class Customer {
         Customer clone = (Customer) super.clone();
         return clone;
     }
+
+
 }
