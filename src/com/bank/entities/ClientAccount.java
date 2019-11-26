@@ -1,7 +1,8 @@
-package com.bank.Entities;
+package com.bank.entities;
 
 
-import com.bank.Service.FinancialProductService;
+import com.bank.service.CreditLineService;
+import com.bank.service.FinancialProductService;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -24,7 +25,7 @@ public class ClientAccount {
         LocalDate thresholdDate = LocalDate.now().minusYears(18);
         boolean clientOldEnough =  customer.getDateOfBirth().isBefore(thresholdDate);
         if(customer.isCanadianResident() && clientOldEnough) {
-            this.amountEligibleForCreditLine = CreditCard.LOWEST_THRESHOLD;
+            this.amountEligibleForCreditLine = CreditLineService.LOWEST_THRESHOLD;
         }else {this.amountEligibleForCreditLine = 0;}
     }
 

@@ -1,7 +1,7 @@
-package com.bank.Service;
+package com.bank.service;
 
-import com.bank.Entities.ClientAccount;
-import com.bank.Entities.Transaction;
+import com.bank.entities.ClientAccount;
+import com.bank.entities.Transaction;
 
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;

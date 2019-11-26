@@ -1,11 +1,11 @@
 package tests;
 
-import com.bank.Entities.CheckingAccount;
-import com.bank.Entities.ClientAccount;
-import com.bank.Entities.Customer;
-import com.bank.Entities.Transaction;
-import com.bank.Service.ClientAccountService;
-import com.bank.Service.FinancialProductService;
+import com.bank.entities.CheckingAccount;
+import com.bank.entities.ClientAccount;
+import com.bank.entities.Customer;
+import com.bank.entities.Transaction;
+import com.bank.service.ClientAccountService;
+import com.bank.service.FinancialProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -21,59 +21,58 @@ class ClientAccountServiceTest {
 
     @BeforeEach
     void setUp() {
-        Customer customer = new Customer("Bob", "Marley", LocalDate.of(1965, 10, 1), false, false);
+        Customer customer = new Customer("Bob", "Marley", LocalDate.of(1965, 10, 1));
         clientAccount = new ClientAccount(customer);
     }
 
     @Test
     void openCheckingAccount() throws Exception {
-        clientAccountService.openCheckingAccount(clientAccount, OPENING_ACCOUNT_BALANCE );
+        clientAccountService.openCheckingAccount(clientAccount, OPENING_ACCOUNT_BALANCE);
         assertNotNull(clientAccount.getTypeToFinancialProductMap().get(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT));
     }
 
     @Test
     void openCheckingAccountNegativeAmount() {
-        assertThrows(Exception.class, () -> clientAccountService.openCheckingAccount(clientAccount, - OPENING_ACCOUNT_BALANCE ));
+        assertThrows(Exception.class, () -> clientAccountService.openCheckingAccount(clientAccount, -OPENING_ACCOUNT_BALANCE));
     }
 
     @Test
-    void openCheckingAccountCheckBalanceForStudent() throws  Exception{
-        Customer customer =  clientAccount.getCustomer();
+    void openCheckingAccountCheckBalanceForStudent() throws Exception {
+        Customer customer = clientAccount.getCustomer();
         customer.setStudentAccount();
-        clientAccountService.openCheckingAccount(clientAccount, OPENING_ACCOUNT_BALANCE );
-        CheckingAccount checkingAccount =(CheckingAccount) clientAccount.getTypeToFinancialProductMap().get(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT);
-        assertEquals(OPENING_ACCOUNT_BALANCE,checkingAccount.getBalance());
+        clientAccountService.openCheckingAccount(clientAccount, OPENING_ACCOUNT_BALANCE);
+        CheckingAccount checkingAccount = (CheckingAccount) clientAccount.getTypeToFinancialProductMap().get(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT);
+        assertEquals(OPENING_ACCOUNT_BALANCE, checkingAccount.getBalance());
     }
 
     @Test
-    void openCheckingAccountCheckEmptyTransactionsForStudent() throws  Exception{
-        Customer customer =  clientAccount.getCustomer();
+    void openCheckingAccountCheckEmptyTransactionsForStudent() throws Exception {
+        Customer customer = clientAccount.getCustomer();
         customer.setStudentAccount();
-        clientAccountService.openCheckingAccount(clientAccount, OPENING_ACCOUNT_BALANCE );
-        CheckingAccount checkingAccount =(CheckingAccount) clientAccount.getTypeToFinancialProductMap().get(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT);
+        clientAccountService.openCheckingAccount(clientAccount, OPENING_ACCOUNT_BALANCE);
+        CheckingAccount checkingAccount = (CheckingAccount) clientAccount.getTypeToFinancialProductMap().get(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT);
         assertTrue(checkingAccount.getCheckingAccountHistory().isEmpty());
     }
 
     @Test
     void openCheckingAccountAmountLessThenFee() {
-        assertThrows(Exception.class, () -> clientAccountService.openCheckingAccount(clientAccount, 50 ));
+        assertThrows(Exception.class, () -> clientAccountService.openCheckingAccount(clientAccount, 50));
     }
 
     @Test
-    void openCheckingAccountCheckBalanceAfterFeeApplied()throws Exception {
-        clientAccountService.openCheckingAccount(clientAccount, OPENING_ACCOUNT_BALANCE );
-        CheckingAccount checkingAccount =(CheckingAccount) clientAccount.getTypeToFinancialProductMap().get(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT);
-        assertEquals(OPENING_ACCOUNT_BALANCE - FinancialProductService.CHECKING_ACCOUNT_YEARLY_FEE  ,checkingAccount.getBalance());
+    void openCheckingAccountCheckBalanceAfterFeeApplied() throws Exception {
+        clientAccountService.openCheckingAccount(clientAccount, OPENING_ACCOUNT_BALANCE);
+        CheckingAccount checkingAccount = (CheckingAccount) clientAccount.getTypeToFinancialProductMap().get(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT);
+        assertEquals(OPENING_ACCOUNT_BALANCE - FinancialProductService.CHECKING_ACCOUNT_YEARLY_FEE, checkingAccount.getBalance());
     }
 
     @Test
-    void openCheckingAccountCheckTransactionForFee()throws Exception {
-        clientAccountService.openCheckingAccount(clientAccount, OPENING_ACCOUNT_BALANCE );
+    void openCheckingAccountCheckTransactionForFee() throws Exception {
+        clientAccountService.openCheckingAccount(clientAccount, OPENING_ACCOUNT_BALANCE);
         CheckingAccount checkingAccount = (CheckingAccount) clientAccount.getTypeToFinancialProductMap().get(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT);
         Transaction transaction = checkingAccount.getCheckingAccountHistory().get(0);
-        assertEquals( - FinancialProductService.CHECKING_ACCOUNT_YEARLY_FEE  , transaction.getAmount());
+        assertEquals(-FinancialProductService.CHECKING_ACCOUNT_YEARLY_FEE, transaction.getAmount());
     }
-
 
 
     @Test

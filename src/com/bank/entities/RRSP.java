@@ -1,4 +1,4 @@
-package com.bank.Entities;
+package com.bank.entities;
 
 import java.util.ArrayList;
 import java.util.List;

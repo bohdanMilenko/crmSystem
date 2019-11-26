@@ -1,4 +1,4 @@
-package com.bank.Util;
+package com.bank.util;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;

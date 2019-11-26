@@ -1,19 +1,8 @@
 package tests;
 
-import com.bank.Entities.ClientAccount;
-import com.bank.Entities.CreditCard;
-import com.bank.Entities.Customer;
-import com.bank.Service.ClientAccountService;
-import com.bank.Service.CreditCardService;
-import com.bank.Service.FinancialProductService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDate;
-
-import static org.junit.jupiter.api.Assertions.*;
-
-class CreditCardServiceTest  {
+class CreditLineServiceTest {
 
 //    @BeforeEach
 //    void setUp() {

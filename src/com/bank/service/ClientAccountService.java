@@ -1,12 +1,12 @@
-package com.bank.Service;
+package com.bank.service;
 
-import com.bank.Entities.*;
+import com.bank.entities.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.bank.Util.FinancialInfoUtil.getNumberFromCustomer;
-import static com.bank.Util.FinancialInfoUtil.getStringFromCustomer;
+import static com.bank.util.FinancialInfoUtil.getNumberFromCustomer;
+import static com.bank.util.FinancialInfoUtil.getStringFromCustomer;
 
 public class ClientAccountService {
 
@@ -29,8 +29,8 @@ public class ClientAccountService {
 
     private void createCheckingAccount(ClientAccount clientAccount, double amount) {
         CheckingAccount checkingAccount = new CheckingAccount(amount);
-        if(!clientAccount.getCustomer().isStudent()){
-            Transaction transaction = new Transaction( - FinancialProductService.CHECKING_ACCOUNT_YEARLY_FEE);
+        if (!clientAccount.getCustomer().isStudent()) {
+            Transaction transaction = new Transaction(-FinancialProductService.CHECKING_ACCOUNT_YEARLY_FEE);
             checkingAccount.addTransactionToTransactionHistory(transaction);
         }
         clientAccount.addNewFinancialProduct(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT, checkingAccount);
@@ -44,10 +44,10 @@ public class ClientAccountService {
 
         if (!typeToFinancialProduct.containsKey(FinancialProductService.FinancialProductType.CREDIT_CARD) &&
                 typeToFinancialProduct.containsKey(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT)) {
-            int availableCreditLine = checkCreditLineEligibility(clientAccount);
+            int availableCreditLine = defineCreditLineAmount(clientAccount);
             if (availableCreditLine > 0) {
-                CreditCard creditCard = new CreditCard(availableCreditLine);
-                clientAccount.addNewFinancialProduct(FinancialProductService.FinancialProductType.CREDIT_CARD, creditCard);
+                CreditLine creditLine = new CreditLine(availableCreditLine);
+                clientAccount.addNewFinancialProduct(FinancialProductService.FinancialProductType.CREDIT_CARD, creditLine);
                 System.out.println("Successfully opened a credit line with $" + availableCreditLine + " available for credit");
                 clientAccount.reviewCurrentFinancialProducts();
             }
@@ -56,7 +56,7 @@ public class ClientAccountService {
         }
     }
 
-    private int checkCreditLineEligibility(ClientAccount clientAccount) {
+    private int defineCreditLineAmount(ClientAccount clientAccount) {
         CheckingAccount checkingAccount = (CheckingAccount) clientAccount.getTypeToFinancialProductMap().
                 get(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT);
         Customer customer = clientAccount.getCustomer();
@@ -67,25 +67,25 @@ public class ClientAccountService {
                 clientAccount.setAmountEligibleForCreditLine(0);
                 return 0;
             } else if (checkingBalance < 1000 && customer.isCanadianResident()) {
-                System.out.println("Eligible for $" + CreditCard.LOWEST_THRESHOLD);
-                clientAccount.setAmountEligibleForCreditLine(CreditCard.LOWEST_THRESHOLD);
-                return CreditCard.LOWEST_THRESHOLD;
+                System.out.println("Eligible for $" + CreditLineService.LOWEST_THRESHOLD);
+                clientAccount.setAmountEligibleForCreditLine(CreditLineService.LOWEST_THRESHOLD);
+                return CreditLineService.LOWEST_THRESHOLD;
             } else if (checkingBalance < 5000 && !customer.isCanadianResident()) {
-                System.out.println("Eligible for $" + CreditCard.LOWEST_THRESHOLD);
-                clientAccount.setAmountEligibleForCreditLine(CreditCard.LOWEST_THRESHOLD);
-                return CreditCard.LOWEST_THRESHOLD;
+                System.out.println("Eligible for $" + CreditLineService.LOWEST_THRESHOLD);
+                clientAccount.setAmountEligibleForCreditLine(CreditLineService.LOWEST_THRESHOLD);
+                return CreditLineService.LOWEST_THRESHOLD;
             } else if (checkingBalance < 5000 && customer.isCanadianResident()) {
-                System.out.println("Eligible for $" + CreditCard.MIDDLE_THRESHOLD);
-                clientAccount.setAmountEligibleForCreditLine(CreditCard.MIDDLE_THRESHOLD);
-                return CreditCard.MIDDLE_THRESHOLD;
+                System.out.println("Eligible for $" + CreditLineService.MIDDLE_THRESHOLD);
+                clientAccount.setAmountEligibleForCreditLine(CreditLineService.MIDDLE_THRESHOLD);
+                return CreditLineService.MIDDLE_THRESHOLD;
             } else if (checkingBalance >= 5000 && !customer.isCanadianResident()) {
-                System.out.println("Eligible for $" + CreditCard.MIDDLE_THRESHOLD);
-                clientAccount.setAmountEligibleForCreditLine(CreditCard.MIDDLE_THRESHOLD);
-                return CreditCard.MIDDLE_THRESHOLD;
+                System.out.println("Eligible for $" + CreditLineService.MIDDLE_THRESHOLD);
+                clientAccount.setAmountEligibleForCreditLine(CreditLineService.MIDDLE_THRESHOLD);
+                return CreditLineService.MIDDLE_THRESHOLD;
             } else {
-                System.out.println("Eligible for $" + CreditCard.TOP_THRESHOLD);
-                clientAccount.setAmountEligibleForCreditLine(CreditCard.TOP_THRESHOLD);
-                return CreditCard.TOP_THRESHOLD;
+                System.out.println("Eligible for $" + CreditLineService.TOP_THRESHOLD);
+                clientAccount.setAmountEligibleForCreditLine(CreditLineService.TOP_THRESHOLD);
+                return CreditLineService.TOP_THRESHOLD;
             }
         }
         return -1;
@@ -104,20 +104,22 @@ public class ClientAccountService {
     }
 
     private FinancialClientsInfo requestFinancialInfo() {
-        String currentPosition;
-        String previousPosition;
-        int yearsOnCurrentPosition;
-        int yearsOnPreviousPosition;
-        Map<Integer, Double> salaryHistory = new HashMap<>();
-        System.out.println("What is the name of the position you currently occupy?");
-        currentPosition = getStringFromCustomer();
-        System.out.println("For how many years do you work at current position?");
-        yearsOnCurrentPosition = (int) getNumberFromCustomer();
-        System.out.println("What is the name of the position you worked before?");
-        previousPosition = getStringFromCustomer();
-        System.out.println("For how many years have you been working at your previous position?");
-        yearsOnPreviousPosition = (int) getNumberFromCustomer();
 
+        System.out.println("What is the name of the position you currently occupy?");
+        String currentPosition = getStringFromCustomer();
+        System.out.println("For how many years do you work at current position?");
+        int yearsOnCurrentPosition = (int) getNumberFromCustomer();
+        System.out.println("What is the name of the position you worked before?");
+        String previousPosition = getStringFromCustomer();
+        System.out.println("For how many years have you been working at your previous position?");
+        int yearsOnPreviousPosition = (int) getNumberFromCustomer();
+
+        Map<Integer, Double> salaryHistory = getSalaryHistoryFromCustomer();
+        return new FinancialClientsInfo(currentPosition, previousPosition, yearsOnCurrentPosition, yearsOnPreviousPosition, salaryHistory);
+    }
+
+    private Map<Integer, Double> getSalaryHistoryFromCustomer(){
+        Map<Integer, Double> salaryHistory = new HashMap<>();
         System.out.println("Please enter the net income in 2017: ");
         double incomeIn2017 = getNumberFromCustomer();
         salaryHistory.put(2017, incomeIn2017);
@@ -125,10 +127,9 @@ public class ClientAccountService {
         double incomeIn2018 = getNumberFromCustomer();
         salaryHistory.put(2018, incomeIn2018);
         System.out.println("Please enter the net income in 2019: ");
-
         double incomeIn2019 = getNumberFromCustomer();
         salaryHistory.put(2019, incomeIn2019);
-        return new FinancialClientsInfo(currentPosition, previousPosition, yearsOnCurrentPosition, yearsOnPreviousPosition, salaryHistory);
+        return salaryHistory;
     }
 
 

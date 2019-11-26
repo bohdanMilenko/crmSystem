@@ -1,4 +1,4 @@
-package com.bank.Entities;
+package com.bank.entities;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -10,17 +10,14 @@ public class Customer {
     private String surname;
     private LocalDate dateOfBirth;
     private boolean isCanadianResident;
-    private List<RelativeType> relativeTypes;
+    private List<RelativeType> relativeTypes = new ArrayList<>();
     private boolean isStudent;
 
 
-    public Customer(String name, String surname, LocalDate dateOfBirth, boolean isCanadianResident, boolean isStudent) {
+    public Customer(String name, String surname, LocalDate dateOfBirth) {
         this.name = name;
         this.surname = surname;
         this.dateOfBirth = dateOfBirth;
-        this.isCanadianResident = isCanadianResident;
-        this.relativeTypes = new ArrayList<>();
-        this.isStudent = isStudent;
     }
 
     public String getName() {

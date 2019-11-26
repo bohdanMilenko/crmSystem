@@ -1,6 +1,6 @@
-package com.bank.Service;
+package com.bank.service;
 
-import com.bank.Entities.ClientAccount;
+import com.bank.entities.ClientAccount;
 
 public interface Promotionable {
 
@@ -14,7 +14,7 @@ public interface Promotionable {
 
     void viewEligibilityTerms();
 
-    boolean checkIfEligibleForPromotion(ClientAccount clientAccountService) throws Exception;
+    boolean isPromotionEligible(ClientAccount clientAccountService) throws Exception;
 
     void applyPromotion(ClientAccount clientAccount) throws Exception;
 }

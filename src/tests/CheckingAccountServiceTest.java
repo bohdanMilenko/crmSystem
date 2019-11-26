@@ -1,12 +1,12 @@
 package tests;
 
-import com.bank.Entities.CheckingAccount;
-import com.bank.Entities.ClientAccount;
-import com.bank.Entities.Customer;
-import com.bank.Entities.Transaction;
-import com.bank.Service.CheckingAccountService;
-import com.bank.Service.ClientAccountService;
-import com.bank.Service.FinancialProductService;
+import com.bank.entities.CheckingAccount;
+import com.bank.entities.ClientAccount;
+import com.bank.entities.Customer;
+import com.bank.entities.Transaction;
+import com.bank.service.CheckingAccountService;
+import com.bank.service.ClientAccountService;
+import com.bank.service.FinancialProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -28,7 +28,7 @@ class CheckingAccountServiceTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        Customer customer = new Customer("Bob", "Marley", LocalDate.of(1965, 10, 1), false, false);
+        Customer customer = new Customer("Bob", "Marley", LocalDate.of(1965, 10, 1));
         clientAccount = new ClientAccount(customer);
         clientAccountService.openCheckingAccount(clientAccount, INITIAL_AMOUNT);
         checkingAccount = (CheckingAccount) clientAccount.getTypeToFinancialProductMap().get(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT);
@@ -143,7 +143,7 @@ class CheckingAccountServiceTest {
     @Test
     void checkIfEligibleForPromotionEnoughExpenses() throws NullPointerException {
         checkingAccountService.withdrawMoneyFromAccount(clientAccount, 5000);
-        assertTrue(checkingAccountService.checkIfEligibleForPromotion(clientAccount));
+        assertTrue(checkingAccountService.isPromotionEligible(clientAccount));
     }
 
     @Test
@@ -152,7 +152,7 @@ class CheckingAccountServiceTest {
         checkingAccountService.depositMoneyToAccount(clientAccount, 2000);
         checkingAccountService.depositMoneyToAccount(clientAccount, 50000);
         checkingAccountService.withdrawMoneyFromAccount(clientAccount, 1000);
-        assertFalse(checkingAccountService.checkIfEligibleForPromotion(clientAccount));
+        assertFalse(checkingAccountService.isPromotionEligible(clientAccount));
     }
 
     @Test
@@ -161,7 +161,7 @@ class CheckingAccountServiceTest {
         checkingAccountService.depositMoneyToAccount(clientAccount, 2000);
         checkingAccountService.depositMoneyToAccount(clientAccount, 50000);
         checkingAccountService.withdrawMoneyFromAccount(clientAccount, 10000);
-        assertTrue(checkingAccountService.checkIfEligibleForPromotion(clientAccount));
+        assertTrue(checkingAccountService.isPromotionEligible(clientAccount));
     }
 
 

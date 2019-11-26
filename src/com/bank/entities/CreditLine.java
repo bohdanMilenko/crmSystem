@@ -1,10 +1,10 @@
-package com.bank.Entities;
+package com.bank.entities;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class CreditCard  extends  FinancialProduct{
+public class CreditLine extends  FinancialProduct{
 
     private double balance;
     private  double creditLimit;
@@ -13,13 +13,9 @@ public class CreditCard  extends  FinancialProduct{
 
     private List<Transaction> creditCardTransactions;
 
-    public static final int LOWEST_THRESHOLD = 1000;
-    public static final int MIDDLE_THRESHOLD = 5000;
-    public static final int TOP_THRESHOLD = 10000;
-    public static final double OVER_LIMIT_FEE = -29.99;
     private static final int WELCOMING_BONUS = 50;
 
-    public CreditCard(double creditLimit) {
+    public CreditLine(double creditLimit) {
         this.balance+= WELCOMING_BONUS;
         this.creditLimit = creditLimit * (-1);
         this.defaulted = false;
@@ -69,8 +65,8 @@ public class CreditCard  extends  FinancialProduct{
     }
 
     @Override
-    protected CreditCard clone() throws CloneNotSupportedException {
-        CreditCard clone = (CreditCard) super.clone();
+    protected CreditLine clone() throws CloneNotSupportedException {
+        CreditLine clone = (CreditLine) super.clone();
         clone.creditCardTransactions = new ArrayList<>(creditCardTransactions);
         return clone;
     }

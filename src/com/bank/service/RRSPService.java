@@ -1,7 +1,7 @@
-package com.bank.Service;
+package com.bank.service;
 
-import com.bank.Entities.ClientAccount;
-import com.bank.Entities.RRSP;
+import com.bank.entities.ClientAccount;
+import com.bank.entities.RRSP;
 
 public class RRSPService extends FinancialProductService implements Promotionable {
 
@@ -11,7 +11,7 @@ public class RRSPService extends FinancialProductService implements Promotionabl
         RRSP rrsp = checkIfFinProductExists(clientAccount);
         double feeForDepositing;
         double balance = rrsp.getBalance();
-        if (checkIfEligibleForPromotion(clientAccount)) {
+        if (isPromotionEligible(clientAccount)) {
             feeForDepositing = 0;
         } else {
             feeForDepositing = incomingTransactionAmount * RRSP.DEPOSIT_FEE_PERCENT;
@@ -59,7 +59,7 @@ public class RRSPService extends FinancialProductService implements Promotionabl
 
     //TODO COMPLETE THIS METHOD
     @Override
-    public boolean checkIfEligibleForPromotion(ClientAccount clientAccount) throws NullPointerException {
+    public boolean isPromotionEligible(ClientAccount clientAccount) throws NullPointerException {
         RRSP rrsp = checkIfFinProductExists(clientAccount);
 
         return true;
@@ -80,7 +80,8 @@ public class RRSPService extends FinancialProductService implements Promotionabl
         if (clientAccount.getTypeToFinancialProductMap().containsKey(FinancialProductType.RRSP)) {
             return (RRSP) clientAccount.getTypeToFinancialProductMap().get(FinancialProductType.RRSP);
         } else {
-            throw new NullPointerException(FinancialProductType.RRSP.toString() +" does not exists");
+            throw new NullPointerException(FinancialProductType.RRSP.toString() + " does not exists");
         }
     }
+
 }
