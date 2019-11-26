@@ -36,11 +36,15 @@ public class Customer {
         return isCanadianResident;
     }
 
+    public void setCanadianResident() {
+        this.isCanadianResident = true;
+    }
+
     public boolean isStudent() {
         return isStudent;
     }
 
-    public void setStudentAccount(){
+    public void setStudentAccount() {
         this.isStudent = true;
     }
 
@@ -56,7 +60,6 @@ public class Customer {
         FEMALE,
         UNKNOWN;
     }
-
 
 
 }

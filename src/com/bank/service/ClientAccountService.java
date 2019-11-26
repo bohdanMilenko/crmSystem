@@ -45,11 +45,11 @@ public class ClientAccountService {
         Map<FinancialProductService.FinancialProductType, FinancialProduct> typeToFinancialProduct = clientAccount.getTypeToFinancialProductMap();
         int availableCreditLine = defineCreditLineAmount(clientAccount);
 
-        if (!typeToFinancialProduct.containsKey(FinancialProductService.FinancialProductType.CREDIT_CARD) &&
+        if (!typeToFinancialProduct.containsKey(FinancialProductService.FinancialProductType.CREDIT_LINE) &&
                 typeToFinancialProduct.containsKey(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT) &&
                 availableCreditLine > 0) {
                 CreditLine creditLine = new CreditLine(availableCreditLine);
-                clientAccount.addNewFinancialProduct(FinancialProductService.FinancialProductType.CREDIT_CARD, creditLine);
+                clientAccount.addNewFinancialProduct(FinancialProductService.FinancialProductType.CREDIT_LINE, creditLine);
                 System.out.println("Successfully opened a credit line with $" + availableCreditLine + " available for credit");
                 clientAccount.reviewCurrentFinancialProducts();
         } else {
@@ -89,7 +89,7 @@ public class ClientAccountService {
                 return CreditLineService.TOP_THRESHOLD;
             }
         }
-        return -1;
+        throw new IllegalStateException("No Checking Account!");
     }
 
     public void openRRSP(ClientAccount clientAccount) {

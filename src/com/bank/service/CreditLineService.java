@@ -63,10 +63,10 @@ public class CreditLineService extends FinancialProductService implements Promot
     }
 
     private CreditLine checkIfFinProductExists(ClientAccount clientAccount) throws NullPointerException {
-        if (clientAccount.getTypeToFinancialProductMap().containsKey(FinancialProductType.CREDIT_CARD)) {
-            return (CreditLine) clientAccount.getTypeToFinancialProductMap().get(FinancialProductType.CREDIT_CARD);
+        if (clientAccount.getTypeToFinancialProductMap().containsKey(FinancialProductType.CREDIT_LINE)) {
+            return (CreditLine) clientAccount.getTypeToFinancialProductMap().get(FinancialProductType.CREDIT_LINE);
         } else {
-            throw new NullPointerException(FinancialProductType.CREDIT_CARD.toString() + " does not exists");
+            throw new NullPointerException(FinancialProductType.CREDIT_LINE.toString() + " does not exists");
         }
     }
 }

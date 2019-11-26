@@ -8,9 +8,7 @@ import com.bank.service.FinancialProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.awt.image.ImageProducer;
 import java.time.LocalDate;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -86,7 +84,7 @@ class ClientAccountServiceTest {
         CheckingAccount checkingAccount = new CheckingAccount(OPENING_ACCOUNT_BALANCE);
         CreditLine creditLine = new CreditLine(CreditLineService.LOWEST_THRESHOLD);
         clientAccount.addNewFinancialProduct(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT, checkingAccount);
-        clientAccount.addNewFinancialProduct(FinancialProductService.FinancialProductType.CREDIT_CARD, creditLine);
+        clientAccount.addNewFinancialProduct(FinancialProductService.FinancialProductType.CREDIT_LINE, creditLine);
         assertThrows(IllegalStateException.class, () -> clientAccountService.openCreditLine(clientAccount));
     }
 
@@ -105,6 +103,23 @@ class ClientAccountServiceTest {
     }
 
     @Test
+    void openCreditLineNotEnoughFundsButCanadianResident() {
+        clientAccountService.openCheckingAccount(clientAccount,500);
+        Customer customer = clientAccount.getCustomer();
+        customer.setCanadianResident();
+        clientAccountService.openCreditLine(clientAccount);
+        assertEquals(1000, clientAccount.getAmountEligibleForCreditLine());
+    }
+
+    @Test
+    void openCreditLineCanadianResidentMaximumLine() {
+        clientAccountService.openCheckingAccount(clientAccount,10000);
+        Customer customer = clientAccount.getCustomer();
+        customer.setCanadianResident();
+        clientAccountService.openCreditLine(clientAccount);
+        assertEquals(10000, clientAccount.getAmountEligibleForCreditLine());
+    }
+    @Test
     void openCreditLine() {
         //Ask a question: I can create = new CheckingAccount() and put it to Map using clientAccount.addNewFinancialProduct,
         // and this is different from openCheckingAccount(). Does it require a fix?
@@ -114,6 +129,15 @@ class ClientAccountServiceTest {
     }
 
     @Test
+    void openCreditLineCheckWelcomingBonus() {
+        clientAccountService.openCheckingAccount(clientAccount,OPENING_ACCOUNT_BALANCE + CheckingAccountService.CHECKING_ACCOUNT_YEARLY_FEE);
+        clientAccountService.openCreditLine(clientAccount);
+        CreditLine creditLine = (CreditLine) clientAccount.getTypeToFinancialProductMap().get(FinancialProductService.FinancialProductType.CREDIT_LINE);
+        assertEquals(50, creditLine.getBalance());
+    }
+
+    @Test
     void openRRSP() {
+
     }
 }

@@ -10,7 +10,7 @@ import java.util.List;
 public abstract class FinancialProductService {
 
     public enum FinancialProductType {
-        CREDIT_CARD,
+        CREDIT_LINE,
         CHECKING_ACCOUNT,
         RRSP;
 
@@ -18,7 +18,7 @@ public abstract class FinancialProductService {
         @Override
         public String toString() {
             switch (this) {
-                case CREDIT_CARD:
+                case CREDIT_LINE:
                     return "Credit Card";
                 case CHECKING_ACCOUNT:
                     return "Checking account";
