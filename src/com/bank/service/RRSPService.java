@@ -2,6 +2,7 @@ package com.bank.service;
 
 import com.bank.entities.ClientAccount;
 import com.bank.entities.RRSP;
+import com.bank.entities.Transaction;
 
 public class RRSPService extends FinancialProductService implements Promotionable {
 
@@ -16,10 +17,14 @@ public class RRSPService extends FinancialProductService implements Promotionabl
         } else {
             feeForDepositing = incomingTransactionAmount * RRSP.DEPOSIT_FEE_PERCENT;
         }
-        if (rrsp.getRoomForContribution() > (incomingTransactionAmount - feeForDepositing)) {
-            rrsp.setBalance(balance + incomingTransactionAmount - feeForDepositing);
-            rrsp.setRoomForContribution(rrsp.getRoomForContribution() - incomingTransactionAmount + feeForDepositing);
-            rrsp.addTransactionToTransactionHistory(super.createTransaction(incomingTransactionAmount));
+        double netSumToBeDeposited = incomingTransactionAmount - feeForDepositing;
+        if (rrsp.getRoomForContribution() > (netSumToBeDeposited)) {
+            rrsp.setBalance(balance + netSumToBeDeposited);
+            rrsp.setRoomForContribution(rrsp.getRoomForContribution() - netSumToBeDeposited);
+            Transaction transaction = super.createTransaction(incomingTransactionAmount);
+            rrsp.addTransactionToTransactionHistory(transaction);
+            transaction = super.createTransaction(-feeForDepositing);
+            rrsp.addTransactionToTransactionHistory(transaction);
             System.out.println("You deposited: $" + incomingTransactionAmount + "\nYour balance is: $" + balance + ", and available room to contribute: $" + rrsp.getRoomForContribution());
             System.out.println("The fee is: $" + feeForDepositing);
         } else {

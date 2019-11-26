@@ -3,7 +3,7 @@ package com.bank.entities;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RRSP extends  FinancialProduct {
+public class RRSP extends FinancialProduct {
 
     private ClientAccount clientAccount;
     private FinancialClientsInfo financialClientsInfo;
@@ -24,24 +24,24 @@ public class RRSP extends  FinancialProduct {
         this.financialClientsInfo = clientAccount.getFinancialClientsInfo();
     }
 
-    private void updateYearlyRooms(){
+    private void updateYearlyRooms() {
         this.maximumContributionRoomYearly = new ArrayList<>();
         maximumContributionRoomYearly.add(new YearlyRoom(2017, 26010.00, 0.18));
         maximumContributionRoomYearly.add(new YearlyRoom(2018, 26230.00, 0.18));
         maximumContributionRoomYearly.add(new YearlyRoom(2019, 26500.00, 0.18));
     }
 
-    private double calculateRoom(){
-        double availableRoomForContribution=0;
+    private double calculateRoom() {
+        double availableRoomForContribution = 0;
         double yearlySalary;
         int currentYear;
-        for(YearlyRoom yearlyRoom : maximumContributionRoomYearly){
+        for (YearlyRoom yearlyRoom : maximumContributionRoomYearly) {
             currentYear = yearlyRoom.getYear();
             yearlySalary = financialClientsInfo.getSalaryHistory().get(currentYear);
-            if(yearlySalary*yearlyRoom.getMaximumPercentageToContribute() < yearlyRoom.getMaximumAmountToContribute()){
-                availableRoomForContribution+=yearlySalary*yearlyRoom.getMaximumPercentageToContribute();
-            }else {
-                availableRoomForContribution+=yearlyRoom.maximumAmountToContribute;
+            if (yearlySalary * yearlyRoom.getMaximumPercentageToContribute() < yearlyRoom.getMaximumAmountToContribute()) {
+                availableRoomForContribution += yearlySalary * yearlyRoom.getMaximumPercentageToContribute();
+            } else {
+                availableRoomForContribution += yearlyRoom.maximumAmountToContribute;
             }
             System.out.println("In " + currentYear + " you can contribute: " + availableRoomForContribution);
         }
@@ -80,7 +80,7 @@ public class RRSP extends  FinancialProduct {
         return clone;
     }
 
-    private static class YearlyRoom{
+    private class YearlyRoom {
 
         private int year;
         private double maximumAmountToContribute;
