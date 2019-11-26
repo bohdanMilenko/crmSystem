@@ -39,10 +39,10 @@ public class FinancialClientsInfo {
         return new HashMap<>(salaryHistory);
     }
 
-    @Override
-    protected FinancialClientsInfo clone() throws CloneNotSupportedException {
-        FinancialClientsInfo clone = (FinancialClientsInfo) super.clone();
-        clone.salaryHistory = new HashMap<>(salaryHistory);
-        return clone;
-    }
+//    @Override
+//    protected FinancialClientsInfo clone() throws CloneNotSupportedException {
+//        FinancialClientsInfo clone = (FinancialClientsInfo) super.clone();
+//        clone.salaryHistory = new HashMap<>(salaryHistory);
+//        return clone;
+//    }
 }

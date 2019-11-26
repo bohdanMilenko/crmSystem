@@ -1,15 +1,16 @@
 package tests;
 
-import com.bank.entities.CheckingAccount;
-import com.bank.entities.ClientAccount;
-import com.bank.entities.Customer;
-import com.bank.entities.Transaction;
+import com.bank.entities.*;
+import com.bank.service.CheckingAccountService;
 import com.bank.service.ClientAccountService;
+import com.bank.service.CreditLineService;
 import com.bank.service.FinancialProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.awt.image.ImageProducer;
 import java.time.LocalDate;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,18 +27,18 @@ class ClientAccountServiceTest {
     }
 
     @Test
-    void openCheckingAccount() throws Exception {
+    void openCheckingAccount() throws IllegalStateException {
         clientAccountService.openCheckingAccount(clientAccount, OPENING_ACCOUNT_BALANCE);
         assertNotNull(clientAccount.getTypeToFinancialProductMap().get(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT));
     }
 
     @Test
     void openCheckingAccountNegativeAmount() {
-        assertThrows(Exception.class, () -> clientAccountService.openCheckingAccount(clientAccount, -OPENING_ACCOUNT_BALANCE));
+        assertThrows(IllegalStateException.class, () -> clientAccountService.openCheckingAccount(clientAccount, -OPENING_ACCOUNT_BALANCE));
     }
 
     @Test
-    void openCheckingAccountCheckBalanceForStudent() throws Exception {
+    void openCheckingAccountCheckBalanceForStudent() throws IllegalStateException {
         Customer customer = clientAccount.getCustomer();
         customer.setStudentAccount();
         clientAccountService.openCheckingAccount(clientAccount, OPENING_ACCOUNT_BALANCE);
@@ -46,7 +47,7 @@ class ClientAccountServiceTest {
     }
 
     @Test
-    void openCheckingAccountCheckEmptyTransactionsForStudent() throws Exception {
+    void openCheckingAccountCheckEmptyTransactionsForStudent() throws IllegalStateException {
         Customer customer = clientAccount.getCustomer();
         customer.setStudentAccount();
         clientAccountService.openCheckingAccount(clientAccount, OPENING_ACCOUNT_BALANCE);
@@ -56,18 +57,18 @@ class ClientAccountServiceTest {
 
     @Test
     void openCheckingAccountAmountLessThenFee() {
-        assertThrows(Exception.class, () -> clientAccountService.openCheckingAccount(clientAccount, 50));
+        assertThrows(IllegalStateException.class, () -> clientAccountService.openCheckingAccount(clientAccount, 50));
     }
 
     @Test
-    void openCheckingAccountCheckBalanceAfterFeeApplied() throws Exception {
+    void openCheckingAccountCheckBalanceAfterFeeApplied() throws IllegalStateException {
         clientAccountService.openCheckingAccount(clientAccount, OPENING_ACCOUNT_BALANCE);
         CheckingAccount checkingAccount = (CheckingAccount) clientAccount.getTypeToFinancialProductMap().get(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT);
         assertEquals(OPENING_ACCOUNT_BALANCE - FinancialProductService.CHECKING_ACCOUNT_YEARLY_FEE, checkingAccount.getBalance());
     }
 
     @Test
-    void openCheckingAccountCheckTransactionForFee() throws Exception {
+    void openCheckingAccountCheckTransactionForFee() throws IllegalStateException {
         clientAccountService.openCheckingAccount(clientAccount, OPENING_ACCOUNT_BALANCE);
         CheckingAccount checkingAccount = (CheckingAccount) clientAccount.getTypeToFinancialProductMap().get(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT);
         Transaction transaction = checkingAccount.getCheckingAccountHistory().get(0);
@@ -76,7 +77,40 @@ class ClientAccountServiceTest {
 
 
     @Test
+    void openCreditLineWithoutCheckingAccount() {
+        assertThrows(IllegalStateException.class, () -> clientAccountService.openCreditLine(clientAccount));
+    }
+
+    @Test
+    void openCreditLineWithAlreadyOpenCreditLine() {
+        CheckingAccount checkingAccount = new CheckingAccount(OPENING_ACCOUNT_BALANCE);
+        CreditLine creditLine = new CreditLine(CreditLineService.LOWEST_THRESHOLD);
+        clientAccount.addNewFinancialProduct(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT, checkingAccount);
+        clientAccount.addNewFinancialProduct(FinancialProductService.FinancialProductType.CREDIT_CARD, creditLine);
+        assertThrows(IllegalStateException.class, () -> clientAccountService.openCreditLine(clientAccount));
+    }
+
+    @Test
+    void openCreditLineCheckAvailableCreditLine() {
+        CheckingAccount checkingAccount = new CheckingAccount(500);
+        clientAccount.addNewFinancialProduct(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT, checkingAccount);
+        assertEquals(0, clientAccount.getAmountEligibleForCreditLine());
+    }
+
+    @Test
+    void openCreditLineNotEnoughFunds() {
+        CheckingAccount checkingAccount = new CheckingAccount(500);
+        clientAccount.addNewFinancialProduct(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT, checkingAccount);
+        assertThrows(IllegalStateException.class, () -> clientAccountService.openCreditLine(clientAccount));
+    }
+
+    @Test
     void openCreditLine() {
+        //Ask a question: I can create = new CheckingAccount() and put it to Map using clientAccount.addNewFinancialProduct,
+        // and this is different from openCheckingAccount(). Does it require a fix?
+        clientAccountService.openCheckingAccount(clientAccount,OPENING_ACCOUNT_BALANCE + CheckingAccountService.CHECKING_ACCOUNT_YEARLY_FEE);
+        clientAccountService.openCreditLine(clientAccount);
+        assertEquals(5000, clientAccount.getAmountEligibleForCreditLine());
     }
 
     @Test

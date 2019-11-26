@@ -64,10 +64,4 @@ public class CreditLine extends  FinancialProduct{
         return new ArrayList<>(creditCardTransactions);
     }
 
-    @Override
-    protected CreditLine clone() throws CloneNotSupportedException {
-        CreditLine clone = (CreditLine) super.clone();
-        clone.creditCardTransactions = new ArrayList<>(creditCardTransactions);
-        return clone;
-    }
 }

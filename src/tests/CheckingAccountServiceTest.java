@@ -53,7 +53,7 @@ class CheckingAccountServiceTest {
     void testDepositMoneyToAccountCheckTransactionAmount() {
         checkingAccountService.depositMoneyToAccount(clientAccount, 25000);
         Transaction transaction = checkingAccount.getCheckingAccountHistory().get(0);
-        assertEquals(FinancialProductService.CHECKING_ACCOUNT_YEARLY_FEE, transaction.getAmount());
+        assertEquals(-FinancialProductService.CHECKING_ACCOUNT_YEARLY_FEE, transaction.getAmount());
     }
 
     @Test
@@ -175,7 +175,7 @@ class CheckingAccountServiceTest {
     @Test
     void applyPromotionCheckTransactionAmount() {
         double outgoingTransaction = 6000;
-        double expectedBonus = outgoingTransaction * 0.01;
+        double expectedBonus = (outgoingTransaction+ CheckingAccountService.CHECKING_ACCOUNT_YEARLY_FEE) * 0.01;
         checkingAccountService.withdrawMoneyFromAccount(clientAccount, outgoingTransaction);
         checkingAccountService.applyPromotion(clientAccount);
         Transaction transaction = checkingAccount.getCheckingAccountHistory().get(2);

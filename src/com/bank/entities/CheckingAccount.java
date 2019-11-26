@@ -39,10 +39,4 @@ public class CheckingAccount extends  FinancialProduct implements  Cloneable {
         this.eligibleForPromotion = eligibleForPromotion;
     }
 
-    @Override
-    public CheckingAccount clone() throws CloneNotSupportedException {
-        CheckingAccount clone = (CheckingAccount) super.clone();
-        clone.checkingAccountHistory = new ArrayList<>(checkingAccountHistory);
-        return clone;
-    }
 }

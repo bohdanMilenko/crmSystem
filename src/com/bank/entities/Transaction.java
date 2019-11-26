@@ -41,7 +41,7 @@ public class Transaction {
 
     @Override
     public String toString() {
-        if(amount>0){
+        if(amount>0 && this.transaction_type == TRANSACTION_TYPE.INCOME){
             return "Successfully deposited $" + amount;
         }else {
             return "Successfully withdrew $" + amount;

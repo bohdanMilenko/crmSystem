@@ -12,12 +12,11 @@ public class ClientAccount {
 
     private Customer customer;
     private FinancialClientsInfo financialClientsInfo;
-    private Map<FinancialProductService.FinancialProductType, FinancialProduct> typeToFinancialProductMap;
+    private Map<FinancialProductService.FinancialProductType, FinancialProduct> typeToFinancialProductMap = new HashMap<>();
     private int amountEligibleForCreditLine;
 
     public ClientAccount(Customer customer) {
         this.customer = customer;
-        this.typeToFinancialProductMap = new HashMap<>();
         calculateInitialCreditLineEligibility(customer);
     }
 
@@ -58,20 +57,13 @@ public class ClientAccount {
     }
 
     public Map<FinancialProductService.FinancialProductType, FinancialProduct> getTypeToFinancialProductMap() {
-        return new HashMap<>(typeToFinancialProductMap);
+        return typeToFinancialProductMap;
     }
 
     public void addNewFinancialProduct(FinancialProductService.FinancialProductType financialProductType, FinancialProduct financialProduct){
         typeToFinancialProductMap.put(financialProductType, financialProduct);
     }
 
-    @Override
-    protected ClientAccount clone() throws CloneNotSupportedException {
-        ClientAccount clone = (ClientAccount) super.clone();
-        clone.typeToFinancialProductMap = new HashMap<>(typeToFinancialProductMap);
-        clone.financialClientsInfo = financialClientsInfo.clone();
-        clone.customer = customer.clone();
-        return clone;
-    }
+
 
 }

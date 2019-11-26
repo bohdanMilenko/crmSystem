@@ -11,9 +11,11 @@ import static com.bank.util.FinancialInfoUtil.getStringFromCustomer;
 public class ClientAccountService {
 
 
-    public void openCheckingAccount(ClientAccount clientAccount, double amount) throws Exception {
+    public void openCheckingAccount(ClientAccount clientAccount, double amount) throws IllegalStateException {
         Customer customer = clientAccount.getCustomer();
-        if (checkIfFinancialProductExists(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT, clientAccount)) {
+        Map<FinancialProductService.FinancialProductType, FinancialProduct> typeToFinancialProduct = clientAccount.getTypeToFinancialProductMap();
+
+        if (!typeToFinancialProduct.containsKey(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT)) {
             if (amount > 0 && customer.isStudent()) {
                 createCheckingAccount(clientAccount, amount);
             } else if (!customer.isStudent() && amount > FinancialProductService.CHECKING_ACCOUNT_YEARLY_FEE) {
@@ -21,7 +23,7 @@ public class ClientAccountService {
                 double depositAmountWithFeeApplied = amount - FinancialProductService.CHECKING_ACCOUNT_YEARLY_FEE;
                 createCheckingAccount(clientAccount, depositAmountWithFeeApplied);
             } else {
-                throw new Exception("Checking account already exists");
+                throw new IllegalStateException("Checking account already exists");
             }
         }
     }
@@ -39,20 +41,19 @@ public class ClientAccountService {
     }
 
 
-    public void openCreditLine(ClientAccount clientAccount) throws Exception {
+    public void openCreditLine(ClientAccount clientAccount) throws IllegalStateException {
         Map<FinancialProductService.FinancialProductType, FinancialProduct> typeToFinancialProduct = clientAccount.getTypeToFinancialProductMap();
+        int availableCreditLine = defineCreditLineAmount(clientAccount);
 
         if (!typeToFinancialProduct.containsKey(FinancialProductService.FinancialProductType.CREDIT_CARD) &&
-                typeToFinancialProduct.containsKey(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT)) {
-            int availableCreditLine = defineCreditLineAmount(clientAccount);
-            if (availableCreditLine > 0) {
+                typeToFinancialProduct.containsKey(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT) &&
+                availableCreditLine > 0) {
                 CreditLine creditLine = new CreditLine(availableCreditLine);
                 clientAccount.addNewFinancialProduct(FinancialProductService.FinancialProductType.CREDIT_CARD, creditLine);
                 System.out.println("Successfully opened a credit line with $" + availableCreditLine + " available for credit");
                 clientAccount.reviewCurrentFinancialProducts();
-            }
         } else {
-            throw new Exception("Either credit card already exists or you don't have checking account yet!");
+            throw new IllegalStateException("Impossible to open a Credit Line!");
         }
     }
 
@@ -94,12 +95,14 @@ public class ClientAccountService {
     public void openRRSP(ClientAccount clientAccount) {
         FinancialClientsInfo financialClientsInfo;
         Map<FinancialProductService.FinancialProductType, FinancialProduct> typeToFinancialProductMap = clientAccount.getTypeToFinancialProductMap();
-        if (checkIfFinancialProductExists(FinancialProductService.FinancialProductType.RRSP, clientAccount)) {
+        if (!typeToFinancialProductMap.containsKey(FinancialProductService.FinancialProductType.RRSP)) {
             financialClientsInfo = requestFinancialInfo();
             clientAccount.setFinancialClientsInfo(financialClientsInfo);
             RRSP rrsp = new RRSP(clientAccount);
             typeToFinancialProductMap.put(FinancialProductService.FinancialProductType.RRSP, rrsp);
             clientAccount.reviewCurrentFinancialProducts();
+        } else {
+            throw new IllegalStateException("RRSP already exists");
         }
     }
 
@@ -118,7 +121,7 @@ public class ClientAccountService {
         return new FinancialClientsInfo(currentPosition, previousPosition, yearsOnCurrentPosition, yearsOnPreviousPosition, salaryHistory);
     }
 
-    private Map<Integer, Double> getSalaryHistoryFromCustomer(){
+    private Map<Integer, Double> getSalaryHistoryFromCustomer() {
         Map<Integer, Double> salaryHistory = new HashMap<>();
         System.out.println("Please enter the net income in 2017: ");
         double incomeIn2017 = getNumberFromCustomer();
@@ -131,18 +134,4 @@ public class ClientAccountService {
         salaryHistory.put(2019, incomeIn2019);
         return salaryHistory;
     }
-
-
-    //TODO Move to FinancialProduct or clientAccount
-    private boolean checkIfFinancialProductExists(FinancialProductService.FinancialProductType financialProductType, ClientAccount clientAccount) {
-        Map financialProductList = clientAccount.getTypeToFinancialProductMap();
-        if (!financialProductList.containsKey(financialProductType)) {
-            return true;
-        } else {
-            System.out.println(financialProductType.toString() + " already exists!");
-            return false;
-        }
-    }
-
-
 }
