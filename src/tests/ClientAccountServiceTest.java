@@ -104,7 +104,7 @@ class ClientAccountServiceTest {
 
     @Test
     void openCreditLineNotEnoughFundsButCanadianResident() {
-        clientAccountService.openCheckingAccount(clientAccount,500);
+        clientAccountService.openCheckingAccount(clientAccount, 500);
         Customer customer = clientAccount.getCustomer();
         customer.setCanadianResident();
         clientAccountService.openCreditLine(clientAccount);
@@ -113,24 +113,25 @@ class ClientAccountServiceTest {
 
     @Test
     void openCreditLineCanadianResidentMaximumLine() {
-        clientAccountService.openCheckingAccount(clientAccount,10000);
+        clientAccountService.openCheckingAccount(clientAccount, 10000);
         Customer customer = clientAccount.getCustomer();
         customer.setCanadianResident();
         clientAccountService.openCreditLine(clientAccount);
         assertEquals(10000, clientAccount.getAmountEligibleForCreditLine());
     }
+
     @Test
     void openCreditLine() {
         //Ask a question: I can create = new CheckingAccount() and put it to Map using clientAccount.addNewFinancialProduct,
         // and this is different from openCheckingAccount(). Does it require a fix?
-        clientAccountService.openCheckingAccount(clientAccount,OPENING_ACCOUNT_BALANCE + CheckingAccountService.CHECKING_ACCOUNT_YEARLY_FEE);
+        clientAccountService.openCheckingAccount(clientAccount, OPENING_ACCOUNT_BALANCE + CheckingAccountService.CHECKING_ACCOUNT_YEARLY_FEE);
         clientAccountService.openCreditLine(clientAccount);
         assertEquals(5000, clientAccount.getAmountEligibleForCreditLine());
     }
 
     @Test
     void openCreditLineCheckWelcomingBonus() {
-        clientAccountService.openCheckingAccount(clientAccount,OPENING_ACCOUNT_BALANCE + CheckingAccountService.CHECKING_ACCOUNT_YEARLY_FEE);
+        clientAccountService.openCheckingAccount(clientAccount, OPENING_ACCOUNT_BALANCE + CheckingAccountService.CHECKING_ACCOUNT_YEARLY_FEE);
         clientAccountService.openCreditLine(clientAccount);
         CreditLine creditLine = (CreditLine) clientAccount.getTypeToFinancialProductMap().get(FinancialProductService.FinancialProductType.CREDIT_LINE);
         assertEquals(50, creditLine.getBalance());
@@ -138,6 +139,8 @@ class ClientAccountServiceTest {
 
     @Test
     void openRRSP() {
-
+        RRSP rrsp = new RRSP(clientAccount);
+        clientAccount.addNewFinancialProduct(FinancialProductService.FinancialProductType.RRSP, rrsp);
+        assertThrows(IllegalStateException.class, () -> clientAccountService.openRRSP(clientAccount));
     }
 }
