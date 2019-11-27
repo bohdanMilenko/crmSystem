@@ -8,11 +8,13 @@ import com.bank.service.CheckingAccountService;
 import com.bank.service.ClientAccountService;
 import com.bank.service.FinancialProductService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -38,28 +40,25 @@ class CheckingAccountServiceTest {
     }
 
     @Test
-    void testDepositMoneyToAccount() throws NullPointerException {
+    void testDepositMoneyToAccount() {
         checkingAccountService.depositMoneyToAccount(clientAccount, 25000);
         assertEquals(INITIAL_AMOUNT + 25000 - FinancialProductService.CHECKING_ACCOUNT_YEARLY_FEE, checkingAccount.getBalance(), 0.000001);
     }
 
+    @DisplayName("naming 1-2 rows")
     @Test
-    void testDepositMoneyToAccountNegativeSum() throws IllegalArgumentException {
-        checkingAccountService.depositMoneyToAccount(clientAccount, 25000);
+    void testDepositMoneyToAccountNegativeSum()  {
+        checkingAccountService.depositMoneyToAccount(clientAccount, -25000);
         assertEquals(INITIAL_AMOUNT + 25000 - FinancialProductService.CHECKING_ACCOUNT_YEARLY_FEE, checkingAccount.getBalance(), 0.000001);
     }
 
-    @Test
-    void testDepositMoneyToAccountCheckTransactionAmount() {
-        checkingAccountService.depositMoneyToAccount(clientAccount, 25000);
-        Transaction transaction = checkingAccount.getCheckingAccountHistory().get(0);
-        assertEquals(-FinancialProductService.CHECKING_ACCOUNT_YEARLY_FEE, transaction.getAmount());
-    }
 
     @Test
     void testDepositMoneyToAccountCheckTransactionAmount2() {
         checkingAccountService.depositMoneyToAccount(clientAccount, 25000);
-        Transaction transaction = checkingAccount.getCheckingAccountHistory().get(1);
+        List<Transaction> checkingAccountHistory = checkingAccount.getCheckingAccountHistory();
+        assertEquals(2, checkingAccountHistory.size());
+        Transaction transaction = checkingAccountHistory.get(1);
         assertEquals(25000, transaction.getAmount());
     }
 
@@ -67,7 +66,7 @@ class CheckingAccountServiceTest {
     void testDepositMoneyToAccountCheckTransactionType() {
         checkingAccountService.depositMoneyToAccount(clientAccount, 25000);
         Transaction transaction = checkingAccount.getCheckingAccountHistory().get(1);
-        assertEquals(Transaction.TRANSACTION_TYPE.INCOME, transaction.getTransaction_type());
+        assertEquals(Transaction.TRANSACTION_TYPE.INCOME, transaction.getTransactionType());
     }
 
     @Test
@@ -82,6 +81,8 @@ class CheckingAccountServiceTest {
         assertEquals(INITIAL_AMOUNT - 5000 - FinancialProductService.CHECKING_ACCOUNT_YEARLY_FEE, checkingAccount.getBalance());
     }
 
+
+    //TODO Messages
     @Test
     void testWithdrawMoneyFromAccountNegativeSum() throws IllegalArgumentException {
         assertThrows(IllegalArgumentException.class, () -> checkingAccountService.withdrawMoneyFromAccount(clientAccount, -500));
@@ -96,7 +97,8 @@ class CheckingAccountServiceTest {
     @Test
     void testWithdrawMoneyFromAccountCheckTransactionTime() {
         checkingAccountService.withdrawMoneyFromAccount(clientAccount, 1000);
-        assertTrue(getSecondsDifference(1) <= 0 && getSecondsDifference(1) >= -1);
+        assertTrue(getSecondsDifference(1) <= 0);
+        assertTrue(getSecondsDifference(1) >= -1);
     }
 
     @Test
@@ -104,6 +106,7 @@ class CheckingAccountServiceTest {
         checkingAccountService.withdrawMoneyFromAccount(clientAccount, 1000);
         Transaction transaction = checkingAccount.getCheckingAccountHistory().get(1);
         double transactionAmount = transaction.getAmount();
+        assertEquals(Transaction.TRANSACTION_TYPE.EXPENSE, transaction.getTransactionType());
         assertEquals(-1000, transactionAmount);
     }
 
@@ -111,7 +114,7 @@ class CheckingAccountServiceTest {
     void testWithdrawMoneyFromAccountCheckTransactionType() {
         checkingAccountService.withdrawMoneyFromAccount(clientAccount, 1000);
         Transaction transaction = checkingAccount.getCheckingAccountHistory().get(1);
-        assertEquals(Transaction.TRANSACTION_TYPE.EXPENSE, transaction.getTransaction_type());
+        assertEquals(Transaction.TRANSACTION_TYPE.EXPENSE, transaction.getTransactionType());
     }
 
     //No point to write
@@ -194,7 +197,7 @@ class CheckingAccountServiceTest {
         checkingAccountService.withdrawMoneyFromAccount(clientAccount, 6000);
         checkingAccountService.applyPromotion(clientAccount);
         Transaction transaction = checkingAccount.getCheckingAccountHistory().get(2);
-        assertEquals(Transaction.TRANSACTION_TYPE.INCOME, transaction.getTransaction_type());
+        assertEquals(Transaction.TRANSACTION_TYPE.INCOME, transaction.getTransactionType());
     }
 
     @Test
@@ -212,6 +215,7 @@ class CheckingAccountServiceTest {
     }
 
 
+    //TODO New field
     private long getSecondsDifference(int transactionNumber) {
         LocalDateTime currentTime = LocalDateTime.now();
         Transaction transaction = checkingAccount.getCheckingAccountHistory().get(transactionNumber);

@@ -5,8 +5,8 @@ import java.time.LocalDateTime;
 public class Transaction {
 
     private TRANSACTION_TYPE transaction_type;
-    private double amount;
-    private LocalDateTime dateTime;
+    private final double amount;
+    private final LocalDateTime dateTime;
 
     public enum TRANSACTION_TYPE{
         INCOME,
@@ -14,12 +14,13 @@ public class Transaction {
     }
 
     public Transaction( double amount) {
+        //TODO THROW TRANSACTION IF = 0
         this.transaction_type = defineTransactionType(amount);
         this.amount = amount;
         this.dateTime = LocalDateTime.now();
     }
 
-    public TRANSACTION_TYPE getTransaction_type() {
+    public TRANSACTION_TYPE getTransactionType() {
         return transaction_type;
     }
 

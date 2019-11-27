@@ -45,7 +45,7 @@ public abstract class FinancialProductService {
         System.out.println("Your transaction list:");
         DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM);
         transactionHistory.forEach(transaction ->
-                System.out.println(formatter.format(transaction.getDateTime()) + " :" + transaction.getTransaction_type() + " $" + transaction.getAmount()));
+                System.out.println(formatter.format(transaction.getDateTime()) + " :" + transaction.getTransactionType() + " $" + transaction.getAmount()));
     }
 
 

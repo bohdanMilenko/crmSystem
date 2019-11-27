@@ -1,5 +1,6 @@
 package com.bank;
 
+import com.bank.entities.CheckingAccount;
 import com.bank.entities.ClientAccount;
 import com.bank.entities.Customer;
 import com.bank.service.*;
@@ -21,6 +22,8 @@ public class Main {
         CheckingAccountService checkingAccountService = new CheckingAccountService();
         CreditLineService creditLineService = new CreditLineService();
         RRSPService rrspService = new RRSPService();
+
+
 
         try {
             clientAccountService.openCheckingAccount(MarkTwain, 10000);

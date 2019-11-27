@@ -12,7 +12,7 @@ public class CheckingAccountService extends FinancialProductService implements P
 
     @Override
     public void depositMoneyToAccount(ClientAccount clientAccount, double incomingTransactionAmount) throws NullPointerException {
-        if (incomingTransactionAmount < 0) {
+        if (incomingTransactionAmount <= 0) {
             throw new IllegalArgumentException("Deposited negative sum");
         }
         CheckingAccount checkingAccount = checkIfFinProductExists(clientAccount);
@@ -24,8 +24,8 @@ public class CheckingAccountService extends FinancialProductService implements P
 
     @Override
     public void withdrawMoneyFromAccount(ClientAccount clientAccount, double outgoingTransactionAmount) throws IllegalArgumentException {
-        if (outgoingTransactionAmount < 0) {
-            throw new IllegalArgumentException();
+        if (outgoingTransactionAmount <= 0) {
+            throw new IllegalArgumentException("Negative amount");
         }
         CheckingAccount checkingAccount = checkIfFinProductExists(clientAccount);
         double balance = checkingAccount.getBalance();
@@ -92,7 +92,7 @@ public class CheckingAccountService extends FinancialProductService implements P
         double amountSpentLastMonth = 0.0;
         for (Transaction transaction : checkingAccountHistory) {
             if (transaction.getDateTime().isAfter(monthBeforeNow.atStartOfDay()) &&
-                    (transaction.getTransaction_type() == Transaction.TRANSACTION_TYPE.EXPENSE)) {
+                    (transaction.getTransactionType() == Transaction.TRANSACTION_TYPE.EXPENSE)) {
                 amountSpentLastMonth += transaction.getAmount();
             }
         }
