@@ -9,7 +9,7 @@ public class RRSPService extends FinancialProductService implements Promotionabl
 
     @Override
     public void depositMoneyToAccount(ClientAccount clientAccount, double incomingTransactionAmount) throws NullPointerException {
-        RRSP rrsp = checkIfFinProductExists(clientAccount);
+        RRSP rrsp = getFinancialProductIfExists(clientAccount);
         double feeForDepositing;
         double balance = rrsp.getBalance();
         if (isPromotionEligible(clientAccount)) {
@@ -36,7 +36,7 @@ public class RRSPService extends FinancialProductService implements Promotionabl
 
     @Override
     public void withdrawMoneyFromAccount(ClientAccount clientAccount, double outgoingTransactionAmount) throws NullPointerException {
-        RRSP rrsp = checkIfFinProductExists(clientAccount);
+        RRSP rrsp = getFinancialProductIfExists(clientAccount);
         double balance = rrsp.getBalance();
         if (outgoingTransactionAmount < balance) {
             rrsp.setBalance(balance - outgoingTransactionAmount);
@@ -50,7 +50,7 @@ public class RRSPService extends FinancialProductService implements Promotionabl
 
     @Override
     public void printTransactionHistory(ClientAccount clientAccount) throws NullPointerException {
-        RRSP rrsp = checkIfFinProductExists(clientAccount);
+        RRSP rrsp = getFinancialProductIfExists(clientAccount);
         super.printTransactionList(rrsp.getTransactionHistory());
     }
 
@@ -65,7 +65,7 @@ public class RRSPService extends FinancialProductService implements Promotionabl
     //TODO COMPLETE THIS METHOD
     @Override
     public boolean isPromotionEligible(ClientAccount clientAccount) throws NullPointerException {
-        RRSP rrsp = checkIfFinProductExists(clientAccount);
+        RRSP rrsp = getFinancialProductIfExists(clientAccount);
 
         return true;
     }
@@ -77,11 +77,12 @@ public class RRSPService extends FinancialProductService implements Promotionabl
 
     @Override
     public void reviewBalance(ClientAccount clientAccount) throws NullPointerException {
-        RRSP rrsp = checkIfFinProductExists(clientAccount);
+        RRSP rrsp = getFinancialProductIfExists(clientAccount);
         System.out.println("Your RRSP account balance is: $ " + rrsp.getBalance());
     }
 
-    private RRSP checkIfFinProductExists(ClientAccount clientAccount) throws NullPointerException {
+    //TODO Throw different exception! NPE is too vague
+    private RRSP getFinancialProductIfExists(ClientAccount clientAccount) throws NullPointerException {
         if (clientAccount.getTypeToFinancialProductMap().containsKey(FinancialProductType.RRSP)) {
             return (RRSP) clientAccount.getTypeToFinancialProductMap().get(FinancialProductType.RRSP);
         } else {

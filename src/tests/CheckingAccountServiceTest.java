@@ -22,14 +22,16 @@ class CheckingAccountServiceTest {
 
     private CheckingAccount checkingAccount;
     private ClientAccount clientAccount;
+    private ClientAccountService clientAccountService;
+    private CheckingAccountService checkingAccountService;
 
-    private ClientAccountService clientAccountService = new ClientAccountService();
-    private CheckingAccountService checkingAccountService = new CheckingAccountService();
     private final int INITIAL_AMOUNT = 10000;
 
 
     @BeforeEach
-    void setUp() throws Exception {
+    void setUp() {
+        clientAccountService = new ClientAccountService();
+        checkingAccountService = new CheckingAccountService();
         Customer customer = new Customer("Bob", "Marley", LocalDate.of(1965, 10, 1));
         clientAccount = new ClientAccount(customer);
         clientAccountService.openCheckingAccount(clientAccount, INITIAL_AMOUNT);
@@ -45,11 +47,11 @@ class CheckingAccountServiceTest {
         assertEquals(INITIAL_AMOUNT + 25000 - FinancialProductService.CHECKING_ACCOUNT_YEARLY_FEE, checkingAccount.getBalance(), 0.000001);
     }
 
-    @DisplayName("naming 1-2 rows")
+    @DisplayName("Tests negative amount passed as an argument. Expected to fail, and catch IllegalArgumentException. " +
+            "The message should be: Deposited negative sum ")
     @Test
     void testDepositMoneyToAccountNegativeSum()  {
-        checkingAccountService.depositMoneyToAccount(clientAccount, -25000);
-        assertEquals(INITIAL_AMOUNT + 25000 - FinancialProductService.CHECKING_ACCOUNT_YEARLY_FEE, checkingAccount.getBalance(), 0.000001);
+        assertThrows(IllegalArgumentException.class, ()-> checkingAccountService.depositMoneyToAccount(clientAccount, -25000));
     }
 
 
@@ -72,7 +74,8 @@ class CheckingAccountServiceTest {
     @Test
     void testDepositMoneyToAccountCheckTransactionTime() {
         checkingAccountService.depositMoneyToAccount(clientAccount, 25000);
-        assertTrue(getSecondsDifference(1) <= 0 && getSecondsDifference(1) >= -1);
+        assertTrue(getSecondsDifference(1) <= 0);
+        assertTrue(getSecondsDifference(1) >= -1);
     }
 
     @Test
@@ -100,6 +103,7 @@ class CheckingAccountServiceTest {
         assertTrue(getSecondsDifference(1) <= 0);
         assertTrue(getSecondsDifference(1) >= -1);
     }
+
 
     @Test
     void testWithdrawMoneyFromAccountCheckTransactionAmount() {
@@ -138,7 +142,7 @@ class CheckingAccountServiceTest {
     }
 
     @Test
-    void checkIfEligibleForPromotionNotEnoughExpenses() throws NullPointerException {
+    void checkIfEligibleForPromotionNotEnoughExpenses() {
         checkingAccountService.withdrawMoneyFromAccount(clientAccount, 1000);
         assertFalse(checkingAccount.isEligibleForPromotion());
     }
@@ -189,7 +193,8 @@ class CheckingAccountServiceTest {
     void applyPromotionCheckTransactionTime() {
         checkingAccountService.withdrawMoneyFromAccount(clientAccount, 6000);
         checkingAccountService.applyPromotion(clientAccount);
-        assertTrue(getSecondsDifference(2) <= 0 && getSecondsDifference(2) >= -1);
+        assertTrue(getSecondsDifference(2) <= 0 );
+        assertTrue(getSecondsDifference(2) >= -1);
     }
 
     @Test
@@ -201,7 +206,7 @@ class CheckingAccountServiceTest {
     }
 
     @Test
-    void applyPromotionIsEligibleAlreadyTrue() throws IllegalStateException {
+    void applyPromotionIsEligibleAlreadyTrue()  {
         checkingAccountService.withdrawMoneyFromAccount(clientAccount, 6000);
         checkingAccount.setEligibleForPromotion(true);
         assertThrows(IllegalStateException.class, () -> checkingAccountService.applyPromotion(clientAccount));

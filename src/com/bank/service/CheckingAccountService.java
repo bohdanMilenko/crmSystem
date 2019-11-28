@@ -15,7 +15,7 @@ public class CheckingAccountService extends FinancialProductService implements P
         if (incomingTransactionAmount <= 0) {
             throw new IllegalArgumentException("Deposited negative sum");
         }
-        CheckingAccount checkingAccount = checkIfFinProductExists(clientAccount);
+        CheckingAccount checkingAccount = getFinancialProductIfExists(clientAccount);
         double balance = checkingAccount.getBalance();
         checkingAccount.setBalance(balance + incomingTransactionAmount);
         Transaction transaction = super.createTransaction(incomingTransactionAmount);
@@ -27,7 +27,7 @@ public class CheckingAccountService extends FinancialProductService implements P
         if (outgoingTransactionAmount <= 0) {
             throw new IllegalArgumentException("Negative amount");
         }
-        CheckingAccount checkingAccount = checkIfFinProductExists(clientAccount);
+        CheckingAccount checkingAccount = getFinancialProductIfExists(clientAccount);
         double balance = checkingAccount.getBalance();
         double remainingBalance = balance - outgoingTransactionAmount;
         if (remainingBalance >= 0) {
@@ -41,14 +41,14 @@ public class CheckingAccountService extends FinancialProductService implements P
 
     @Override
     public void printTransactionHistory(ClientAccount clientAccount) throws NullPointerException {
-        CheckingAccount checkingAccount = checkIfFinProductExists(clientAccount);
+        CheckingAccount checkingAccount = getFinancialProductIfExists(clientAccount);
         List<Transaction> checkingAccountHistory = checkingAccount.getCheckingAccountHistory();
         super.printTransactionList(checkingAccountHistory);
     }
 
     @Override
     public void reviewBalance(ClientAccount clientAccount) {
-        CheckingAccount checkingAccount = checkIfFinProductExists(clientAccount);
+        CheckingAccount checkingAccount = getFinancialProductIfExists(clientAccount);
         System.out.println("Your checking account balance is: $ " + checkingAccount.getBalance());
     }
 
@@ -58,7 +58,7 @@ public class CheckingAccountService extends FinancialProductService implements P
 
     @Override
     public boolean isPromotionEligible(ClientAccount clientAccount) {
-        CheckingAccount checkingAccount = checkIfFinProductExists(clientAccount);
+        CheckingAccount checkingAccount = getFinancialProductIfExists(clientAccount);
         double amountSpentLastMonth = getAmountSpentLastMonth(checkingAccount);
         System.out.println("Amount spent last month is: $" + amountSpentLastMonth);
         if (amountSpentLastMonth <= PROMOTION_ELIGIBLE_EXPENSES) {
@@ -73,7 +73,7 @@ public class CheckingAccountService extends FinancialProductService implements P
 
     @Override
     public void applyPromotion(ClientAccount clientAccount) {
-        CheckingAccount checkingAccount = checkIfFinProductExists(clientAccount);
+        CheckingAccount checkingAccount = getFinancialProductIfExists(clientAccount);
         if (!checkingAccount.isEligibleForPromotion() && isPromotionEligible(clientAccount)) {
             checkingAccount.setEligibleForPromotion(true);
             double amountSpentLastMonth = getAmountSpentLastMonth(checkingAccount);
@@ -99,7 +99,7 @@ public class CheckingAccountService extends FinancialProductService implements P
         return amountSpentLastMonth;
     }
 
-    private CheckingAccount checkIfFinProductExists(ClientAccount clientAccount) throws NullPointerException {
+    private CheckingAccount getFinancialProductIfExists(ClientAccount clientAccount) throws NullPointerException {
         if (clientAccount.getTypeToFinancialProductMap().containsKey(FinancialProductType.CHECKING_ACCOUNT)) {
             return (CheckingAccount) clientAccount.getTypeToFinancialProductMap().get(FinancialProductType.CHECKING_ACCOUNT);
         } else {

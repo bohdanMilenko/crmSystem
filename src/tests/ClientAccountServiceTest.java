@@ -59,7 +59,7 @@ class ClientAccountServiceTest {
     }
 
     @Test
-    void openCheckingAccountCheckBalanceAfterFeeApplied() throws IllegalStateException {
+    void openCheckingAccountCheckBalanceAfterFeeApplied() {
         clientAccountService.openCheckingAccount(clientAccount, OPENING_ACCOUNT_BALANCE);
         CheckingAccount checkingAccount = (CheckingAccount) clientAccount.getTypeToFinancialProductMap().get(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT);
         assertEquals(OPENING_ACCOUNT_BALANCE - FinancialProductService.CHECKING_ACCOUNT_YEARLY_FEE, checkingAccount.getBalance());

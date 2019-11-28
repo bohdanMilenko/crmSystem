@@ -11,7 +11,7 @@ import static com.bank.util.FinancialInfoUtil.getStringFromCustomer;
 public class ClientAccountService {
 
 
-    public void openCheckingAccount(ClientAccount clientAccount, double amount) throws IllegalStateException {
+    public void openCheckingAccount(ClientAccount clientAccount, double amount) {
         Customer customer = clientAccount.getCustomer();
         Map<FinancialProductService.FinancialProductType, FinancialProduct> typeToFinancialProduct = clientAccount.getTypeToFinancialProductMap();
 
@@ -41,17 +41,17 @@ public class ClientAccountService {
     }
 
 
-    public void openCreditLine(ClientAccount clientAccount) throws IllegalStateException {
+    public void openCreditLine(ClientAccount clientAccount) {
         Map<FinancialProductService.FinancialProductType, FinancialProduct> typeToFinancialProduct = clientAccount.getTypeToFinancialProductMap();
         int availableCreditLine = defineCreditLineAmount(clientAccount);
 
         if (!typeToFinancialProduct.containsKey(FinancialProductService.FinancialProductType.CREDIT_LINE) &&
                 typeToFinancialProduct.containsKey(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT) &&
                 availableCreditLine > 0) {
-                CreditLine creditLine = new CreditLine(availableCreditLine);
-                clientAccount.addNewFinancialProduct(FinancialProductService.FinancialProductType.CREDIT_LINE, creditLine);
-                System.out.println("Successfully opened a credit line with $" + availableCreditLine + " available for credit");
-                clientAccount.reviewCurrentFinancialProducts();
+            CreditLine creditLine = new CreditLine(availableCreditLine);
+            clientAccount.addNewFinancialProduct(FinancialProductService.FinancialProductType.CREDIT_LINE, creditLine);
+            System.out.println("Successfully opened a credit line with $" + availableCreditLine + " available for credit");
+            clientAccount.reviewCurrentFinancialProducts();
         } else {
             throw new IllegalStateException("Impossible to open a Credit Line!");
         }
@@ -88,8 +88,9 @@ public class ClientAccountService {
                 clientAccount.setAmountEligibleForCreditLine(CreditLineService.TOP_THRESHOLD);
                 return CreditLineService.TOP_THRESHOLD;
             }
+        } else {
+            throw new IllegalStateException("No Checking Account!");
         }
-        throw new IllegalStateException("No Checking Account!");
     }
 
     public void openRRSP(ClientAccount clientAccount) {

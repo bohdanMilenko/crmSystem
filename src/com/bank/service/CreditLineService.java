@@ -12,16 +12,16 @@ public class CreditLineService extends FinancialProductService implements Promot
     private static final double OVER_LIMIT_FEE = -29.99;
 
     @Override
-    public void depositMoneyToAccount(ClientAccount clientAccount, double incomingTransactionAmount) throws NullPointerException {
-        CreditLine creditLine = checkIfFinProductExists(clientAccount);
+    public void depositMoneyToAccount(ClientAccount clientAccount, double incomingTransactionAmount) {
+        CreditLine creditLine = getFinancialProductIfExists(clientAccount);
         double balance = creditLine.getBalance();
         creditLine.setBalance(balance + incomingTransactionAmount);
         creditLine.addTransactionToTransactionHistory(super.createTransaction(incomingTransactionAmount));
     }
 
     @Override
-    public void withdrawMoneyFromAccount(ClientAccount clientAccount, double outgoingTransactionAmount) throws NullPointerException {
-        CreditLine creditLine = checkIfFinProductExists(clientAccount);
+    public void withdrawMoneyFromAccount(ClientAccount clientAccount, double outgoingTransactionAmount)  {
+        CreditLine creditLine = getFinancialProductIfExists(clientAccount);
         double balance = creditLine.getBalance();
         if (creditLine.getCreditLimit() >= (balance - outgoingTransactionAmount)) {
             creditLine.increaseOverLimitCount();
@@ -35,8 +35,8 @@ public class CreditLineService extends FinancialProductService implements Promot
     }
 
     @Override
-    public void reviewBalance(ClientAccount clientAccount) throws NullPointerException {
-        CreditLine creditLine = checkIfFinProductExists(clientAccount);
+    public void reviewBalance(ClientAccount clientAccount) {
+        CreditLine creditLine = getFinancialProductIfExists(clientAccount);
         System.out.println("Your credit account balance is: $ " + creditLine.getBalance());
     }
 
@@ -57,12 +57,12 @@ public class CreditLineService extends FinancialProductService implements Promot
     }
 
     @Override
-    public void printTransactionHistory(ClientAccount clientAccount) throws NullPointerException {
-        CreditLine creditLine = checkIfFinProductExists(clientAccount);
+    public void printTransactionHistory(ClientAccount clientAccount)  {
+        CreditLine creditLine = getFinancialProductIfExists(clientAccount);
         super.printTransactionList(creditLine.getCreditCardTransactions());
     }
 
-    private CreditLine checkIfFinProductExists(ClientAccount clientAccount) throws NullPointerException {
+    private CreditLine getFinancialProductIfExists(ClientAccount clientAccount) {
         if (clientAccount.getTypeToFinancialProductMap().containsKey(FinancialProductType.CREDIT_LINE)) {
             return (CreditLine) clientAccount.getTypeToFinancialProductMap().get(FinancialProductType.CREDIT_LINE);
         } else {
