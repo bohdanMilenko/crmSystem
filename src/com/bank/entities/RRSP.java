@@ -31,6 +31,8 @@ public class RRSP extends FinancialProduct {
         maximumContributionRoomYearly.add(new YearlyRoom(2019, 26500.00, 0.18));
     }
 
+
+    //TODO HERE IS A BUG! NEEDS A FIX
     private double calculateRoom() {
         double availableRoomForContribution = 0;
         double yearlySalary;

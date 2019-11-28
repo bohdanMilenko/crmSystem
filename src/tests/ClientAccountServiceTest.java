@@ -113,7 +113,7 @@ class ClientAccountServiceTest {
 
     @Test
     void openCreditLineCanadianResidentMaximumLine() {
-        clientAccountService.openCheckingAccount(clientAccount, 10000);
+        clientAccountService.openCheckingAccount(clientAccount, 999999);
         Customer customer = clientAccount.getCustomer();
         customer.setCanadianResident();
         clientAccountService.openCreditLine(clientAccount);
@@ -137,6 +137,7 @@ class ClientAccountServiceTest {
         assertEquals(50, creditLine.getBalance());
     }
 
+    //TODO Test needs a fix!
     @Test
     void openRRSP() {
         RRSP rrsp = new RRSP(clientAccount);
