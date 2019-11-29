@@ -50,8 +50,8 @@ class CheckingAccountServiceTest {
     @DisplayName("Tests negative amount passed as an argument. Expected to fail, and catch IllegalArgumentException. " +
             "The message should be: Deposited negative sum ")
     @Test
-    void testDepositMoneyToAccountNegativeSum()  {
-        assertThrows(IllegalArgumentException.class, ()-> checkingAccountService.depositMoneyToAccount(clientAccount, -25000));
+    void testDepositMoneyToAccountNegativeSum() {
+        assertThrows(IllegalArgumentException.class, () -> checkingAccountService.depositMoneyToAccount(clientAccount, -25000));
     }
 
 
@@ -74,8 +74,8 @@ class CheckingAccountServiceTest {
     @Test
     void testDepositMoneyToAccountCheckTransactionTime() {
         checkingAccountService.depositMoneyToAccount(clientAccount, 25000);
-        assertTrue(getSecondsDifference(1) <= 0);
-        assertTrue(getSecondsDifference(1) >= -1);
+        assertTrue(getSecondsDifference(1, checkingAccount) <= 0);
+        assertTrue(getSecondsDifference(1, checkingAccount) >= -1);
     }
 
     @Test
@@ -100,8 +100,8 @@ class CheckingAccountServiceTest {
     @Test
     void testWithdrawMoneyFromAccountCheckTransactionTime() {
         checkingAccountService.withdrawMoneyFromAccount(clientAccount, 1000);
-        assertTrue(getSecondsDifference(1) <= 0);
-        assertTrue(getSecondsDifference(1) >= -1);
+        assertTrue(getSecondsDifference(1, checkingAccount) <= 0);
+        assertTrue(getSecondsDifference(1, checkingAccount) >= -1);
     }
 
 
@@ -182,7 +182,7 @@ class CheckingAccountServiceTest {
     @Test
     void applyPromotionCheckTransactionAmount() {
         double outgoingTransaction = 6000;
-        double expectedBonus = (outgoingTransaction+ CheckingAccountService.CHECKING_ACCOUNT_YEARLY_FEE) * 0.01;
+        double expectedBonus = (outgoingTransaction + CheckingAccountService.CHECKING_ACCOUNT_YEARLY_FEE) * 0.01;
         checkingAccountService.withdrawMoneyFromAccount(clientAccount, outgoingTransaction);
         checkingAccountService.applyPromotion(clientAccount);
         Transaction transaction = checkingAccount.getCheckingAccountHistory().get(2);
@@ -193,8 +193,8 @@ class CheckingAccountServiceTest {
     void applyPromotionCheckTransactionTime() {
         checkingAccountService.withdrawMoneyFromAccount(clientAccount, 6000);
         checkingAccountService.applyPromotion(clientAccount);
-        assertTrue(getSecondsDifference(2) <= 0 );
-        assertTrue(getSecondsDifference(2) >= -1);
+        assertTrue(getSecondsDifference(2, checkingAccount) <= 0);
+        assertTrue(getSecondsDifference(2, checkingAccount) >= -1);
     }
 
     @Test
@@ -206,7 +206,7 @@ class CheckingAccountServiceTest {
     }
 
     @Test
-    void applyPromotionIsEligibleAlreadyTrue()  {
+    void applyPromotionIsEligibleAlreadyTrue() {
         checkingAccountService.withdrawMoneyFromAccount(clientAccount, 6000);
         checkingAccount.setEligibleForPromotion(true);
         assertThrows(IllegalStateException.class, () -> checkingAccountService.applyPromotion(clientAccount));
@@ -220,8 +220,7 @@ class CheckingAccountServiceTest {
     }
 
 
-    //TODO New field
-    private long getSecondsDifference(int transactionNumber) {
+    private long getSecondsDifference(int transactionNumber, CheckingAccount checkingAccount) {
         LocalDateTime currentTime = LocalDateTime.now();
         Transaction transaction = checkingAccount.getCheckingAccountHistory().get(transactionNumber);
         Duration diff = Duration.between(currentTime, transaction.getDateTime());

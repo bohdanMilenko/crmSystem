@@ -62,7 +62,8 @@ class ClientAccountServiceTest {
     void openCheckingAccountCheckBalanceAfterFeeApplied() {
         clientAccountService.openCheckingAccount(clientAccount, OPENING_ACCOUNT_BALANCE);
         CheckingAccount checkingAccount = (CheckingAccount) clientAccount.getTypeToFinancialProductMap().get(FinancialProductService.FinancialProductType.CHECKING_ACCOUNT);
-        assertEquals(OPENING_ACCOUNT_BALANCE - FinancialProductService.CHECKING_ACCOUNT_YEARLY_FEE, checkingAccount.getBalance());
+        double netAmountAtAccount = OPENING_ACCOUNT_BALANCE - FinancialProductService.CHECKING_ACCOUNT_YEARLY_FEE;
+        assertEquals(netAmountAtAccount, checkingAccount.getBalance());
     }
 
     @Test
@@ -137,11 +138,9 @@ class ClientAccountServiceTest {
         assertEquals(50, creditLine.getBalance());
     }
 
-    //TODO Test needs a fix!
+
     @Test
     void openRRSP() {
-        RRSP rrsp = new RRSP(clientAccount);
-        clientAccount.addNewFinancialProduct(FinancialProductService.FinancialProductType.RRSP, rrsp);
         assertThrows(IllegalStateException.class, () -> clientAccountService.openRRSP(clientAccount));
     }
 }

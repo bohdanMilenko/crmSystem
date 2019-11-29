@@ -7,11 +7,11 @@ public class RRSP extends FinancialProduct {
 
     private ClientAccount clientAccount;
     private FinancialClientsInfo financialClientsInfo;
-    private double roomForContribution = calculateRoom();
+    private double roomForContribution;
+    private double balance;
 
     //TODO Rethink the idea of maximum room!!
-    private List<YearlyRoom> maximumContributionRoomYearly;
-    private double balance;
+    private List<YearlyRoom> maximumContributionRoomYearly= new ArrayList<>();
     private List<Transaction> transactionHistory = new ArrayList<>();
     public static final double DEPOSIT_FEE_PERCENT = 0.01;
 
@@ -21,11 +21,11 @@ public class RRSP extends FinancialProduct {
 
     {
         updateYearlyRooms();
-        this.financialClientsInfo = clientAccount.getFinancialClientsInfo();
+        financialClientsInfo = clientAccount.getFinancialClientsInfo();
+        roomForContribution = calculateRoom();
     }
 
     private void updateYearlyRooms() {
-        this.maximumContributionRoomYearly = new ArrayList<>();
         maximumContributionRoomYearly.add(new YearlyRoom(2017, 26010.00, 0.18));
         maximumContributionRoomYearly.add(new YearlyRoom(2018, 26230.00, 0.18));
         maximumContributionRoomYearly.add(new YearlyRoom(2019, 26500.00, 0.18));
@@ -37,6 +37,7 @@ public class RRSP extends FinancialProduct {
         double availableRoomForContribution = 0;
         double yearlySalary;
         int currentYear;
+        System.out.println(maximumContributionRoomYearly.size());
         for (YearlyRoom yearlyRoom : maximumContributionRoomYearly) {
             currentYear = yearlyRoom.getYear();
             yearlySalary = financialClientsInfo.getSalaryHistory().get(currentYear);
